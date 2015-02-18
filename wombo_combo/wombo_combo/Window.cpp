@@ -4,7 +4,7 @@ Window::Window(int width, int height, const char* title)
 	:_title(title), _width(width), _height(height),
 	_isClose(true), _pWindow(nullptr), _isVSyncOn(false)
 {
-	assert(IS_SYSTEM_INIT != false);
+
 }
 
 
@@ -19,8 +19,8 @@ bool Window::Open()
 		_title.c_str(),                  // window title
 		SDL_WINDOWPOS_UNDEFINED,         // initial x position
 		SDL_WINDOWPOS_UNDEFINED,         // initial y position
-		WINDOW_WIDTH,                    // width, in pixels
-		WINDOW_HEIGHT,                   // height, in pixels
+		_width,                    // width, in pixels
+		_height,                   // height, in pixels
 		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN
 		// flags - see below
 		);
@@ -54,9 +54,7 @@ bool Window::InitGL()
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	SDL_GL_MakeCurrent(_pWindow, _glContext);
-
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
@@ -70,15 +68,11 @@ bool Window::InitGL()
 		return false;
 	}
 
-#ifdef DEBUG
 	printf("OpenGL (%s): \n", glGetString(GL_VERSION));
 	printf("GLSL: (%s): \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 	printf("GPU: (%s %s): \n\n", glGetString(GL_RENDERER), glGetString(GL_VENDOR));
-#endif
 
-#ifdef DEBUG
-	SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
-#endif
+	//SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
 	if (_isVSyncOn)
 	{
@@ -102,4 +96,13 @@ void Window::SwapBuffers()
 {
 	assert(_glContext != nullptr);
 	SDL_GL_SwapWindow(_pWindow);
+}
+
+bool Window::SetGLContext()
+{
+	assert(_pWindow != nullptr && _glContext != nullptr);
+	SDL_GL_MakeCurrent(_pWindow, _glContext);
+	//glBindTexture(GL_TEXTURE_2D, 0);
+	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, GetWidth(), GetHeight());
 }

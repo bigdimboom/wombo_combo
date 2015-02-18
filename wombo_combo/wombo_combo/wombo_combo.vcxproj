@@ -12,10 +12,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs1.glsl" />
     <None Include="Shaders\vs1.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Global.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D33D2B22-082B-436A-8144-4F4692F887FB}</ProjectGuid>

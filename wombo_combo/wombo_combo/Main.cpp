@@ -1,57 +1,19 @@
-//compile with this command on my Ubuntu 12.04 machine:
-//gcc sdl2-opengl-sample.c -o sdl2-opengl-sample -Wall -std=c99 -I/usr/local/include/SDL2 -lSDL2 -I/usr/include/GL -lGL -lGLEW -Wall
-#include <GL/glew.h>
-#include <SDL.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "Global.h"
+#include "Window.h"
+#include "Shader.h"
 
-GLuint BuildShaderProgram(const char *vsPath, const char *fsPath);
-GLuint CreateShader(GLenum eShaderType, const char *strShaderFile);
-
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 int main(int argc, char** argv)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		return 1;
 
-	SDL_Window *window = SDL_CreateWindow("My Game Window",
-		SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED,
-		640, 480,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+	Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello");
 
-	SDL_GLContext glContext = SDL_GL_CreateContext(window);
-	if (glContext == NULL)
-	{
-		printf("There was an error creating the OpenGL context!\n");
-		return 0;
-	}
-
-	const unsigned char *version = glGetString(GL_VERSION);
-	if (version == NULL)
-	{
-		printf("There was an error creating the OpenGL context!\n");
-		return 1;
-	}
-
-	SDL_GL_MakeCurrent(window, glContext);
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-
-	//MUST make a context AND make it current BEFORE glewInit()!
-	glewExperimental = GL_TRUE;
-	GLenum glew_status = glewInit();
-	if (glew_status != 0)
-	{
-		fprintf(stderr, "Error: %s\n", glewGetErrorString(glew_status));
-		return 1;
-	}
-	else{
-		printf("OpenGL (%s): \n", glGetString(GL_VERSION));
-		printf("GLSL: (%s): \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-		printf("GPU: (%s %s): \n\n", glGetString(GL_RENDERER), glGetString(GL_VENDOR));
-	}
+	window.Open();
+	window.InitGL();
 
 	const float triangleVertices[] = {
 		0.0f, 0.5f, 0.0f, 1.0f,
@@ -63,15 +25,8 @@ int main(int argc, char** argv)
 		0.0f, 0.0f, 1.0f, 1.0f
 	}; //we love you vertices!
 
-	GLuint theShaderProgram;
-	theShaderProgram = BuildShaderProgram("shaders/vs1.glsl", "shaders/fs1.glsl");
-	if (theShaderProgram == -1)
-	{
-		SDL_Quit();
-		return 0;
-	}
-
-	printf("Using program %d\n", theShaderProgram);
+	Shader sh;
+	sh.Comiple("shaders/vs1.glsl", "shaders/fs1.glsl");
 
 	GLuint vao;
 	glGenVertexArrays(1, &vao);
@@ -98,10 +53,10 @@ int main(int argc, char** argv)
 		}
 
 		glClearColor(0.0, 0.0, 0.0, 0.0);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		/* drawing code in here! */
-		glUseProgram(theShaderProgram);
+		glUseProgram(sh.GetID());
 		glBindBuffer(GL_ARRAY_BUFFER, triangleBufferObject); //bind the buffer we're applying attributes to
 		glEnableVertexAttribArray(0); //0 is our index, refer to "location = 0" in the vertex shader
 		glEnableVertexAttribArray(1); //attribute 1 is for vertex color data
@@ -114,105 +69,11 @@ int main(int argc, char** argv)
 		glUseProgram(0);
 		/* drawing code above here! */
 
-		SDL_GL_SwapWindow(window);
+		window.SwapBuffers();
 		SDL_Delay(20);
 	}
 
-	SDL_GL_DeleteContext(glContext);
+	window.DestoryGL();
 	SDL_Quit();
 	return 0;
-}
-
-GLuint BuildShaderProgram(const char *vsPath, const char *fsPath)
-{
-	GLuint vertexShader;
-	GLuint fragmentShader;
-
-	vertexShader = CreateShader(GL_VERTEX_SHADER, vsPath);
-	fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fsPath);
-
-	/* So we've compiled our shaders, now we need to link them in to the program
-	that will be used for rendering. */
-
-	/*This section could be broken out into a separate function, but we're doing it here
-	because I'm not using C++ STL features that would make this easier. Tutorial doing so is
-	here: http://www.arcsynthesis.org/gltut/Basics/Tut01%20Making%20Shaders.html */
-
-	GLuint tempProgram;
-	tempProgram = glCreateProgram();
-
-	glAttachShader(tempProgram, vertexShader);
-	glAttachShader(tempProgram, fragmentShader);
-
-	glLinkProgram(tempProgram); //linking!
-
-	//error checking
-	GLint status;
-	glGetProgramiv(tempProgram, GL_LINK_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetProgramiv(tempProgram, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar strInfoLog[4096];
-		glGetProgramInfoLog(tempProgram, infoLogLength, NULL, strInfoLog);
-		printf("Shader linker failure: %s\n", strInfoLog);
-		return -1;
-	}
-	else
-		puts("Shader linked sucessfully!");
-
-	glDetachShader(tempProgram, vertexShader);
-	glDetachShader(tempProgram, fragmentShader);
-
-	return tempProgram;
-}
-
-GLuint CreateShader(GLenum eShaderType, const char *strShaderFile)
-{
-	char shaderSource[4096];
-	char inChar;
-	FILE *shaderFile;
-	int i = 0;
-
-	fopen_s(&shaderFile, strShaderFile, "r");
-	while (fscanf_s(shaderFile, "%c", &inChar) > 0)
-	{
-		shaderSource[i++] = inChar; //loading the file's chars into array
-	}
-	shaderSource[i - 1] = '\0';
-	fclose(shaderFile);
-	puts(shaderSource); //print to make sure the string is loaded
-
-	GLuint shader = glCreateShader(eShaderType);
-	const char *ss = shaderSource;
-	glShaderSource(shader, 1, &ss, NULL);
-
-	glCompileShader(shader);
-
-	GLint status;
-	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-	if (status == GL_FALSE)
-	{
-		GLint infoLogLength;
-		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLogLength);
-
-		GLchar strInfoLog[4096];
-		glGetShaderInfoLog(shader, infoLogLength, NULL, strInfoLog);
-
-		char strShaderType[16];
-		switch (eShaderType)
-		{
-		case GL_VERTEX_SHADER: sprintf_s(strShaderType, "vertex"); break;
-		case GL_GEOMETRY_SHADER: sprintf_s(strShaderType, "geometry"); break;
-		case GL_FRAGMENT_SHADER: sprintf_s(strShaderType, "fragment"); break;
-		}
-
-		printf("Compile failure in %s shader:\n%s\n", strShaderType, strInfoLog);
-		return -1;
-	}
-	else
-		puts("Shader compiled sucessfully!");
-
-	return shader;
 }

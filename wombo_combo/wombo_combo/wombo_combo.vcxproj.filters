@@ -11,10 +11,22 @@
     <Filter Include="Assets">
       <UniqueIdentifier>{641fbdd3-99c6-4f7e-981e-b109700dcc08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Window">
+      <UniqueIdentifier>{aed06a5d-6cbf-496e-af9d-28f4901571f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Shader">
+      <UniqueIdentifier>{78a85087-1b3a-4139-a00b-c1d99848f528}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -24,5 +36,16 @@
     <None Include="Shaders\vs1.glsl">
       <Filter>Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Window.h">
+      <Filter>Source Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Source Files\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
