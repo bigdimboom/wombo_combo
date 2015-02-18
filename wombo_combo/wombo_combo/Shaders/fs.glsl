@@ -13,5 +13,3 @@ void main()
 	color = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2) * vec4(ourColor, 1.0);
 }
 
-
-

@@ -3,15 +3,15 @@
 #include "Shader.h"
 #include "Texture.h"
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+#define WINDOW_WIDTH 512
+#define WINDOW_HEIGHT 512
 
 int main(int argc, char** argv)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		return 1;
 
-	Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Hello");
+	Window window(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 
 	window.Open();
 	window.InitGL();
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 	tex2.Load("Assets/awesomeface.png");
 
 	Shader sh;
-	sh.Comiple("shaders/vs1.glsl", "shaders/fs1.glsl");
+	sh.Comiple("shaders/vs.glsl", "shaders/fs.glsl");
 
 	//printf("glError: %d\n", glGetError());
 

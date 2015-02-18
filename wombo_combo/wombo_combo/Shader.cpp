@@ -18,7 +18,7 @@ GLuint Shader::CreateShader(GLenum eShaderType, const char *strShaderFile)
 	FILE *shaderFile;
 	int i = 0;
 
-	if (fopen_s(&shaderFile, strShaderFile, "r")){
+	if (fopen_s(&shaderFile, strShaderFile, "rb")){
 		std::cout << "Unable to locate shader files.\n";
 		exit(EXIT_FAILURE);
 	}
@@ -27,12 +27,13 @@ GLuint Shader::CreateShader(GLenum eShaderType, const char *strShaderFile)
 	{
 		shaderSource[i++] = inChar; //loading the file's chars into array
 	}
-	shaderSource[i - 1] = '\0';
+	shaderSource[i] = '\0';
 	fclose(shaderFile);
 	puts(shaderSource); //print to make sure the string is loaded
 
 	GLuint shader = glCreateShader(eShaderType);
 	const char *ss = shaderSource;
+
 	glShaderSource(shader, 1, &ss, NULL);
 
 	glCompileShader(shader);

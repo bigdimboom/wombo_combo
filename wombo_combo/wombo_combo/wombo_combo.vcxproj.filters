@@ -20,6 +20,15 @@
     <Filter Include="Source Files\Texture">
       <UniqueIdentifier>{8ea62df4-956d-4a2f-a537-6d6420f0ebe1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{028440d9-16f8-452c-8f9f-748929f36be2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\System">
+      <UniqueIdentifier>{28019f02-2296-434c-9a04-94d863964aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game Object">
+      <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -34,12 +43,15 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\Texture</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\fs1.glsl">
+    <None Include="Shaders\fs.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\vs1.glsl">
+    <None Include="Shaders\vs.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -55,6 +67,15 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Source Files\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Source Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>Source Files\Game Object</Filter>
+    </ClInclude>
+    <ClInclude Include="ICommand.h">
+      <Filter>Source Files\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
