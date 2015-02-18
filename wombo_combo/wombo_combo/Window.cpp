@@ -83,6 +83,8 @@ bool Window::InitGL()
 		SDL_GL_SetSwapInterval(0);
 	}
 
+	glViewport(0, 0, _width, _height);
+
 	return true;
 }
 
@@ -98,7 +100,7 @@ void Window::SwapBuffers()
 	SDL_GL_SwapWindow(_pWindow);
 }
 
-bool Window::SetGLContext()
+void Window::SetGLContext()
 {
 	assert(_pWindow != nullptr && _glContext != nullptr);
 	SDL_GL_MakeCurrent(_pWindow, _glContext);

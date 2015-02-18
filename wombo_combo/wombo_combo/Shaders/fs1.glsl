@@ -1,7 +1,17 @@
-#version 330
-smooth in vec4 theColor;
-out vec4 outputColor;
+#version 330 core
+in vec3 ourColor;
+in vec2 TexCoord;
+
+out vec4 color;
+
+// Texture samplers
+uniform sampler2D ourTexture1;
+uniform sampler2D ourTexture2;
+
 void main()
 {
-	outputColor = theColor;
+	color = mix(texture(ourTexture1, TexCoord), texture(ourTexture2, TexCoord), 0.2) * vec4(ourColor, 1.0);
 }
+
+
+

@@ -112,12 +112,11 @@ bool Shader::Comiple(const char *vsPath, const char *fsPath)
 		return false;
 	}
 
-#ifdef DEBUG
-	printf("Using program %d\n", tempProgram);
-#endif
-
-
-
 	return true;
 }
 
+void Shader::Delete()
+{
+	assert(_program > 0);
+	glDeleteProgram(_program);
+}

@@ -17,6 +17,9 @@
     <Filter Include="Source Files\Shader">
       <UniqueIdentifier>{78a85087-1b3a-4139-a00b-c1d99848f528}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Texture">
+      <UniqueIdentifier>{8ea62df4-956d-4a2f-a537-6d6420f0ebe1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -27,6 +30,9 @@
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -46,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Source Files\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Source Files\Texture</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 #include "Global.h"
 #include "Window.h"
 #include "Shader.h"
+#include "Texture.h"
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
@@ -15,30 +16,52 @@ int main(int argc, char** argv)
 	window.Open();
 	window.InitGL();
 
-	const float triangleVertices[] = {
-		0.0f, 0.5f, 0.0f, 1.0f,
-		0.5f, -0.366f, 0.0f, 1.0f,
-		-0.5f, -0.366f, 0.0f, 1.0f,
-		//next part contains vertex colors
-		1.0f, 0.0f, 0.0f, 1.0f,
-		0.0f, 1.0f, 0.0f, 1.0f,
-		0.0f, 0.0f, 1.0f, 1.0f
-	}; //we love you vertices!
+	// Set up vertex data (and buffer(s)) and attribute pointers
+	GLfloat vertices[] = {
+		// Positions          // Colors           // Texture Coords
+		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // Top Right
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // Bottom Right
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // Bottom Left
+		-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // Top Left 
+	};
+	GLuint indices[] = {  // Note that we start from 0!
+		0, 1, 3, // First Triangle
+		1, 2, 3  // Second Triangle
+	};
+	GLuint VBO, VAO, EBO;
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// Position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+	glEnableVertexAttribArray(0);
+	// Color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+	// TexCoord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+
+	glBindVertexArray(0); // Unbind VAO
+
+	Texture tex1;
+	tex1.Load("Assets/container.jpg");
+	Texture tex2;
+	tex2.Load("Assets/awesomeface.png");
 
 	Shader sh;
 	sh.Comiple("shaders/vs1.glsl", "shaders/fs1.glsl");
 
-	GLuint vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao); //make our vertex array object, we need it to restore state we set after binding it. Re-binding reloads the state associated with it.
-
-	GLuint triangleBufferObject;
-	glGenBuffers(1, &triangleBufferObject); //create the buffer
-	glBindBuffer(GL_ARRAY_BUFFER, triangleBufferObject); //we're "using" this one now
-	glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW); //formatting the data for the buffer
-	glBindBuffer(GL_ARRAY_BUFFER, 0); //unbind any buffers
-
-	printf("glError: %d\n", glGetError());
+	//printf("glError: %d\n", glGetError());
 
 	char bGameLoopRunning = 1;
 	while (bGameLoopRunning)
@@ -53,24 +76,22 @@ int main(int argc, char** argv)
 		}
 
 		glClearColor(0.0, 0.0, 0.0, 0.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		tex1.Bind(0);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "ourTexture1"), 0);
+		tex2.Bind(1);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "ourTexture2"), 1);
 
 		/* drawing code in here! */
-		glUseProgram(sh.GetID());
-		glBindBuffer(GL_ARRAY_BUFFER, triangleBufferObject); //bind the buffer we're applying attributes to
-		glEnableVertexAttribArray(0); //0 is our index, refer to "location = 0" in the vertex shader
-		glEnableVertexAttribArray(1); //attribute 1 is for vertex color data
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0); //tell gl (shader!) how to interpret our vertex data
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, (void*)48); //color data is 48 bytes in to the array
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		sh.Use();
 
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glUseProgram(0);
-		/* drawing code above here! */
+		// Draw container
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 
 		window.SwapBuffers();
-		SDL_Delay(20);
 	}
 
 	window.DestoryGL();
