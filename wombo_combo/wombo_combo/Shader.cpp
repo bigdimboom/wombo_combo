@@ -116,8 +116,11 @@ bool Shader::Comiple(const char *vsPath, const char *fsPath)
 	return true;
 }
 
+
 void Shader::Delete()
 {
 	assert(_program > 0);
 	glDeleteProgram(_program);
 }
+
+

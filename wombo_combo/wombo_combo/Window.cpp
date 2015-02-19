@@ -83,7 +83,11 @@ bool Window::InitGL()
 		SDL_GL_SetSwapInterval(0);
 	}
 
+	// Define the viewport dimensions
 	glViewport(0, 0, _width, _height);
+
+	// Setup some OpenGL options
+	glEnable(GL_DEPTH_TEST);
 
 	return true;
 }

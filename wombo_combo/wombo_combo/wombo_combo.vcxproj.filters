@@ -29,6 +29,9 @@
     <Filter Include="Source Files\Game Object">
       <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Tools">
+      <UniqueIdentifier>{21bcf197-c969-4e12-b3be-c5c7501df98f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -44,6 +47,12 @@
       <Filter>Source Files\Texture</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="MyTimer.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCamera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
   </ItemGroup>
@@ -76,6 +85,12 @@
     </ClInclude>
     <ClInclude Include="ICommand.h">
       <Filter>Source Files\System</Filter>
+    </ClInclude>
+    <ClInclude Include="MyTimer.h">
+      <Filter>Source Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeCamera.h">
+      <Filter>Source Files\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
