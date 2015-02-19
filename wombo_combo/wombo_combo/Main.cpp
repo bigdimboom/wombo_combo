@@ -6,8 +6,30 @@
 #include "FreeCamera.h"
 
 
-#define WINDOW_WIDTH 512
-#define WINDOW_HEIGHT 512
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
+
+GLfloat lastX = 400, lastY = 300;
+bool firstMouse = true;
+
+void CameraMotion(GLfloat xpos, GLfloat ypos, FreeCamera* cam){
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+		SDL_ShowCursor(SDL_DISABLE);
+	}
+
+	GLfloat xoffset = xpos - lastX;
+	GLfloat yoffset = lastY - ypos;  // Reversed since y-coordinates go from bottom to left
+
+	lastX = xpos;
+	lastY = ypos;
+
+	cam->Rotate(PITCH, yoffset);
+	cam->Rotate(YAW, xoffset);
+}
 
 int main(int argc, char** argv)
 {
@@ -108,7 +130,7 @@ int main(int argc, char** argv)
 	MyTimer timer;
 	timer.Reset();
 
-	FreeCamera camera(point3(-1.0f,0.0f,1.5f));
+	FreeCamera camera(point3(-1.0f, 0.0f, 1.5f));
 
 	char bGameLoopRunning = 1;
 	while (bGameLoopRunning)
@@ -122,9 +144,24 @@ int main(int argc, char** argv)
 				bGameLoopRunning = 0;
 			else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)
 				bGameLoopRunning = 0;
+			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w){
+				camera.Move(FORWARD, (float)timer.GetElapsedTime());
+			}
+			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s){
+				camera.Move(BACKWARD, (float)timer.GetElapsedTime());
+			}
+			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a){
+				camera.Move(LEFT, (float)timer.GetElapsedTime());
+			}
+			else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
+				camera.Move(RIGHT, (float)timer.GetElapsedTime());
+			}
+			else if (e.type == SDL_MOUSEMOTION){
+				CameraMotion(e.motion.x, e.motion.y, &camera);
+			}
 		}
 
-
+		camera.Update();
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,7 +175,6 @@ int main(int argc, char** argv)
 
 		/* drawing code in here! */
 
-		// Draw container
 		// Create camera transformation
 		glm::mat4 view;
 		view = *(camera.GetViewMatrix());

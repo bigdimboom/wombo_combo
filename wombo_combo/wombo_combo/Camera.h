@@ -26,10 +26,10 @@ public:
 	virtual void Rotate(Camera_Rotate dir, GLfloat angle);
 	inline void SetVelocity(GLfloat velocity) { _velocity = velocity; }
 	inline void SetSensitivity(GLfloat sensitivity) { _sensitivity = sensitivity; }
-protected:
 	// If you want to override the camera class
 	virtual void Update();
 	//view matrix
+protected:
 	matrix4 _viewMat;
 	//Camera Attributes
 	point3 _up;

@@ -13,6 +13,8 @@
 
 #include <assert.h>
 
+#include <string>
+
 typedef glm::vec2 point2;
 
 typedef glm::vec3 point3;
