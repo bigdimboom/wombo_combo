@@ -16,6 +16,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MyTimer.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="Terrian.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -31,8 +32,15 @@
     <ClInclude Include="ICommand.h" />
     <ClInclude Include="MyTimer.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="Terrian.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\awesomeface.png" />
+    <Image Include="Assets\container.jpg" />
+    <Image Include="Assets\Terrian\height_map.jpg" />
+    <Image Include="Assets\wall.jpg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{D33D2B22-082B-436A-8144-4F4692F887FB}</ProjectGuid>
