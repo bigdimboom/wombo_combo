@@ -118,5 +118,8 @@
     <Image Include="Assets\Terrian\height_map.jpg">
       <Filter>Assets\Terrian</Filter>
     </Image>
+    <Image Include="Assets\Terrian\height_map2.jpg">
+      <Filter>Assets\Terrian</Filter>
+    </Image>
   </ItemGroup>
 </Project>
