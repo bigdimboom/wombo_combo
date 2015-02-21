@@ -29,3 +29,6 @@ typedef glm::mat4 matrix4;
 
 typedef unsigned int uint;
 typedef unsigned char uchar;
+
+
+#define BUFFER_OFFSET(offset) (( void *)(offset))

@@ -18,7 +18,7 @@
 #define WINDOW_HEIGHT 768
 
 //Put mouse in the center
-GLfloat lastX = 512, lastY = 384;
+GLfloat lastX = WINDOW_WIDTH / 2, lastY = WINDOW_HEIGHT / 2;
 bool firstMouse = true;
 
 Shader sh;
@@ -62,25 +62,35 @@ int main(int argc, char** argv)
 
 	//InitData()
 	GLuint VAO, VBO, EBO;
-	terrian.GenTerrian("Assets/Terrian/height_map.jpg");
+	terrian.GenTerrian("Assets/Terrian/height_map.jpg", true);
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetSize(), terrian.GetPureTerrian(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetSize() + sizeof(normal3) * terrian.GetSize(), nullptr, GL_STATIC_DRAW);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(point4) * terrian.GetSize(), terrian.GetPureTerrian().get());
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetSize(), sizeof(normal3) * terrian.GetSize(), terrian.GetNormals().get());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrian.GetIndicesNum() * sizeof(GLuint), terrian.GetIndices(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrian.GetIndicesNum() * sizeof(GLuint), terrian.GetIndices().get(), GL_STATIC_DRAW);
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrian.GetSize()));
 
 	glBindVertexArray(0); // Unbind VAO
 
 	char bGameLoopRunning = 1;
+
+	int frame = 0;
+	double time = 0;
+
+
 	while (bGameLoopRunning)
 	{
 		timer.Start();
@@ -105,7 +115,7 @@ int main(int argc, char** argv)
 				camera.Move(RIGHT, (float)timer.GetElapsedTime());
 			}
 			else if (e.type == SDL_MOUSEMOTION){
-				CameraMotion(e.motion.x, e.motion.y, &camera);
+				CameraMotion((float)e.motion.x, (float)e.motion.y, &camera);
 			}
 		}
 
@@ -133,20 +143,20 @@ int main(int argc, char** argv)
 
 		glBindVertexArray(VAO);
 
-		// Calculate the model matrix for each object and pass it to shader before drawing
-		//glm::mat4 model;
-		//model = glm::translate(model, cubePositions[i]);
-		//GLfloat angle = 20.0f * i;
-		//model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
-		//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, terrian.GetIndicesNum(), GL_UNSIGNED_INT, 0);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, terrian.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 		window.SwapBuffers();
-		timer.Stop();
 
-		//std::cout << "FPS: "<< 1000 / (timer.GetElapsedTime())  << std::endl;
+
+		time += timer.GetElapsedTime();
+		timer.Stop();
+		++frame;
+		if (time / 1000 >= 1 && time < 60){
+			std::cout << "Frame rate warning:(lower than 60 fps) "<< frame << std::endl;
+			frame = 0;
+			time = 0;
+		}
 	}
 
 	window.DestoryGL();

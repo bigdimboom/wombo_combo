@@ -17,22 +17,23 @@ public:
 
 	void GenTerrian(const char* hightmap, bool genNormals = false, bool genUVs=false);
 	inline void SetWeight(float weight){ _weight = weight; }
-	inline point4* GetPureTerrian() const { return _terrian; }
-	inline uint* GetIndices() const { return _indices; }
+	inline std::shared_ptr<point4> GetPureTerrian() const { return _grids; }
+	inline std::shared_ptr<uint> GetIndices() const { return _indices; }
+	std::shared_ptr<normal3> GetNormals() const { return _normals; }
 	inline uint GetSize() const { return _width * _length; }
 	inline uint GetIndicesNum() const { return _index_size; }
 protected:
 	virtual void GenHeightMap(const char* hightmap);
 	virtual void GenIndicesArray();
+	virtual void GenNormals();
 	//TODO:
-	//point3* GetNormals() const;
 	//point2* GetUVCoords() const;
 private:
-	point4* _terrian;
-	point3* _normals;
-	uint* _indices;
-	point2* _textureCoords;
-	int _length, _width;
+	std::shared_ptr<point4> _grids;
+	std::shared_ptr<normal3> _normals;
+	std::shared_ptr<uint> _indices;
+	std::shared_ptr<point2> _textureCoords;
+	uint _length, _width;
 	GLuint _index_size;
 	float _weight;
 };

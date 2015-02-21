@@ -38,6 +38,9 @@
     <Filter Include="Assets\Terrian">
       <UniqueIdentifier>{c0eca8a6-fbbb-4957-b8b5-98046954934c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Mesh">
+      <UniqueIdentifier>{96041cd1-a0e1-4caf-8a69-16bbc2c480d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -63,6 +66,9 @@
     </ClCompile>
     <ClCompile Include="Terrian.cpp">
       <Filter>Source Files\Terrian</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Source Files\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Terrian.h">
       <Filter>Source Files\Terrian</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Source Files\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
