@@ -25,6 +25,8 @@ Shader sh;
 MyTimer timer;
 FreeCamera camera(point3(-1.0f, 0.0f, 1.5f));
 Terrian terrian(1024, 1024);
+Texture texture_terrian1;
+Texture texture_terrian2;
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, FreeCamera* cam){
 	if (firstMouse)
@@ -62,7 +64,10 @@ int main(int argc, char** argv)
 
 	//InitData()
 	GLuint VAO, VBO, EBO;
-	terrian.GenTerrian("Assets/Terrian/height_map.jpg", true);
+	terrian.GenTerrian("Assets/Terrian/height_map.jpg", true, true);
+
+	texture_terrian1.Load("Assets/Terrian/terrian_tex.jpg");
+	texture_terrian2.Load("Assets/Terrian/terrian_tex2.jpg");
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -70,9 +75,16 @@ int main(int argc, char** argv)
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetSize() + sizeof(normal3) * terrian.GetSize(), nullptr, GL_STATIC_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(point4) * terrian.GetSize(), terrian.GetPureTerrian().get());
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetSize(), sizeof(normal3) * terrian.GetSize(), terrian.GetNormals().get());
+	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetVertsSize() + 
+								  sizeof(normal3) * terrian.GetVertsSize() + 
+								  sizeof(point2) * terrian.GetTextureSize(), nullptr, GL_STATIC_DRAW);
+
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(point4) * terrian.GetVertsSize(), terrian.GetPureTerrian().get());
+
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetVertsSize(), sizeof(normal3) * terrian.GetVertsSize(), terrian.GetNormals().get());
+
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetVertsSize() + 
+									 sizeof(normal3) * terrian.GetVertsSize(), sizeof(point2) * terrian.GetTextureSize(), terrian.GetTextureCoords().get());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrian.GetIndicesNum() * sizeof(GLuint), terrian.GetIndices().get(), GL_STATIC_DRAW);
@@ -81,7 +93,9 @@ int main(int argc, char** argv)
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrian.GetSize()));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrian.GetVertsSize()));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrian.GetVertsSize() + sizeof(normal3) * terrian.GetVertsSize()));
 
 	glBindVertexArray(0); // Unbind VAO
 
@@ -90,6 +104,7 @@ int main(int argc, char** argv)
 	int frame = 0;
 	double time = 0;
 
+	camera.SetVelocity(0.8f);
 
 	while (bGameLoopRunning)
 	{
@@ -142,6 +157,11 @@ int main(int argc, char** argv)
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
+
+		texture_terrian1.Bind(0);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "myTexture1"), 0);
+		texture_terrian2.Bind(1);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "myTexture2"), 1);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, terrian.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));

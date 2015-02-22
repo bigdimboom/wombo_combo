@@ -17,7 +17,7 @@ Terrian::Terrian(int len, int width)
 	_indices(nullptr),
 	_normals(nullptr),
 	_textureCoords(nullptr),
-	_length(len), _width(width), _index_size(0),
+	_length(len), _width(width), _index_size(0), _textureSize(0),
 	_weight(50.0f)
 {
 }
@@ -42,7 +42,7 @@ void Terrian::GenTerrian(const char* hightmap, bool genNormals, bool genUVs)
 	}
 	if (genUVs)
 	{
-		//GetUVCoords()
+		GenTextureCoords();
 	}
 	return;
 }
@@ -71,7 +71,7 @@ void Terrian::GenHeightMap(const char* hightmap)
 			// why -0.5 ? because, height could be negtive.
 			h = _weight * ((color / 255.0f) - 0.5f);
 			_grids.get()[y * _length + x] =
-				point4(((float)x - (_length / 2)), h, ((_width / 2) - (float)y), 1.0f);
+				point4(((float)x - (_length / 2)), h , ((_width / 2) - (float)y), 1.0f);
 			//printf("%d\n", cccc);
 		}
 	}
@@ -196,4 +196,29 @@ void Terrian::GenNormals()
 
 	delete[] normalSum;
 	delete[] counts;
+}
+
+void Terrian::GenTextureCoords()
+{
+	_textureSize = _length * _width;
+	_textureCoords = std::shared_ptr<point2>(
+		new point2[_textureSize], [](point2* p){ delete[] p; }
+		);
+
+	//map all index in (0,0) to (1,1) scale
+	// 1. shift first
+	// 2 .scale to (1,1) cocrdinate
+
+	for (uint i = 0; i < _width; ++i)
+	{
+		for (uint x = 0; x < _length; ++x)
+		{
+			_textureCoords.get()[i*_length + x]
+				= point2(
+				(_grids.get()[i*_length + x].x + _length / 2) / (_length / 100),
+				(_grids.get()[i*_length + x].z + _width / 2) / (_width / 100)
+				);
+		}
+	}
+
 }
