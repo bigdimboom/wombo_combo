@@ -32,14 +32,14 @@
     <Filter Include="Source Files\Tools">
       <UniqueIdentifier>{21bcf197-c969-4e12-b3be-c5c7501df98f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Terrian">
-      <UniqueIdentifier>{637c5d7b-8dff-41a8-9685-bfcdbfdf0781}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Assets\Terrian">
       <UniqueIdentifier>{c0eca8a6-fbbb-4957-b8b5-98046954934c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Mesh">
       <UniqueIdentifier>{96041cd1-a0e1-4caf-8a69-16bbc2c480d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Terrain">
+      <UniqueIdentifier>{637c5d7b-8dff-41a8-9685-bfcdbfdf0781}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -64,11 +64,11 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Terrian.cpp">
-      <Filter>Source Files\Terrian</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -107,11 +107,11 @@
     <ClInclude Include="FreeCamera.h">
       <Filter>Source Files\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Terrian.h">
-      <Filter>Source Files\Terrian</Filter>
-    </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Source Files\Terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +123,15 @@
     </Image>
     <Image Include="Assets\wall.jpg">
       <Filter>Assets</Filter>
+    </Image>
+    <Image Include="Assets\Terrian\height_map.jpg">
+      <Filter>Assets\Terrian</Filter>
+    </Image>
+    <Image Include="Assets\Terrian\Rock.jpg">
+      <Filter>Assets\Terrian</Filter>
+    </Image>
+    <Image Include="Assets\Terrian\terrian_tex.jpg">
+      <Filter>Assets\Terrian</Filter>
     </Image>
   </ItemGroup>
 </Project>

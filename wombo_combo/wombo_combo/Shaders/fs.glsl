@@ -53,10 +53,10 @@ void main()
  vec3 reflective = reflect(-fE, fN);
 
   if (textureType == 1)
-		gl_FragColor = lighting_color * texture2D(myTexture1, uv);
+		gl_FragColor = mix(texture2D(myTexture1, uv),texture2D(myTexture2, uv), 0.15) * lighting_color;
 
   if (textureType == 2)
-		gl_FragColor = lighting_color * texture2D(myTexture2, uv);
+		gl_FragColor = mix(texture2D(myTexture1, uv), texture2D(myTexture2, uv), 0.8)*lighting_color;
 
   gl_FragColor.a = 1.0;
 }

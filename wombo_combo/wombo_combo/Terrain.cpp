@@ -1,4 +1,4 @@
-#include "Terrian.h"
+#include "Terrain.h"
 
 
 static normal3 CalculateNorm(point3 curr, point3 x, point3 xz, point3 z)
@@ -12,7 +12,7 @@ static normal3 CalculateNorm(point3 curr, point3 x, point3 xz, point3 z)
 	return n1 + n2;
 }
 
-Terrian::Terrian(int len, int width)
+Terrain::Terrain(int len, int width)
 	:_grids(nullptr),
 	_indices(nullptr),
 	_normals(nullptr),
@@ -23,7 +23,7 @@ Terrian::Terrian(int len, int width)
 }
 
 
-Terrian::~Terrian()
+Terrain::~Terrain()
 {
 	//delete[] _terrian;
 	//delete[] _normals;
@@ -31,7 +31,7 @@ Terrian::~Terrian()
 	//delete[] _indices;
 }
 
-void Terrian::GenTerrian(const char* hightmap, bool genNormals, bool genUVs)
+void Terrain::GenTerrian(const char* hightmap, bool genNormals, bool genUVs)
 {
 
 	GenHeightMap(hightmap);
@@ -47,7 +47,7 @@ void Terrian::GenTerrian(const char* hightmap, bool genNormals, bool genUVs)
 	return;
 }
 
-void Terrian::GenHeightMap(const char* hightmap)
+void Terrain::GenHeightMap(const char* hightmap)
 {
 	SDL_Surface* img = IMG_Load(hightmap);
 	if (!img)
@@ -94,7 +94,7 @@ void Terrian::GenHeightMap(const char* hightmap)
 }
 
 
-void Terrian::GenIndicesArray()
+void Terrain::GenIndicesArray()
 {
 	_index_size = (_width - 1) * (_length - 1) * 6;
 	_indices = std::shared_ptr<uint>(new GLuint[_index_size], [](uint *p) { delete[] p; });
@@ -118,7 +118,7 @@ void Terrian::GenIndicesArray()
 	}
 }
 
-void Terrian::GenNormals()
+void Terrain::GenNormals()
 {
 	_normals.reset();
 	_normals = std::shared_ptr<normal3>(
@@ -198,7 +198,7 @@ void Terrian::GenNormals()
 	delete[] counts;
 }
 
-void Terrian::GenTextureCoords()
+void Terrain::GenTextureCoords()
 {
 	_textureSize = _length * _width;
 	_textureCoords = std::shared_ptr<point2>(
@@ -215,8 +215,8 @@ void Terrian::GenTextureCoords()
 		{
 			_textureCoords.get()[i*_length + x]
 				= point2(
-				(_grids.get()[i*_length + x].x + _length / 2) / (_length / 100),
-				(_grids.get()[i*_length + x].z + _width / 2) / (_width / 100)
+				(_grids.get()[i*_length + x].x + _length / 2) / (_length / 50),
+				(_grids.get()[i*_length + x].z + _width / 2) / (_width / 50)
 				);
 		}
 	}

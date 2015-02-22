@@ -17,7 +17,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyTimer.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Terrian.cpp" />
+    <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -34,13 +34,16 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MyTimer.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Terrian.h" />
+    <ClInclude Include="Terrain.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\awesomeface.png" />
     <Image Include="Assets\container.jpg" />
+    <Image Include="Assets\Terrian\height_map.jpg" />
+    <Image Include="Assets\Terrian\Rock.jpg" />
+    <Image Include="Assets\Terrian\terrian_tex.jpg" />
     <Image Include="Assets\wall.jpg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

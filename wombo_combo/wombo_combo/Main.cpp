@@ -11,7 +11,7 @@
 #include "Texture.h"
 #include "MyTimer.h"
 #include "FreeCamera.h"
-#include "Terrian.h"
+#include "Terrain.h"
 
 
 #define WINDOW_WIDTH 1024
@@ -24,9 +24,9 @@ bool firstMouse = true;
 Shader sh;
 MyTimer timer;
 FreeCamera camera(point3(-1.0f, 0.0f, 1.5f));
-Terrian terrian(1024, 1024);
-Texture texture_terrian1;
-Texture texture_terrian2;
+Terrain terrain(1024, 1024);
+Texture texture_terrain1;
+Texture texture_terrain2;
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, FreeCamera* cam){
 	if (firstMouse)
@@ -64,10 +64,10 @@ int main(int argc, char** argv)
 
 	//InitData()
 	GLuint VAO, VBO, EBO;
-	terrian.GenTerrian("Assets/Terrian/height_map.jpg", true, true);
+	terrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
 
-	texture_terrian1.Load("Assets/Terrian/terrian_tex.jpg");
-	texture_terrian2.Load("Assets/Terrian/terrian_tex2.jpg");
+	texture_terrain1.Load("Assets/Terrain/terrain_tex.jpg");
+	texture_terrain2.Load("Assets/Terrain/Rock.jpg");
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -75,27 +75,27 @@ int main(int argc, char** argv)
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetVertsSize() + 
-								  sizeof(normal3) * terrian.GetVertsSize() + 
-								  sizeof(point2) * terrian.GetTextureSize(), nullptr, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrain.GetVertsSize() +
+		sizeof(normal3) * terrain.GetVertsSize() +
+		sizeof(point2) * terrain.GetTextureSize(), nullptr, GL_STATIC_DRAW);
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(point4) * terrian.GetVertsSize(), terrian.GetPureTerrian().get());
+	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(point4) * terrain.GetVertsSize(), terrain.GetPureTerrian().get());
 
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetVertsSize(), sizeof(normal3) * terrian.GetVertsSize(), terrian.GetNormals().get());
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrain.GetVertsSize(), sizeof(normal3) * terrain.GetVertsSize(), terrain.GetNormals().get());
 
-	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrian.GetVertsSize() + 
-									 sizeof(normal3) * terrian.GetVertsSize(), sizeof(point2) * terrian.GetTextureSize(), terrian.GetTextureCoords().get());
+	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrain.GetVertsSize() +
+		sizeof(normal3) * terrain.GetVertsSize(), sizeof(point2) * terrain.GetTextureSize(), terrain.GetTextureCoords().get());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrian.GetIndicesNum() * sizeof(GLuint), terrian.GetIndices().get(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrain.GetIndicesNum() * sizeof(GLuint), terrain.GetIndices().get(), GL_STATIC_DRAW);
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrian.GetVertsSize()));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrain.GetVertsSize()));
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrian.GetVertsSize() + sizeof(normal3) * terrian.GetVertsSize()));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * terrain.GetVertsSize() + sizeof(normal3) * terrain.GetVertsSize()));
 
 	glBindVertexArray(0); // Unbind VAO
 
@@ -158,13 +158,13 @@ int main(int argc, char** argv)
 
 		glBindVertexArray(VAO);
 
-		texture_terrian1.Bind(0);
+		texture_terrain1.Bind(0);
 		glUniform1i(glGetUniformLocation(sh.GetID(), "myTexture1"), 0);
-		texture_terrian2.Bind(1);
+		texture_terrain2.Bind(1);
 		glUniform1i(glGetUniformLocation(sh.GetID(), "myTexture2"), 1);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, terrian.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+		glDrawElements(GL_TRIANGLES, terrain.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 		window.SwapBuffers();
 
@@ -173,7 +173,7 @@ int main(int argc, char** argv)
 		timer.Stop();
 		++frame;
 		if (time / 1000 >= 1 && time < 60){
-			std::cout << "Frame rate warning:(lower than 60 fps) "<< frame << std::endl;
+			std::cout << "Warning:(Frame rate lower than 60 fps) " << frame << std::endl;
 			frame = 0;
 			time = 0;
 		}

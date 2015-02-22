@@ -9,11 +9,11 @@
 //in order to change the behavior of 
 //"GenTerrian(const char*, bool, bool)"
 
-class Terrian
+class Terrain
 {
 public:
-	Terrian(int length=1024, int width=1024);
-	~Terrian();
+	Terrain(int length = 1024, int width = 1024);
+	~Terrain();
 
 	void GenTerrian(const char* hightmap, bool genNormals = false, bool genUVs=false);
 	inline void SetWeight(float weight){ _weight = weight; }
