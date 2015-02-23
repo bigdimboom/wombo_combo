@@ -29,12 +29,19 @@ void main()
    //vertex, normal and light in camera coordinates
    vec3 pos = (view * position).xyz; // vertex in camera
    vec3 lightCC = (view*lightPosition).xyz; // light in camera
-   fN = normalize((view*vec4(normal,0.0)).xyz); // normal in camera
+   fN = normalize( mat3(transpose(inverse(view) ) ) *normal); // normal in camera
+   /*
+   Inversing matrices is a costly operation even for shaders so wherever possible, 
+   try to avoid doing inverse operations in shaders since they have to be done on each vertex of your scene. 
+   For learning purposes this is fine, but for an efficient application you'll likely want to calculate the 
+   normal matrix on the CPU and send it to the shaders via a uniform before drawing (just like the model matrix).
+   */
+
     //ray from vertex towards camera
    fE =normalize(-pos);
     //ray from vertex towards light
    fL = normalize(lightCC-pos);
 
-   if(position.y <= 0){ textureType = 1;}
-   else{ textureType = 2;}
+   if(position.y <= -15){ textureType = 1;}
+   else{textureType = 2;}
 }

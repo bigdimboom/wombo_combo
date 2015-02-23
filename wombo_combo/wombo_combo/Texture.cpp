@@ -2,7 +2,8 @@
 
 
 Texture::Texture()
-	:_isMipMapsRequested(false)
+	:_isMipMapsRequested(false),
+	_texture(0), _sampler(0)
 {
 }
 
@@ -23,6 +24,7 @@ bool Texture::Load(const char* img_path, bool isMipMaps)
 	//Gen a texture object
 	glGenTextures(1, &_texture);
 	glBindTexture(GL_TEXTURE_2D, _texture);
+	glGenSamplers(1, &_sampler);
 
 	// Set our texture parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
@@ -52,6 +54,7 @@ void Texture::Bind(int textureUnit)
 {
 	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	glBindTexture(GL_TEXTURE_2D, _texture);
+	glBindSampler(textureUnit, _sampler);
 }
 
 void Texture::Release()

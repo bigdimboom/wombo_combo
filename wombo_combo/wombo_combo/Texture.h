@@ -14,6 +14,7 @@ public:
 private:
 	bool _isMipMapsRequested;
 	GLuint _texture;
+	GLuint _sampler;
 private:
 	GLenum _Convert(SDL_PixelFormat* sdl_img_format);
 };

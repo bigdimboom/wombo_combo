@@ -26,9 +26,6 @@
     <Filter Include="Source Files\System">
       <UniqueIdentifier>{28019f02-2296-434c-9a04-94d863964aea}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Game Object">
-      <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Tools">
       <UniqueIdentifier>{21bcf197-c969-4e12-b3be-c5c7501df98f}</UniqueIdentifier>
     </Filter>
@@ -40,6 +37,9 @@
     </Filter>
     <Filter Include="Source Files\Terrain">
       <UniqueIdentifier>{637c5d7b-8dff-41a8-9685-bfcdbfdf0781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Object">
+      <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +96,7 @@
       <Filter>Source Files\Camera</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
-      <Filter>Source Files\Game Object</Filter>
+      <Filter>Source Files\Object</Filter>
     </ClInclude>
     <ClInclude Include="ICommand.h">
       <Filter>Source Files\System</Filter>
@@ -131,6 +131,9 @@
       <Filter>Assets\Terrian</Filter>
     </Image>
     <Image Include="Assets\Terrian\terrian_tex.jpg">
+      <Filter>Assets\Terrian</Filter>
+    </Image>
+    <Image Include="Assets\Terrain\Sand.jpg">
       <Filter>Assets\Terrian</Filter>
     </Image>
   </ItemGroup>

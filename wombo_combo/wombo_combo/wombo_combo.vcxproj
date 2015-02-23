@@ -41,6 +41,7 @@
   <ItemGroup>
     <Image Include="Assets\awesomeface.png" />
     <Image Include="Assets\container.jpg" />
+    <Image Include="Assets\Terrain\Sand.jpg" />
     <Image Include="Assets\Terrian\height_map.jpg" />
     <Image Include="Assets\Terrian\Rock.jpg" />
     <Image Include="Assets\Terrian\terrian_tex.jpg" />

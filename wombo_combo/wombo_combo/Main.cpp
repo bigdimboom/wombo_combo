@@ -61,13 +61,12 @@ int main(int argc, char** argv)
 	timer.Reset();
 
 
-
 	//InitData()
 	GLuint VAO, VBO, EBO;
 	terrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
 
-	texture_terrain1.Load("Assets/Terrain/terrain_tex.jpg");
-	texture_terrain2.Load("Assets/Terrain/Rock.jpg");
+	texture_terrain1.Load("Assets/Terrain/terrain_tex.jpg", true);
+	texture_terrain2.Load("Assets/Terrain/Rock.jpg", true);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -106,11 +105,11 @@ int main(int argc, char** argv)
 
 	camera.SetVelocity(0.8f);
 
+	SDL_Event e;
 	while (bGameLoopRunning)
 	{
 		timer.Start();
-
-		SDL_Event e;
+	
 		if (SDL_PollEvent(&e))
 		{
 			if (e.type == SDL_QUIT)
