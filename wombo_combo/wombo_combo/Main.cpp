@@ -28,14 +28,18 @@ Terrain terrain(1024, 1024);
 Texture texture_terrain1;
 Texture texture_terrain2;
 
-void CameraMotion(GLfloat xpos, GLfloat ypos, FreeCamera* cam){
+void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
 	{
 		lastX = xpos;
 		lastY = ypos;
 		firstMouse = false;
 		SDL_ShowCursor(SDL_DISABLE);
+		//SDL_SetRelativeMouseMode(SDL_TRUE);
+		SDL_WarpMouseInWindow(win->GetWindowRef(), WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	}
+
+	//std::cout << xpos << std::endl;
 
 	GLfloat xoffset = xpos - lastX;
 	GLfloat yoffset = lastY - ypos;  // Reversed since y-coordinates go from bottom to left
@@ -45,6 +49,12 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, FreeCamera* cam){
 
 	cam->Rotate(PITCH, yoffset);
 	cam->Rotate(YAW, xoffset);
+
+	if (xpos == WINDOW_WIDTH -1 || xpos == 0)
+	{
+		SDL_WarpMouseInWindow(win->GetWindowRef(), WINDOW_WIDTH / 2, lastY);
+		lastX = WINDOW_WIDTH / 2;
+	}
 }
 
 int main(int argc, char** argv)
@@ -65,8 +75,8 @@ int main(int argc, char** argv)
 	GLuint VAO, VBO, EBO;
 	terrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
 
-	texture_terrain1.Load("Assets/Terrain/terrain_tex.jpg", true);
-	texture_terrain2.Load("Assets/Terrain/Rock.jpg", true);
+	texture_terrain1.Load("Assets/Terrain/terrain_tex.jpg",true);
+	texture_terrain2.Load("Assets/Terrain/Rock.jpg",true);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -129,7 +139,7 @@ int main(int argc, char** argv)
 				camera.Move(RIGHT, (float)timer.GetElapsedTime());
 			}
 			else if (e.type == SDL_MOUSEMOTION){
-				CameraMotion((float)e.motion.x, (float)e.motion.y, &camera);
+				CameraMotion((float)e.motion.x, (float)e.motion.y, &window, &camera);
 			}
 		}
 

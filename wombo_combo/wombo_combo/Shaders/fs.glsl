@@ -18,8 +18,8 @@ void main()
 	//gl_FragColor = texture(myTexture, uv) * vec4(color, 1.0);
   
   vec4 light_ambient = vec4(0.3, 0.3, 0.3, 1);
-  vec4 light_diffuse = vec4(0.3, 0.3, 0.3, 1);
-  vec4 light_specular = vec4(0.5, 0.5, 0.5, 1);
+  vec4 light_diffuse = vec4(1.0, 1.0, 1.0, 1);
+  vec4 light_specular = vec4(1.0, 1.0, 1.0, 1);
 
   vec4 material_ambient = vec4(1.0, 1.0, 1.0, 1.0);
   vec4 material_diffuse = vec4(1.0, 0.8, 0.0, 1.0);
@@ -34,15 +34,13 @@ void main()
   vec3 E = normalize(fE);
   vec3 N = normalize(fN);
   //vec3 H = normalize( L + E );
-  vec3 Reflective = normalize(reflect(-fE, fN));
   
   vec4 ambient = AmbientProduct; // ambient
   
   float Kd = max(dot(L, N), 0.0);
   vec4 diffuse = Kd*DiffuseProduct; // diffuse
-  
-  //vec3 reflective = reflect(-fE, fN);
 
+  vec3 Reflective = reflect(-fE, fN);
   float Ks = pow(max(dot(E, Reflective), 0.0), material_shininess);
   vec4 specular = Ks*SpecularProduct; // specular
   if( dot(L, N) < 0.0 ) {

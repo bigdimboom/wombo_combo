@@ -24,7 +24,7 @@ void main()
    uv = texCoord;
 
    
-   vec4 lightPosition = vec4(1.8, 100, 1, 0);
+   vec4 lightPosition = vec4(0, 100, 0, 1);
 
    //vertex, normal and light in camera coordinates
    vec3 pos = (view * position).xyz; // vertex in camera
