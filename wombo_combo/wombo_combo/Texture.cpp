@@ -35,7 +35,7 @@ bool Texture::Load(const char* img_path, bool isMipMaps)
 
 	//You Need to watch out for the two formats
 	GLenum colorformat = _Convert(img->format);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->w, img->h, 0, colorformat, GL_UNSIGNED_BYTE, img->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, colorformat, img->w, img->h, 0, colorformat, GL_UNSIGNED_BYTE, img->pixels);
 
 	if (isMipMaps)
 	{

@@ -25,6 +25,8 @@ Shader sh;
 MyTimer timer;
 FreeCamera camera(point3(-1.0f, 0.0f, 1.5f));
 Terrain terrain(1024, 1024);
+
+Texture tex_alpha_terrain;
 Texture tex_grass_terrian;
 Texture tex_dirt_terrian;
 Texture tex_rock_terrian;
@@ -57,6 +59,11 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 		SDL_WarpMouseInWindow(win->GetWindowRef(), WINDOW_WIDTH / 2, lastY);
 		lastX = WINDOW_WIDTH / 2;
 	}
+
+	if (ypos == WINDOW_HEIGHT - 1 || ypos == 0)
+	{
+		//SDL_WarpMouseInWindow(win->GetWindowRef(), lastX, lastY);
+	}
 }
 
 int main(int argc, char** argv)
@@ -77,6 +84,7 @@ int main(int argc, char** argv)
 	GLuint VAO, VBO, EBO;
 	terrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
 
+	tex_alpha_terrain.Load("Assets/Terrain/height_map.jpg", true);
 	tex_grass_terrian.Load("Assets/Terrain/terrain_tex.jpg",true);
 	tex_dirt_terrian.Load("Assets/Terrain/dirt.JPG", true);
 	tex_rock_terrian.Load("Assets/Terrain/Rock.jpg", true);
@@ -166,7 +174,7 @@ int main(int argc, char** argv)
 		GLint viewLoc = glGetUniformLocation(sh.GetID(), "view");
 		GLint projLoc = glGetUniformLocation(sh.GetID(), "projection");
 		// Pass the matrices to the shader
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0)));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0f)));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
@@ -180,6 +188,9 @@ int main(int argc, char** argv)
 		glUniform1i(glGetUniformLocation(sh.GetID(), "rock_texture"), 2);
 		tex_snow_terrian.Bind(3);
 		glUniform1i(glGetUniformLocation(sh.GetID(), "snow_texture"), 3);
+
+		tex_alpha_terrain.Bind(4);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "alpha_texture"), 4);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, terrain.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));

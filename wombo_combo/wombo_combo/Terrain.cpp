@@ -18,7 +18,7 @@ Terrain::Terrain(int len, int width)
 	_normals(nullptr),
 	_textureCoords(nullptr),
 	_length(len), _width(width), _index_size(0),
-	_weight(100.0f)
+	_weight(50.0f)
 {
 }
 
@@ -38,7 +38,7 @@ void Terrain::GenTerrian(const char* hightmap, bool genNormals, bool genUVs)
 	GenIndicesArray();
 	if (genNormals)
 	{
-		//GenNormals();
+		GenNormals();
 	}
 	if (genUVs)
 	{
@@ -157,11 +157,13 @@ void Terrain::GenNormals()
 
 				point4 x = _grids.get()[(w + 1)*_length + l];
 				point4 xz = _grids.get()[(w + 1)*_length + l - 1];
-				point4 z = _grids.get()[w *_length + l - 1];
 
-				normalSum[curr_index] += CalculateNorm(point3(currentPoint), point3(x), point3(xz), point3(z));
+				point4 a = x - currentPoint;
+				point4 b = xz - currentPoint;
 
-				counts[curr_index] += 2;
+				normalSum[curr_index] += glm::cross(normal3(a), normal3(b));
+
+				counts[curr_index] += 1;
 			}
 
 			if (l - 1 >= 0 && w - 1 >= 0)
@@ -178,9 +180,11 @@ void Terrain::GenNormals()
 			{
 				point4 x = _grids.get()[(w - 1)*_length + l];
 				point4 xz = _grids.get()[(w - 1)*_length + l + 1];
-				point4 z = _grids.get()[w*_length + l + 1];
 
-				normalSum[curr_index] += CalculateNorm(point3(currentPoint), point3(x), point3(xz), point3(z));
+				point4 a = x - currentPoint;
+				point4 b = xz - currentPoint;
+
+				normalSum[curr_index] += glm::cross(normal3(a), normal3(b));
 				counts[curr_index] += 2;
 			}
 
@@ -215,8 +219,8 @@ void Terrain::GenTextureCoords()
 		{
 			_textureCoords.get()[i*_length + x]
 				= point2(
-				(_grids.get()[i*_length + x].x + _length / 2) / (_length/ 25 ),
-				(_grids.get()[i*_length + x].z + _width / 2) / (_width / 25)
+				(_grids.get()[i*_length + x].x + _length / 2) / (_length ),
+				(_grids.get()[i*_length + x].z + _width / 2) / (_width)
 				);
 		}
 	}
