@@ -13,26 +13,28 @@ Shader::~Shader()
 
 GLuint Shader::CreateShader(GLenum eShaderType, const char *strShaderFile)
 {
-	char shaderSource[4096];
-	char inChar;
-	FILE *shaderFile;
-	int i = 0;
+	// 1. Retrieve the vertex/fragment source code from filePath
+	std::string source;
 
-	if (fopen_s(&shaderFile, strShaderFile, "rb")){
-		std::cout << "Unable to locate shader files.\n";
+	// Open files
+	std::ifstream shaderFile(strShaderFile);
+	if (shaderFile.fail())
+	{
+		std::cout << strShaderFile << "Open Failed" << std::endl;
 		exit(EXIT_FAILURE);
 	}
+	std::stringstream stream;
+	// Read file's buffer contents into streams
+	stream << shaderFile.rdbuf();
+	// close file handlers
+	shaderFile.close();
+	// Convert stream into string
+	source = stream.str();
 
-	while (fscanf_s(shaderFile, "%c", &inChar) > 0)
-	{
-		shaderSource[i++] = inChar; //loading the file's chars into array
-	}
-	shaderSource[i] = '\0';
-	fclose(shaderFile);
-	puts(shaderSource); //print to make sure the string is loaded
+	puts(source.c_str());
 
 	GLuint shader = glCreateShader(eShaderType);
-	const char *ss = shaderSource;
+	const char *ss = source.c_str();
 
 	glShaderSource(shader, 1, &ss, NULL);
 

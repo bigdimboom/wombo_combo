@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include <string>
 
 #include <GL/glew.h>
 #include <SDL.h>
@@ -12,8 +13,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <assert.h>
-
-#include <string>
 
 #include <memory>
 

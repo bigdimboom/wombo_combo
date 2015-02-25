@@ -38,11 +38,11 @@
     <Filter Include="Source Files\Terrain">
       <UniqueIdentifier>{637c5d7b-8dff-41a8-9685-bfcdbfdf0781}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Object">
-      <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\SkyBox">
       <UniqueIdentifier>{1efcf5fa-8760-4460-80ec-23a5d78ff27d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameObject">
+      <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +99,7 @@
       <Filter>Source Files\Camera</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
-      <Filter>Source Files\Object</Filter>
+      <Filter>Source Files\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="ICommand.h">
       <Filter>Source Files\System</Filter>

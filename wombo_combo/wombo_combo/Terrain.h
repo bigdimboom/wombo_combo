@@ -23,7 +23,6 @@ public:
 	inline std::shared_ptr<point2> GetTextureCoords() const { return _textureCoords; }
 	inline uint GetVertsSize() const { return _width * _length; }
 	inline uint GetIndicesNum() const { return _index_size; }
-	inline uint GetTextureSize() const { return _textureSize; }
 protected:
 	virtual void GenHeightMap(const char* hightmap);
 	virtual void GenIndicesArray();
@@ -36,7 +35,6 @@ private:
 	std::shared_ptr<point2> _textureCoords;
 	uint _length, _width;
 	GLuint _index_size;
-	GLuint _textureSize;
 	float _weight;
 };
 

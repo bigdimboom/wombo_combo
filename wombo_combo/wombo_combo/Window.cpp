@@ -68,9 +68,14 @@ bool Window::InitGL()
 		return false;
 	}
 
-	printf("OpenGL (%s): \n", glGetString(GL_VERSION));
-	printf("GLSL: (%s): \n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-	printf("GPU: (%s %s): \n\n", glGetString(GL_RENDERER), glGetString(GL_VENDOR));
+	fprintf(stdout, "OpenGL Version: %s\n", glGetString(GL_VERSION));
+	fprintf(stdout, "GLSL Version: %s\n",
+		glGetString(GL_SHADING_LANGUAGE_VERSION));
+	GLenum err = glewInit();
+	if (GLEW_OK != err) {
+		fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+	}
+	fprintf(stdout, "Status: Using GLEW %s\n", glewGetString(GLEW_VERSION));
 
 	//SDL_SetHint(SDL_HINT_RENDER_VSYNC, "1");
 
@@ -88,6 +93,8 @@ bool Window::InitGL()
 
 	// Setup some OpenGL options
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_FRONT);
 
 	return true;
 }

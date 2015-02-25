@@ -25,8 +25,10 @@ Shader sh;
 MyTimer timer;
 FreeCamera camera(point3(-1.0f, 0.0f, 1.5f));
 Terrain terrain(1024, 1024);
-Texture texture_terrain1;
-Texture texture_terrain2;
+Texture tex_grass_terrian;
+Texture tex_dirt_terrian;
+Texture tex_rock_terrian;
+Texture tex_snow_terrian;
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -75,8 +77,10 @@ int main(int argc, char** argv)
 	GLuint VAO, VBO, EBO;
 	terrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
 
-	texture_terrain1.Load("Assets/Terrain/terrain_tex.jpg",true);
-	texture_terrain2.Load("Assets/Terrain/Rock.jpg",true);
+	tex_grass_terrian.Load("Assets/Terrain/terrain_tex.jpg",true);
+	tex_dirt_terrian.Load("Assets/Terrain/dirt.JPG", true);
+	tex_rock_terrian.Load("Assets/Terrain/Rock.jpg", true);
+	tex_snow_terrian.Load("Assets/Terrain/snow.JPG", true);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -86,14 +90,14 @@ int main(int argc, char** argv)
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * terrain.GetVertsSize() +
 		sizeof(normal3) * terrain.GetVertsSize() +
-		sizeof(point2) * terrain.GetTextureSize(), nullptr, GL_STATIC_DRAW);
+		sizeof(point2) * terrain.GetVertsSize(), nullptr, GL_STATIC_DRAW);
 
 	glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(point4) * terrain.GetVertsSize(), terrain.GetPureTerrian().get());
 
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrain.GetVertsSize(), sizeof(normal3) * terrain.GetVertsSize(), terrain.GetNormals().get());
 
 	glBufferSubData(GL_ARRAY_BUFFER, sizeof(point4) * terrain.GetVertsSize() +
-		sizeof(normal3) * terrain.GetVertsSize(), sizeof(point2) * terrain.GetTextureSize(), terrain.GetTextureCoords().get());
+		sizeof(normal3) * terrain.GetVertsSize(), sizeof(point2) * terrain.GetVertsSize(), terrain.GetTextureCoords().get());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, terrain.GetIndicesNum() * sizeof(GLuint), terrain.GetIndices().get(), GL_STATIC_DRAW);
@@ -158,19 +162,24 @@ int main(int argc, char** argv)
 		glm::mat4 projection;
 		projection = glm::perspective(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
 		// Get the uniform locations
-		//GLint modelLoc = glGetUniformLocation(sh.GetID(), "model");
+		GLint modelLoc = glGetUniformLocation(sh.GetID(), "model");
 		GLint viewLoc = glGetUniformLocation(sh.GetID(), "view");
 		GLint projLoc = glGetUniformLocation(sh.GetID(), "projection");
 		// Pass the matrices to the shader
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0)));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		glBindVertexArray(VAO);
 
-		texture_terrain1.Bind(0);
-		glUniform1i(glGetUniformLocation(sh.GetID(), "myTexture1"), 0);
-		texture_terrain2.Bind(1);
-		glUniform1i(glGetUniformLocation(sh.GetID(), "myTexture2"), 1);
+		tex_grass_terrian.Bind(0);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "grass_texture"), 0);
+		tex_dirt_terrian.Bind(1);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "dirt_texture"), 1);
+		tex_rock_terrian.Bind(2);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "rock_texture"), 2);
+		tex_snow_terrian.Bind(3);
+		glUniform1i(glGetUniformLocation(sh.GetID(), "snow_texture"), 3);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glDrawElements(GL_TRIANGLES, terrain.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));

@@ -1,59 +1,35 @@
 #version 330 core
 
-//in vec3 color;
-in vec2 uv;
+out vec4 fragColor_out;
 
-in vec3 fN;
-in vec3 fL;
-in vec3 fE;
+in vec2 my_uv;
+in vec3 my_normal;
 
-flat in int textureType;
+uniform sampler2D grass_texture;
+uniform sampler2D dirt_texture;
+uniform sampler2D rock_texture;
+uniform sampler2D snow_texture;
 
-uniform sampler2D myTexture1;
-uniform sampler2D myTexture2;
+
+vec3 blend(vec4 texture1, float a1, vec4 texture2, float a2)
+{
+    float depth = 0.2;
+    float ma = max(texture1.a + a1, texture2.a + a2) - depth;
+
+    float b1 = max(texture1.a + a1 - ma, 0);
+    float b2 = max(texture2.a + a2 - ma, 0);
+
+    return (texture1.rgb * b1 + texture2.rgb * b2) / (b1 + b2);
+}
+
 
 void main()
 {
-	//gl_FragColor = vec4(color, 1.0);
-	//gl_FragColor = texture(myTexture, uv) * vec4(color, 1.0);
-  
-  vec4 light_ambient = vec4(0.3, 0.3, 0.3, 1);
-  vec4 light_diffuse = vec4(1.0, 1.0, 1.0, 1);
-  vec4 light_specular = vec4(1.0, 1.0, 1.0, 1);
-
-  vec4 material_ambient = vec4(1.0, 1.0, 1.0, 1.0);
-  vec4 material_diffuse = vec4(1.0, 0.8, 0.0, 1.0);
-  vec4 material_specular = vec4(0.8, 0.8, 0.8, 1.0);
-  float material_shininess = 5.0;
-
-  vec4 AmbientProduct = light_ambient * material_ambient;
-  vec4 DiffuseProduct = light_diffuse * material_diffuse;
-  vec4 SpecularProduct = light_specular * material_specular;
-  
-  vec3 L = normalize(fL);
-  vec3 E = normalize(fE);
-  vec3 N = normalize(fN);
-  //vec3 H = normalize( L + E );
-  
-  vec4 ambient = AmbientProduct; // ambient
-  
-  float Kd = max(dot(L, N), 0.0);
-  vec4 diffuse = Kd*DiffuseProduct; // diffuse
-
-  vec3 Reflective = reflect(-fE, fN);
-  float Ks = pow(max(dot(E, Reflective), 0.0), material_shininess);
-  vec4 specular = Ks*SpecularProduct; // specular
-  if( dot(L, N) < 0.0 ) {
-      specular = vec4(0.0, 0.0, 0.0, 1.0);
-  }
-
-  vec4 lighting_color = diffuse + specular + ambient;
-
-  if (textureType == 1)
-		gl_FragColor = mix(texture(myTexture1, uv), texture(myTexture2, uv), 0.1) * lighting_color ;
-
-  if (textureType == 2)
-		gl_FragColor = mix(texture(myTexture1, uv), texture(myTexture2, uv), 0.8) * lighting_color;
-
-  //gl_FragColor.a = 1.0;
+	//vec2 reg1 = vec2(my_uv.s / 4, my_uv.t / 4);
+	//vec2 reg2 = vec2(my_uv.s / 6, my_uv.t / 6);
+	vec3 tex1 = blend(texture(grass_texture, my_uv), 1, texture(dirt_texture, my_uv), 0);
+	//vec3 tex2 = blend(texture(dirt_texture, my_uv), 100, texture(rock_texture, my_uv), 100);
+	//vec3 tex3 = blend(texture(rock_texture, my_uv), 100, texture(snow_texture, my_uv), 0.01);
+	fragColor_out = vec4((tex1).xyz, 1.0);
 }
+

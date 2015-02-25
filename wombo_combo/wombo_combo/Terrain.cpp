@@ -17,8 +17,8 @@ Terrain::Terrain(int len, int width)
 	_indices(nullptr),
 	_normals(nullptr),
 	_textureCoords(nullptr),
-	_length(len), _width(width), _index_size(0), _textureSize(0),
-	_weight(50.0f)
+	_length(len), _width(width), _index_size(0),
+	_weight(100.0f)
 {
 }
 
@@ -38,7 +38,7 @@ void Terrain::GenTerrian(const char* hightmap, bool genNormals, bool genUVs)
 	GenIndicesArray();
 	if (genNormals)
 	{
-		GenNormals();
+		//GenNormals();
 	}
 	if (genUVs)
 	{
@@ -63,15 +63,15 @@ void Terrain::GenHeightMap(const char* hightmap)
 	_grids = std::shared_ptr<point4>(new point4[size], [](point4 *p) { delete[] p; });
 
 	//only red for heightmap
-	for (int y = 0; y < (int)_length; ++y)
+	for (int z = 0; z < (int)_width; ++z)
 	{
-		for (int x = 0; x < (int)_width; ++x)
+		for (int x = 0; x < (int)_length; ++x)
 		{
-			color = ((uchar*)img->pixels)[3 * (y * _length + x)];
+			color = ((uchar*)img->pixels)[3 * (z * _length + x)];
 			// why -0.5 ? because, height could be negtive.
-			h = _weight * ((color / 255.0f) - 0.5f);
-			_grids.get()[y * _length + x] =
-				point4(((float)x - (_length / 2)), h , ((_width / 2) - (float)y), 1.0f);
+			h = _weight * ((color / 255.0f) - (1.0f/2.0f));
+			_grids.get()[z * _length + x] =
+				point4(((float)x - (float)(_length / 2.0f)), h, ((float)z - (float)(_width / 2.0f)), 1.0f);
 			//printf("%d\n", cccc);
 		}
 	}
@@ -105,13 +105,13 @@ void Terrain::GenIndicesArray()
 	{
 		for (int x = 0; x < (int)_length - 1; ++x)
 		{
-			_indices.get()[y*(_width - 1) + x + i] = y*(_width - 1) + x; // x 
-			_indices.get()[y*(_width - 1) + x + 1 + i] = y*(_width - 1) + x + 1; // x + 1
-			_indices.get()[y*(_width - 1) + x + 2 + i] = y*(_width - 1) + x + 1 + _width; // x + 1 + _width
+			_indices.get()[y*(_length - 1) + x + i] = y*(_length - 1) + x; // x 
+			_indices.get()[y*(_length - 1) + x + i + 1] = y*(_length - 1) + x + 1; // x + 1
+			_indices.get()[y*(_length - 1) + x + i + 2] = y*(_length - 1) + x + 1 + _length; // x + 1 + _width
 			/////////////////////////////////////////////////////////////
-			_indices.get()[y*(_width - 1) + x + 3 + i] = y*(_width - 1) + x + 1 + _width; // x + 1 + _width
-			_indices.get()[y*(_width - 1) + x + 4 + i] = y*(_width - 1) + x + _width; // x + 1
-			_indices.get()[y*(_width - 1) + x + 5 + i] = y*(_width - 1) + x;
+			_indices.get()[y*(_length - 1) + x + i + 3] = y*(_length - 1) + x; // x + 1 + _width
+			_indices.get()[y*(_length - 1) + x + i + 4] = y*(_length - 1) + x + 1 + _length; // x + 1
+			_indices.get()[y*(_length - 1) + x + i + 5] = y*(_length - 1) + x + _length;
 
 			i += 5;
 		}
@@ -200,9 +200,9 @@ void Terrain::GenNormals()
 
 void Terrain::GenTextureCoords()
 {
-	_textureSize = _length * _width;
+	int size = _length * _width;
 	_textureCoords = std::shared_ptr<point2>(
-		new point2[_textureSize], [](point2* p){ delete[] p; }
+		new point2[size], [](point2* p){ delete[] p; }
 		);
 
 	//map all index in (0,0) to (1,1) scale
@@ -215,8 +215,8 @@ void Terrain::GenTextureCoords()
 		{
 			_textureCoords.get()[i*_length + x]
 				= point2(
-				(_grids.get()[i*_length + x].x + _length / 2) / (_length / 50),
-				(_grids.get()[i*_length + x].z + _width / 2) / (_width / 50)
+				(_grids.get()[i*_length + x].x + _length / 2) / (_length/ 25 ),
+				(_grids.get()[i*_length + x].z + _width / 2) / (_width / 25)
 				);
 		}
 	}

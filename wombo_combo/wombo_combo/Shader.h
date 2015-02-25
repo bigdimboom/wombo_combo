@@ -1,6 +1,7 @@
 #pragma once
 #include "Global.h"
-#include <map>
+#include <fstream>
+#include <sstream>
 
 class Shader
 {
