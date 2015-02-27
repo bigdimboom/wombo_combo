@@ -9,12 +9,17 @@ uniform mat4 view;
 uniform mat4 projection;
 //////////////////////////////
 out vec2 my_uv;
+out vec3 my_normal;
+out vec3 my_point;
 /////////////////////////////
 
 
 void main()
 {
     my_uv = uv;
-    gl_Position = projection * view  * position;
+	my_point = (view * model * position).xyz;
+	my_normal = normal;
+    gl_Position = projection * view  * model *position;
 }
+
 

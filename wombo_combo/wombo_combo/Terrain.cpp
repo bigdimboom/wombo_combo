@@ -9,7 +9,7 @@ static normal3 CalculateNorm(point3 curr, point3 x, point3 xz, point3 z)
 	a = b;
 	b = z - curr;
 	normal3 n2 = glm::cross(a, b);
-	return n1 + n2;
+	return glm::normalize(n1 + n2);
 }
 
 Terrain::Terrain(int len, int width)
@@ -155,17 +155,19 @@ void Terrain::GenNormals()
 			if (l - 1 >= 0 && w + 1 < (int)_width)
 			{
 
-				point4 x = _grids.get()[(w + 1)*_length + l];
-				point4 xz = _grids.get()[(w + 1)*_length + l - 1];
+				point4 y = _grids.get()[(w + 1)*_length + l];
+				point4 x = _grids.get()[ w*_length + l - 1];
 
+				
 				point4 a = x - currentPoint;
-				point4 b = xz - currentPoint;
+				point4 b = y - currentPoint;
 
-				normalSum[curr_index] += glm::cross(normal3(a), normal3(b));
+				normalSum[curr_index] += glm::cross(normal3(b), normal3(a));
 
 				counts[curr_index] += 1;
 			}
 
+			//downleft
 			if (l - 1 >= 0 && w - 1 >= 0)
 			{
 				point4 x = _grids.get()[w*_length + l - 1];
@@ -176,16 +178,17 @@ void Terrain::GenNormals()
 				counts[curr_index] += 2;
 			}
 
+			//downleft
 			if (l + 1 < (int)_length && w - 1 >= 0)
 			{
-				point4 x = _grids.get()[(w - 1)*_length + l];
-				point4 xz = _grids.get()[(w - 1)*_length + l + 1];
+				point4 y = _grids.get()[(w - 1)*_length + l];
+				point4 x = _grids.get()[w*_length + l + 1];
 
 				point4 a = x - currentPoint;
-				point4 b = xz - currentPoint;
+				point4 b = y - currentPoint;
 
-				normalSum[curr_index] += glm::cross(normal3(a), normal3(b));
-				counts[curr_index] += 2;
+				normalSum[curr_index] += glm::cross(normal3(b), normal3(a));
+				counts[curr_index] += 1;
 			}
 
 			//smooth the normals
