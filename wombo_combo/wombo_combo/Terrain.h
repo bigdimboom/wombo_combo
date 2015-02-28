@@ -3,11 +3,15 @@
 #include "IRenderable.h"
 #include "Global.h"
 #include <SDL_image.h>
+#include <fstream>
+#include <iomanip>
 
 //Using templete pattern
 //user could override terrian-gen methods 
 //in order to change the behavior of 
 //"GenTerrian(const char*, bool, bool)"
+
+#define NORMAL_MAP_FILE "NORMAL.Data"
 
 class Terrain
 {

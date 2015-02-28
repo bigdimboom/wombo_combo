@@ -90,6 +90,43 @@ void Terrain::GenHeightMap(const char* hightmap)
 		}
 	}
 
+	//std::ifstream normalMap;
+	//bool stop = false;
+	//normalMap.open(NORMAL_MAP_FILE, std::ios::binary);
+	//if (!normalMap.fail() && normalMap.is_open())
+	//{
+	//	for (int y = 0; y < (int)_length; ++y)
+	//	{
+	//		if (stop == true)
+	//		{
+	//			break;
+	//		}
+
+	//		for (int x = 0; x < (int)_width; ++x)
+	//		{
+	//			std::string word;
+	//			int count = 0;
+	//			float arr[3];
+	//			while (count < 3)
+	//			{
+	//				if (! (normalMap >> word))
+	//				{
+	//					stop = true;
+	//					break;
+	//				}
+	//				arr[count] = std::stof(word);
+	//				++count;
+	//			}
+	//			_normals.get()[y * _length + x] = normal3(arr[0], arr[1], arr[2]);
+	//		}
+	//	}
+	//	normalMap.close();
+	//}
+	//else
+	//{
+	//	GenNormals();
+	//}
+
 	SDL_FreeSurface(img);
 }
 
@@ -203,6 +240,27 @@ void Terrain::GenNormals()
 
 	delete[] normalSum;
 	delete[] counts;
+
+	//std::ofstream normalMap;
+	//normalMap.open(NORMAL_MAP_FILE, std::ios::binary);
+	//float r, g, b;
+	//if (!normalMap.fail() && normalMap.is_open())
+	//{
+	//	for (int y = 0; y < (int)_length; ++y)
+	//	{
+	//		for (int x = 0; x < (int)_width; ++x)
+	//		{
+	//			r = _normals.get()[y * _length + x].r;
+	//			g = _normals.get()[y * _length + x].g;
+	//			b = _normals.get()[y * _length + x].b;
+	//			normalMap << std::fixed << std::setprecision(5)
+	//				<< std::to_string(r) << " "
+	//					  << std::to_string(g) << " "
+	//					  << std::to_string(b)<< " ";
+	//		}
+	//	}
+	//	normalMap.close();
+	//}
 }
 
 void Terrain::GenTextureCoords()

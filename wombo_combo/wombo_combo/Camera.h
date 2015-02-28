@@ -22,6 +22,7 @@ public:
 	~Camera();
 	void Reset();
 	inline matrix4* GetViewMatrix(){return &_viewMat; }
+	inline point3* GetPosition(){ return &_pos; }
 	virtual void Move(Camera_Movement dir, GLfloat dTime);
 	virtual void Rotate(Camera_Rotate dir, GLfloat angle);
 	inline void SetVelocity(GLfloat velocity) { _velocity = velocity; }

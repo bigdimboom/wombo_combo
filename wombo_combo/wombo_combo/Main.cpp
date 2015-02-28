@@ -14,8 +14,8 @@
 #include "Terrain.h"
 
 
-#define WINDOW_WIDTH 1024
-#define WINDOW_HEIGHT 768
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 //Put mouse in the center
 GLfloat lastX = WINDOW_WIDTH / 2, lastY = WINDOW_HEIGHT / 2;
@@ -23,7 +23,7 @@ bool firstMouse = true;
 
 Shader sh;
 MyTimer timer;
-FreeCamera camera(point3(-1.0f, 0.0f, 1.5f));
+FreeCamera camera(point3(127.0f, 100.0f, 143.5f));
 Terrain terrain(1024, 1024);
 
 Texture tex_alpha_terrain;
@@ -31,6 +31,8 @@ Texture tex_grass_terrian;
 Texture tex_dirt_terrian;
 Texture tex_rock_terrian;
 Texture tex_snow_terrian;
+
+point3 lightPos = point3(-1.0, 100, 1.5);
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -62,7 +64,7 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 
 	if (ypos == WINDOW_HEIGHT - 1 || ypos == 0)
 	{
-		//SDL_WarpMouseInWindow(win->GetWindowRef(), lastX, lastY);
+		SDL_WarpMouseInWindow(win->GetWindowRef(), lastX, lastY);
 	}
 }
 
@@ -173,6 +175,10 @@ int main(int argc, char** argv)
 		GLint modelLoc = glGetUniformLocation(sh.GetID(), "model");
 		GLint viewLoc = glGetUniformLocation(sh.GetID(), "view");
 		GLint projLoc = glGetUniformLocation(sh.GetID(), "projection");
+
+
+		GLint lightPosLoc = glGetUniformLocation(sh.GetID(), "lightPosition");
+		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0f)));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -201,10 +207,13 @@ int main(int argc, char** argv)
 		time += timer.GetElapsedTime();
 		timer.Stop();
 		++frame;
-		if (time / 1000 >= 1 && time < 60){
-			std::cout << "Warning:(Frame rate lower than 60 fps) " << frame << std::endl;
+		if (time / 1000 >= 1 /*&& time < 60*/){
+			//std::cout << "Warning:(Frame rate lower than 60 fps) " << frame << std::endl;
 			frame = 0;
 			time = 0;
+			//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;
+			lightPos.x += lightPos.x * cos(5.0f) - lightPos.y * sin(5.0f);
+			lightPos.y += lightPos.x * sin(5.0f) - lightPos.y * cos(5.0f);
 		}
 	}
 

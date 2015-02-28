@@ -18,7 +18,7 @@ GLuint Shader::CreateShader(GLenum eShaderType, const char *strShaderFile)
 
 	// Open files
 	std::ifstream shaderFile(strShaderFile);
-	if (shaderFile.fail())
+	if (shaderFile.fail() || !shaderFile.is_open())
 	{
 		std::cout << strShaderFile << "Open Failed" << std::endl;
 		exit(EXIT_FAILURE);
