@@ -92,7 +92,7 @@ void Terrain::GenHeightMap(const char* hightmap)
 
 	//std::ifstream normalMap;
 	//bool stop = false;
-	//normalMap.open(NORMAL_MAP_FILE, std::ios::binary);
+	//normalMap.open(NORMAL_MAP_FILE, std::ios::in | std::ios::binary);
 	//if (!normalMap.fail() && normalMap.is_open())
 	//{
 	//	for (int y = 0; y < (int)_length; ++y)
@@ -241,8 +241,16 @@ void Terrain::GenNormals()
 	delete[] normalSum;
 	delete[] counts;
 
+	//FILE* normalMap;
+	//fopen_s(&normalMap, NORMAL_MAP_FILE, "wb");
+	//for (uint j = 0; j < _width*_length; ++j){
+	//	//Some calculations to fill a[]
+	//	fwrite(_normals.get(), 1, _width*_length*sizeof(normal3), normalMap);
+	//}
+	//fclose(normalMap);
+
 	//std::ofstream normalMap;
-	//normalMap.open(NORMAL_MAP_FILE, std::ios::binary);
+	//normalMap.open(NORMAL_MAP_FILE, std::ios::out | std::ios::binary);
 	//float r, g, b;
 	//if (!normalMap.fail() && normalMap.is_open())
 	//{
