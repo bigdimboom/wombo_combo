@@ -84,6 +84,12 @@
     <None Include="Shaders\vs.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\fs_octree.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\vs_octree.glsl">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window.h">

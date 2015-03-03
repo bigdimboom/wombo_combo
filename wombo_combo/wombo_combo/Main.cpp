@@ -24,6 +24,7 @@ bool firstMouse = true;
 Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 
 Shader gShader;
+Shader gShader2;
 MyTimer gTimer;
 FreeCamera gCamera(point3(127.0f, 100.0f, 143.5f));
 Terrain gTerrain(1024, 1024);
@@ -36,10 +37,39 @@ Texture gTerrainTex_snow;
 
 point3 gLightPos = point3(-1.0, 100, 1.5);
 GLuint gVAO, gVBO, gEBO;
+GLuint gVAO2, gVBO2, gEBO2;
 
 bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
+
+GLfloat octree[] = {
+	-1024.0f / 2, 1024.0f / 2, 1024.0f / 2, //0
+	1024.0f / 2, 1024.0f / 2, 1024.0f / 2, //1
+	1024.0f / 2, -1024.0f / 2, 1024.0f / 2, //2
+	-1024.0f / 2, -1024.0f / 2, 1024.0f / 2, //3
+	-1024.0f / 2, 1024.0f / 2, -1024.0f / 2, //0
+	1024.0f / 2, 1024.0f / 2, -1024.0f / 2, //1
+	1024.0f / 2, -1024.0f, -1024.0f / 2, //2
+	-1024.0f / 2, -1024.0f / 2, -1024.0f / 2, //3
+};
+
+GLuint lines[] =
+{
+	0, 1,
+	1, 2,
+	2, 3,
+	3, 0,
+	4, 5,
+	5, 6,
+	6, 7,
+	7, 4,
+	0, 4,
+	3, 7,
+	1, 5,
+	2, 6
+};
+
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -63,7 +93,7 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	cam->Rotate(PITCH, yoffset);
 	cam->Rotate(YAW, xoffset);
 
-	if (xpos == WINDOW_WIDTH -1 || xpos == 0)
+	if (xpos == WINDOW_WIDTH - 1 || xpos == 0)
 	{
 		SDL_WarpMouseInWindow(win->GetWindowRef(), (int)WINDOW_WIDTH / 2, (int)lastY);
 		lastX = WINDOW_WIDTH / 2;
@@ -77,9 +107,12 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 
 void Init()
 {
-	gShader.Comiple("shaders/vs.glsl", "shaders/fs.glsl");
+	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
+	gShader2.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
+
 	gTimer.Reset();
 
+	gShader.Use();
 	gTerrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
 
 	gTerrainTex_alpha.Load("Assets/Terrain/height_map.jpg", true);
@@ -116,6 +149,24 @@ void Init()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(sizeof(point4) * gTerrain.GetVertsSize() + sizeof(normal3) * gTerrain.GetVertsSize()));
 
 	glBindVertexArray(0); // Unbind VAO
+
+	gShader2.Use();
+	glGenVertexArrays(1, &gVAO2);
+	glGenBuffers(1, &gVBO2);
+	glGenBuffers(1, &gEBO2);
+
+	glBindVertexArray(gVAO2);
+	glBindBuffer(GL_ARRAY_BUFFER, gVBO2);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(octree), octree, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO2);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(lines), lines, GL_STATIC_DRAW);
+
+	// Position attribute
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glBindVertexArray(0); // Unbind VAO
+
 }
 
 void EventHandler(SDL_Event &e)
@@ -148,6 +199,7 @@ void Render()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	gShader.Use();
 	gCamera.Update();
 
@@ -185,6 +237,22 @@ void Render()
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, gTerrain.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	glBindVertexArray(0);
+
+
+	gShader2.Use();
+	glBindVertexArray(gVAO2);
+	// Get the uniform locations
+	modelLoc = glGetUniformLocation(gShader2.GetID(), "model");
+	viewLoc = glGetUniformLocation(gShader2.GetID(), "view");
+	projLoc = glGetUniformLocation(gShader2.GetID(), "projection");
+
+	// Pass the matrices to the shader
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0f)));
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glDrawElements(GL_LINES, sizeof(lines), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	glBindVertexArray(0);
 
 	gWindow.SwapBuffers();
 }

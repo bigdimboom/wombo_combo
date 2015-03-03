@@ -24,7 +24,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl" />
+    <None Include="Shaders\fs_octree.glsl" />
     <None Include="Shaders\vs.glsl" />
+    <None Include="Shaders\vs_octree.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
