@@ -82,8 +82,6 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 		SDL_WarpMouseInWindow(win->GetWindowRef(), WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	}
 
-	//std::cout << xpos << std::endl;
-
 	GLfloat xoffset = xpos - lastX;
 	GLfloat yoffset = lastY - ypos;  // Reversed since y-coordinates go from bottom to left
 
@@ -113,9 +111,9 @@ void Init()
 	gTimer.Reset();
 
 	gShader.Use();
-	gTerrain.GenTerrian("Assets/Terrain/height_map.jpg", true, true);
+	gTerrain.GenTerrian("Assets/Terrain/height_map2.jpg", true, true);
 
-	gTerrainTex_alpha.Load("Assets/Terrain/height_map.jpg", true);
+	gTerrainTex_alpha.Load("Assets/Terrain/height_map2.jpg", true);
 	gTerrainTex_grass.Load("Assets/Terrain/terrain_tex.jpg", true);
 	gTerrainTex_dirt.Load("Assets/Terrain/dirt.JPG", true);
 	gTerrainTex_rock.Load("Assets/Terrain/Rock.jpg", true);
@@ -138,7 +136,7 @@ void Init()
 		sizeof(normal3) * gTerrain.GetVertsSize(), sizeof(point2) * gTerrain.GetVertsSize(), gTerrain.GetTextureCoords().get());
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetIndicesNum() * sizeof(GLuint), gTerrain.GetIndices().get(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetIndicesSize() * sizeof(GLuint), gTerrain.GetIndices().get(), GL_STATIC_DRAW);
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
@@ -236,7 +234,7 @@ void Render()
 	glUniform1i(glGetUniformLocation(gShader.GetID(), "alpha_texture"), 4);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, gTerrain.GetIndicesNum(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	glDrawElements(GL_TRIANGLES, gTerrain.GetIndicesSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
 
 

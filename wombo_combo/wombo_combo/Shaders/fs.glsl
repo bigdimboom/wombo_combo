@@ -22,9 +22,9 @@ void main()
 	vec4 rock = texture(rock_texture, uv);
 	vec4 snow = texture(snow_texture, uv);
 
-	vec4 mainTex = mix(rock, snow, smoothstep(8, 10, r*50));
-	vec4 middle = mix(dirt, mainTex, smoothstep(6, 8, r*50));
-	vec4 finalTex = mix(grass, middle, smoothstep(0, 6, r*50));
+	vec4 mainTex = mix(rock, snow, smoothstep(50, 100, r*100));
+	vec4 middle = mix(dirt, mainTex, smoothstep(30, 49, r*100));
+	vec4 finalTex = mix(grass, middle, smoothstep(0, 30, r*100));
 
 
 	fragColor_out = finalTex * my_color;

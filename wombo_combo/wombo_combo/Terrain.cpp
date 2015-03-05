@@ -18,7 +18,7 @@ Terrain::Terrain(int len, int width)
 	_normals(nullptr),
 	_textureCoords(nullptr),
 	_length(len), _width(width), _index_size(0),
-	_weight(50.0f)
+	_weight(100.0f)
 {
 }
 
@@ -90,43 +90,6 @@ void Terrain::GenHeightMap(const char* hightmap)
 		}
 	}
 
-	//std::ifstream normalMap;
-	//bool stop = false;
-	//normalMap.open(NORMAL_MAP_FILE, std::ios::in | std::ios::binary);
-	//if (!normalMap.fail() && normalMap.is_open())
-	//{
-	//	for (int y = 0; y < (int)_length; ++y)
-	//	{
-	//		if (stop == true)
-	//		{
-	//			break;
-	//		}
-
-	//		for (int x = 0; x < (int)_width; ++x)
-	//		{
-	//			std::string word;
-	//			int count = 0;
-	//			float arr[3];
-	//			while (count < 3)
-	//			{
-	//				if (! (normalMap >> word))
-	//				{
-	//					stop = true;
-	//					break;
-	//				}
-	//				arr[count] = std::stof(word);
-	//				++count;
-	//			}
-	//			_normals.get()[y * _length + x] = normal3(arr[0], arr[1], arr[2]);
-	//		}
-	//	}
-	//	normalMap.close();
-	//}
-	//else
-	//{
-	//	GenNormals();
-	//}
-
 	SDL_FreeSurface(img);
 }
 
@@ -142,15 +105,24 @@ void Terrain::GenIndicesArray()
 	{
 		for (int x = 0; x < (int)_length - 1; ++x)
 		{
-			_indices.get()[y*(_length - 1) + x + i] = y*(_length - 1) + x; // x 
-			_indices.get()[y*(_length - 1) + x + i + 1] = y*(_length - 1) + x + 1; // x + 1
-			_indices.get()[y*(_length - 1) + x + i + 2] = y*(_length - 1) + x + 1 + _length; // x + 1 + _width
-			/////////////////////////////////////////////////////////////
-			_indices.get()[y*(_length - 1) + x + i + 3] = y*(_length - 1) + x; // x + 1 + _width
-			_indices.get()[y*(_length - 1) + x + i + 4] = y*(_length - 1) + x + 1 + _length; // x + 1
-			_indices.get()[y*(_length - 1) + x + i + 5] = y*(_length - 1) + x + _length;
+			//_indices.get()[y*(_length - 1) + x + i] = y*(_length - 1) + x; // x 
+			//_indices.get()[y*(_length - 1) + x + i + 1] = y*(_length - 1) + x + 1; // x + 1
+			//_indices.get()[y*(_length - 1) + x + i + 2] = y*(_length - 1) + x + 1 + _length; // x + 1 + _width
+			///////////////////////////////////////////////////////////////
+			//_indices.get()[y*(_length - 1) + x + i + 3] = y*(_length - 1) + x; // x + 1 + _width
+			//_indices.get()[y*(_length - 1) + x + i + 4] = y*(_length - 1) + x + 1 + _length; // x + 1
+			//_indices.get()[y*(_length - 1) + x + i + 5] = y*(_length - 1) + x + _length;
 
-			i += 5;
+			_indices.get()[i] = y*(_length) + x; // x 
+			_indices.get()[i + 1] = y*(_length) + x + 1; // x + 1
+			_indices.get()[i + 2] = y*(_length) + x + 1 + _length; // x + 1 + _width
+			/////////////////////////////////////////////////////////////
+			_indices.get()[i + 3] = y*(_length) + x; // x + 1 + _width
+			_indices.get()[i + 4] = y*(_length) + x + 1 + _length; // x + 1
+			_indices.get()[i + 5] = y*(_length) + x + _length;
+
+
+			i += 6;
 		}
 	}
 }
@@ -240,35 +212,6 @@ void Terrain::GenNormals()
 
 	delete[] normalSum;
 	delete[] counts;
-
-	//FILE* normalMap;
-	//fopen_s(&normalMap, NORMAL_MAP_FILE, "wb");
-	//for (uint j = 0; j < _width*_length; ++j){
-	//	//Some calculations to fill a[]
-	//	fwrite(_normals.get(), 1, _width*_length*sizeof(normal3), normalMap);
-	//}
-	//fclose(normalMap);
-
-	//std::ofstream normalMap;
-	//normalMap.open(NORMAL_MAP_FILE, std::ios::out | std::ios::binary);
-	//float r, g, b;
-	//if (!normalMap.fail() && normalMap.is_open())
-	//{
-	//	for (int y = 0; y < (int)_length; ++y)
-	//	{
-	//		for (int x = 0; x < (int)_width; ++x)
-	//		{
-	//			r = _normals.get()[y * _length + x].r;
-	//			g = _normals.get()[y * _length + x].g;
-	//			b = _normals.get()[y * _length + x].b;
-	//			normalMap << std::fixed << std::setprecision(5)
-	//				<< std::to_string(r) << " "
-	//					  << std::to_string(g) << " "
-	//					  << std::to_string(b)<< " ";
-	//		}
-	//	}
-	//	normalMap.close();
-	//}
 }
 
 void Terrain::GenTextureCoords()

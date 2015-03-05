@@ -41,7 +41,7 @@
     <Filter Include="Source Files\SkyBox">
       <UniqueIdentifier>{1efcf5fa-8760-4460-80ec-23a5d78ff27d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\GameObject">
+    <Filter Include="Source Files\Component">
       <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -74,7 +74,7 @@
       <Filter>Source Files\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="Actor.cpp">
-      <Filter>Source Files\GameObject</Filter>
+      <Filter>Source Files\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -108,10 +108,7 @@
       <Filter>Source Files\Camera</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
-      <Filter>Source Files\GameObject</Filter>
-    </ClInclude>
-    <ClInclude Include="ICommand.h">
-      <Filter>Source Files\System</Filter>
+      <Filter>Source Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="MyTimer.h">
       <Filter>Source Files\Tools</Filter>
@@ -126,7 +123,10 @@
       <Filter>Source Files\Terrain</Filter>
     </ClInclude>
     <ClInclude Include="Actor.h">
-      <Filter>Source Files\GameObject</Filter>
+      <Filter>Source Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="ICommand.h">
+      <Filter>Source Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

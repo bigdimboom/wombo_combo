@@ -26,7 +26,7 @@ public:
 	inline std::shared_ptr<normal3> GetNormals() const { return _normals; }
 	inline std::shared_ptr<point2> GetTextureCoords() const { return _textureCoords; }
 	inline uint GetVertsSize() const { return _width * _length; }
-	inline uint GetIndicesNum() const { return _index_size; }
+	inline uint GetIndicesSize() const { return _index_size; }
 protected:
 	virtual void GenHeightMap(const char* hightmap);
 	virtual void GenIndicesArray();
