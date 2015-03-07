@@ -19,7 +19,7 @@ public:
 	Terrain(int length = 1024, int width = 1024);
 	~Terrain();
 
-	void GenTerrian(const char* hightmap, bool genNormals = false, bool genUVs=false);
+	void GenTerrian(const char* hightmap, bool genNormals = false, bool genUVs = false);
 	inline void SetWeight(float weight){ _weight = weight; }
 	inline std::shared_ptr<point4> GetPureTerrian() const { return _grids; }
 	inline std::shared_ptr<uint> GetIndices() const { return _indices; }
@@ -41,4 +41,3 @@ private:
 	GLuint _index_size;
 	float _weight;
 };
-

@@ -15,8 +15,8 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyTimer.cpp" />
+    <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -35,8 +35,8 @@
     <ClInclude Include="Global.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="ICommand.h" />
-    <ClInclude Include="Mesh.h" />
     <ClInclude Include="MyTimer.h" />
+    <ClInclude Include="Octree.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Texture.h" />

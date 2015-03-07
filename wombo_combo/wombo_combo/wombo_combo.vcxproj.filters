@@ -44,6 +44,12 @@
     <Filter Include="Source Files\Component">
       <UniqueIdentifier>{b3ee3fee-5e97-46da-96de-0fc302f94554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Actor">
+      <UniqueIdentifier>{cd7f798d-be85-44b9-8b01-4a2254b39cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Octree">
+      <UniqueIdentifier>{4c7452bb-523a-4f3c-b3e4-c45a1707b6fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -67,14 +73,14 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Mesh.cpp">
-      <Filter>Source Files\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="Terrain.cpp">
       <Filter>Source Files\Terrain</Filter>
     </ClCompile>
     <ClCompile Include="Actor.cpp">
-      <Filter>Source Files\Component</Filter>
+      <Filter>Source Files\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="Octree.cpp">
+      <Filter>Source Files\Octree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,17 +122,17 @@
     <ClInclude Include="FreeCamera.h">
       <Filter>Source Files\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Mesh.h">
-      <Filter>Source Files\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="Terrain.h">
       <Filter>Source Files\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="Actor.h">
-      <Filter>Source Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="ICommand.h">
       <Filter>Source Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Actor.h">
+      <Filter>Source Files\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="Octree.h">
+      <Filter>Source Files\Octree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

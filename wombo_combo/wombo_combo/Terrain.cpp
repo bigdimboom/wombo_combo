@@ -69,7 +69,7 @@ void Terrain::GenHeightMap(const char* hightmap)
 		{
 			color = ((uchar*)img->pixels)[3 * (z * _length + x)];
 			// why -0.5 ? because, height could be negtive.
-			h = _weight * ((color / 255.0f) - (1.0f/2.0f));
+			h = _weight * ((color / 255.0f) - (1.0f / 2.0f));
 			_grids.get()[z * _length + x] =
 				point4(((float)x - (float)(_length / 2.0f)), h, ((float)z - (float)(_width / 2.0f)), 1.0f);
 			//printf("%d\n", cccc);
@@ -113,13 +113,13 @@ void Terrain::GenIndicesArray()
 			//_indices.get()[y*(_length - 1) + x + i + 4] = y*(_length - 1) + x + 1 + _length; // x + 1
 			//_indices.get()[y*(_length - 1) + x + i + 5] = y*(_length - 1) + x + _length;
 
-			_indices.get()[i] = y*(_length) + x; // x 
-			_indices.get()[i + 1] = y*(_length) + x + 1; // x + 1
-			_indices.get()[i + 2] = y*(_length) + x + 1 + _length; // x + 1 + _width
+			_indices.get()[i] = y*(_length)+x; // x 
+			_indices.get()[i + 1] = y*(_length)+x + 1; // x + 1
+			_indices.get()[i + 2] = y*(_length)+x + 1 + _length; // x + 1 + _width
 			/////////////////////////////////////////////////////////////
-			_indices.get()[i + 3] = y*(_length) + x; // x + 1 + _width
-			_indices.get()[i + 4] = y*(_length) + x + 1 + _length; // x + 1
-			_indices.get()[i + 5] = y*(_length) + x + _length;
+			_indices.get()[i + 3] = y*(_length)+x; // x + 1 + _width
+			_indices.get()[i + 4] = y*(_length)+x + 1 + _length; // x + 1
+			_indices.get()[i + 5] = y*(_length)+x + _length;
 
 
 			i += 6;
@@ -165,9 +165,9 @@ void Terrain::GenNormals()
 			{
 
 				point4 y = _grids.get()[(w + 1)*_length + l];
-				point4 x = _grids.get()[ w*_length + l - 1];
+				point4 x = _grids.get()[w*_length + l - 1];
 
-				
+
 				point4 a = x - currentPoint;
 				point4 b = y - currentPoint;
 
@@ -219,7 +219,7 @@ void Terrain::GenTextureCoords()
 	int size = _length * _width;
 	_textureCoords = std::shared_ptr<point2>(
 		new point2[size], [](point2* p){ delete[] p; }
-		);
+	);
 
 	//map all index in (0,0) to (1,1) scale
 	// 1. shift first
@@ -231,7 +231,7 @@ void Terrain::GenTextureCoords()
 		{
 			_textureCoords.get()[i*_length + x]
 				= point2(
-				(_grids.get()[i*_length + x].x + _length / 2) / (_length ),
+				(_grids.get()[i*_length + x].x + _length / 2) / (_length),
 				(_grids.get()[i*_length + x].z + _width / 2) / (_width)
 				);
 		}

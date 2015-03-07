@@ -259,8 +259,8 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 1 /*&& time < 60*/){
-		//std::cout << "Warning:(Frame rate lower than 60 fps) " << frame << std::endl;
+	if (gTimeElapsed / 1000 >= 1 && gTimeElapsed < 60){
+		std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;
