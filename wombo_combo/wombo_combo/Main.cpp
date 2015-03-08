@@ -27,7 +27,7 @@ Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 Shader gShader;
 Shader gShader2;
 MyTimer gTimer;
-FreeCamera gCamera(point3(127.0f, 100.0f, 143.5f));
+FreeCamera gCamera(point3(127.0f, 25.0f, 143.5f));
 Terrain gTerrain(512, 512);
 
 Texture gTerrainTex_alpha;
@@ -166,8 +166,8 @@ void Init()
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glBindVertexArray(0); // Unbind VAO
 
-	//Octree octree(gTerrain.GetPureTerrian(), gTerrain.GetVertsSize(), gTerrain.GetIndices(), gTerrain.GetIndicesSize());
-	//octree.Build(point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f, 300, 7);
+	Octree octree(gTerrain.GetPureTerrian(), gTerrain.GetVertsSize(), gTerrain.GetIndices(), gTerrain.GetIndicesSize());
+	octree.Build(point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f, 300, 3);
 
 }
 
@@ -268,8 +268,8 @@ void Update()
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;
-		gLightPos.x += gLightPos.x * cos(5.0f) - gLightPos.y * sin(5.0f);
-		gLightPos.y += gLightPos.x * sin(5.0f) - gLightPos.y * cos(5.0f);
+		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
+		gLightPos.y += gLightPos.x * sin(1.0f) - gLightPos.y * cos(1.0f);
 	}
 }
 

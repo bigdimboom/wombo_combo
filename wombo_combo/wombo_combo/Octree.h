@@ -33,6 +33,7 @@ private:
 	OctantSptr _root;
 	int _maxDepth;
 	int _maxVertsNum;
+	int  _currentDepth;
 	enum{
 		FRONT_UP_LEFT = 0,
 		RRONT_UP_RIGHT,
