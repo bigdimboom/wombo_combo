@@ -12,6 +12,7 @@
 #include "MyTimer.h"
 #include "FreeCamera.h"
 #include "Terrain.h"
+#include "Octree.h"
 
 
 #define WINDOW_WIDTH 800
@@ -27,7 +28,7 @@ Shader gShader;
 Shader gShader2;
 MyTimer gTimer;
 FreeCamera gCamera(point3(127.0f, 100.0f, 143.5f));
-Terrain gTerrain(1024, 1024);
+Terrain gTerrain(512, 512);
 
 Texture gTerrainTex_alpha;
 Texture gTerrainTex_grass;
@@ -111,9 +112,9 @@ void Init()
 	gTimer.Reset();
 
 	gShader.Use();
-	gTerrain.GenTerrian("Assets/Terrain/height_map2.jpg", true, true);
+	gTerrain.GenTerrian("Assets/Terrain/heightmap.jpeg", true, true);
 
-	gTerrainTex_alpha.Load("Assets/Terrain/height_map2.jpg", true);
+	gTerrainTex_alpha.Load("Assets/Terrain/heightmap.jpeg", true);
 	gTerrainTex_grass.Load("Assets/Terrain/terrain_tex.jpg", true);
 	gTerrainTex_dirt.Load("Assets/Terrain/dirt.JPG", true);
 	gTerrainTex_rock.Load("Assets/Terrain/Rock.jpg", true);
@@ -164,6 +165,9 @@ void Init()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glBindVertexArray(0); // Unbind VAO
+
+	//Octree octree(gTerrain.GetPureTerrian(), gTerrain.GetVertsSize(), gTerrain.GetIndices(), gTerrain.GetIndicesSize());
+	//octree.Build(point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f, 300, 7);
 
 }
 
@@ -259,8 +263,8 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 1 && gTimeElapsed < 60){
-		std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
+	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
+		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;

@@ -18,7 +18,7 @@ Terrain::Terrain(int len, int width)
 	_normals(nullptr),
 	_textureCoords(nullptr),
 	_length(len), _width(width), _index_size(0),
-	_weight(100.0f)
+	_weight(50.0f)
 {
 }
 
@@ -105,14 +105,6 @@ void Terrain::GenIndicesArray()
 	{
 		for (int x = 0; x < (int)_length - 1; ++x)
 		{
-			//_indices.get()[y*(_length - 1) + x + i] = y*(_length - 1) + x; // x 
-			//_indices.get()[y*(_length - 1) + x + i + 1] = y*(_length - 1) + x + 1; // x + 1
-			//_indices.get()[y*(_length - 1) + x + i + 2] = y*(_length - 1) + x + 1 + _length; // x + 1 + _width
-			///////////////////////////////////////////////////////////////
-			//_indices.get()[y*(_length - 1) + x + i + 3] = y*(_length - 1) + x; // x + 1 + _width
-			//_indices.get()[y*(_length - 1) + x + i + 4] = y*(_length - 1) + x + 1 + _length; // x + 1
-			//_indices.get()[y*(_length - 1) + x + i + 5] = y*(_length - 1) + x + _length;
-
 			_indices.get()[i] = y*(_length)+x; // x 
 			_indices.get()[i + 1] = y*(_length)+x + 1; // x + 1
 			_indices.get()[i + 2] = y*(_length)+x + 1 + _length; // x + 1 + _width
