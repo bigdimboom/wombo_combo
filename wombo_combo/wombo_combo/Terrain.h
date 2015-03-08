@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 #include <fstream>
 #include <iomanip>
+#include "Mesh.h"
 
 //Using templete pattern
 //user could override terrian-gen methods 
@@ -21,23 +22,14 @@ public:
 
 	void GenTerrian(const char* hightmap, bool genNormals = false, bool genUVs = false);
 	inline void SetWeight(float weight){ _weight = weight; }
-	inline std::shared_ptr<point4> GetPureTerrian() const { return _grids; }
-	inline std::shared_ptr<uint> GetIndices() const { return _indices; }
-	inline std::shared_ptr<normal3> GetNormals() const { return _normals; }
-	inline std::shared_ptr<point2> GetTextureCoords() const { return _textureCoords; }
-	inline uint GetVertsSize() const { return _width * _length; }
-	inline uint GetIndicesSize() const { return _index_size; }
+	inline Mesh& GetMesh() { return _mesh; }
 protected:
 	virtual void GenHeightMap(const char* hightmap);
 	virtual void GenIndicesArray();
 	virtual void GenNormals();
 	virtual void GenTextureCoords();
 private:
-	std::shared_ptr<point4> _grids;
-	std::shared_ptr<normal3> _normals;
-	std::shared_ptr<uint> _indices;
-	std::shared_ptr<point2> _textureCoords;
+	Mesh _mesh;
 	uint _length, _width;
-	GLuint _index_size;
 	float _weight;
 };

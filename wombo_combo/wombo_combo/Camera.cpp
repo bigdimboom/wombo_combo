@@ -7,7 +7,8 @@ Camera::Camera(point3 cameraPos, point3 wolrdUp)
 	_worldUp(_up),
 	_front(point3(0.0f, 0.0f, -1.0f)),
 	_sensitivity(0.5f),
-	_velocity(0.05f)
+	_velocity(0.05f),
+	_projMat(1.0)
 {
 	Update();
 }
@@ -79,4 +80,9 @@ void Camera::Update()
 	_up = glm::normalize(glm::cross(_right, _front));
 	// Update ViewMat
 	_viewMat = glm::lookAt(_pos, _pos + _front, _up);
+}
+
+void Camera::SetFrustum(float angle, float ratio, float nearPlane, float farPlane)
+{
+	_projMat = glm::perspective(angle, ratio, nearPlane, farPlane);
 }

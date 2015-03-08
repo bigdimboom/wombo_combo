@@ -22,6 +22,8 @@ public:
 	~Camera();
 	void Reset();
 	inline matrix4* GetViewMatrix(){return &_viewMat; }
+	void SetFrustum(float angle, float ratio, float nearPlane, float farPlane);
+	inline matrix4* GetProjMatrix(){ return &_projMat; }
 	inline point3* GetPosition(){ return &_pos; }
 	virtual void Move(Camera_Movement dir, GLfloat dTime);
 	virtual void Rotate(Camera_Rotate dir, GLfloat angle);
@@ -32,6 +34,7 @@ public:
 	//view matrix
 protected:
 	matrix4 _viewMat;
+	matrix4 _projMat;
 	//Camera Attributes
 	point3 _up;
 	point3 _right;
