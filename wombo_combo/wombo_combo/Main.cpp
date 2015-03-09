@@ -13,6 +13,7 @@
 #include "FreeCamera.h"
 #include "Terrain.h"
 #include "Octree.h"
+#include "Frustum.h"
 
 
 #define WINDOW_WIDTH 800
@@ -45,6 +46,14 @@ double gTimeElapsed = 0.0;
 
 Octree octree;
 
+Frustum cullspace;
+
+std::vector<uint> idxBuffer;
+
+void CullTest()
+{
+
+}
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -109,6 +118,8 @@ void Init()
 	glBufferSubData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes() +
 		gTerrain.GetMesh().GetNormSizeInBytes(), gTerrain.GetMesh().GetUVSizeInBytes(), gTerrain.GetMesh().GetUVs());
 
+
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetMesh().GetIdxSizeInBytes(), gTerrain.GetMesh().GetIndxs(), GL_STATIC_DRAW);
 
@@ -124,12 +135,10 @@ void Init()
 	glBindVertexArray(0); // Unbind VAO
 
 	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(600, 7);
-}
+	octree.Build(300, 5);
+	cullspace.Build(&gCamera, 100);
 
-void CullTest()
-{
-
+	CullTest();
 }
 
 void EventHandler(SDL_Event &e)

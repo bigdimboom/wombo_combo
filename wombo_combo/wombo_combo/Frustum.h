@@ -1,5 +1,11 @@
 #pragma once
 #include "Camera.h"
+#include "Global.h"
+
+/*
+The frustrum class is ported from
+http://www.rastertek.com/dx10tut16.html
+*/
 
 class Frustum
 {
@@ -7,34 +13,28 @@ public:
 	Frustum();
 	~Frustum();
 
-//	void SetFrustum(float angle, float ratio, float nearD, float farD);
-//	void SetCamera(Camera* cam);
-//	bool CubeInFrustum(const point4 center, float cubeRadius);
-//
-//public:
-//	enum {
-//		FRUSTUM_TOP = 0,
-//		FRUSTUM_BOTTOM,
-//		FRUSTUM_LEFT,
-//		FRUSTUM_RIGHT,
-//		FRUSTUM_NEAR,
-//		FRUSTUM_FAR,
-//	};
-//
-//	static enum {
-//		FRUSTUM_OUTSIDE = 0,
-//		FRUSTUM_INTERSECT,
-//		FRUSTUM_INSIDE,
-//	};
-//
-//	//Plane3D planes[6];
-//
-//	point3 nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight;
-//	point3 farTopLeft, farTopRight, farBottomLeft, farBottomRight;
-//
-//	float nearDistance, farDistance;
-//	float nearWidth, nearHeight;
-//	float farWidth, farHeight;
-//	float ratio, angle, tang;
+	void Build(Camera* cam, float screenDepth);
+	bool CubeInFrustum(const point3 center, float cubeRadius);
+
+public:
+	enum {
+		FRUSTUM_TOP = 0,
+		FRUSTUM_BOTTOM,
+		FRUSTUM_LEFT,
+		FRUSTUM_RIGHT,
+		FRUSTUM_NEAR,
+		FRUSTUM_FAR,
+	};
+
+	static enum {
+		FRUSTUM_OUTSIDE = 0,
+		FRUSTUM_INTERSECT,
+		FRUSTUM_INSIDE,
+	};
+
+private:
+
+	point4 _plane[6];
+	matrix4 _mat;
 };
 

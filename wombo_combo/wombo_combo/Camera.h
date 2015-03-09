@@ -24,7 +24,8 @@ public:
 	inline matrix4* GetViewMatrix(){return &_viewMat; }
 	void SetFrustum(float angle, float ratio, float nearPlane, float farPlane);
 	inline matrix4* GetProjMatrix(){ return &_projMat; }
-	inline point3* GetPosition(){ return &_pos; }
+	inline point3 GetPosition(){ return _pos; }
+	inline point3 GetFront(){ return _front; }
 	virtual void Move(Camera_Movement dir, GLfloat dTime);
 	virtual void Rotate(Camera_Rotate dir, GLfloat angle);
 	inline void SetVelocity(GLfloat velocity) { _velocity = velocity; }
