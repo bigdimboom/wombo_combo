@@ -25,7 +25,7 @@ bool firstMouse = true;
 Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 
 Shader gShader;
-//Shader gShaderOctree;
+Shader gShaderOctree;
 MyTimer gTimer;
 FreeCamera gCamera(point3(100.0f, 25.0f, 50.5f));
 Terrain gTerrain(512, 512);
@@ -38,40 +38,12 @@ Texture gTerrainTex_snow;
 
 point3 gLightPos = point3(-1.0, 100, 1.5);
 GLuint gVAO, gVBO, gEBO;
-//GLuint gVAO2, gVBO2, gEBO2;
 
 bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
 
-//Octree octree(gTerrain.GetPureTerrian(), gTerrain.GetVertsSize(), gTerrain.GetIndices(), gTerrain.GetIndicesSize());
-
-//GLfloat octree[] = {
-//	-1024.0f / 4, 1024.0f / 4, 1024.0f / 4, //0
-//	1024.0f / 4, 1024.0f / 4, 1024.0f / 4, //1
-//	1024.0f / 4, -1024.0f / 4, 1024.0f / 4, //2
-//	-1024.0f / 4, -1024.0f / 4, 1024.0f / 4, //3
-//	-1024.0f / 4, 1024.0f / 4, -1024.0f / 4, //0
-//	1024.0f / 4, 1024.0f / 4, -1024.0f / 4, //1
-//	1024.0f / 4, -1024.0f / 4, -1024.0f / 4, //2
-//	-1024.0f / 4, -1024.0f / 4, -1024.0f / 4 //3
-//};
-//
-//GLuint lines[] =
-//{
-//	0, 1,
-//	1, 2,
-//	2, 3,
-//	3, 0,
-//	4, 5,
-//	5, 6,
-//	6, 7,
-//	7, 4,
-//	0, 4,
-//	3, 7,
-//	1, 5,
-//	2, 6
-//};
+Octree octree;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -109,7 +81,7 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 void Init()
 {
 	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
-	//gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
+	gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
 
 	gTimer.Reset();
 
@@ -151,7 +123,8 @@ void Init()
 
 	glBindVertexArray(0); // Unbind VAO
 
-	//octree.Build(point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f, 300/2, 3);
+	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	octree.Build(50, 2);
 }
 
 void CullTest()
@@ -235,21 +208,7 @@ void Render()
 	glDrawElements(GL_TRIANGLES, gTerrain.GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
 
-	//glBindVertexArray(gVAO2);
-	//// Get the uniform locations
-	//modelLoc = glGetUniformLocation(gShader2.GetID(), "model");
-	//viewLoc = glGetUniformLocation(gShader2.GetID(), "view");
-	//projLoc = glGetUniformLocation(gShader2.GetID(), "projection");
-
-	//// Pass the matrices to the shader
-	//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0f)));
-	//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	//glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-	//glDrawElements(GL_LINES, sizeof(lines), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-	//glBindVertexArray(0);
-
-	//octree.DebugDraw(&gCamera, &gShaderOctree);
+	octree.DebugDraw(&gCamera, &gShaderOctree);
 
 	gWindow.SwapBuffers();
 }
@@ -279,7 +238,7 @@ int main(int argc, char** argv)
 	gWindow.InitGL();
 
 	Init();
-	gCamera.SetVelocity(0.8f);
+	gCamera.SetVelocity(2.0f);
 
 	SDL_Event e;
 

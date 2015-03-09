@@ -1,21 +1,21 @@
 #include "Octree.h"
 
-void InitNodeChildren(OctantSptr oct)
+void InitNodeChildren(OctantPtr octPtr)
 {
 	for (int i = 0; i < 8; ++i)
 	{
-		oct->child[i] = nullptr;
+		octPtr->child[i] = nullptr;
 	}
 }
 
-bool IsInBox(OctantSptr octSptr, point3 point)
+bool IsInBox(OctantPtr octPtr, point3 point)
 {
-	float x1 = octSptr->center.x - octSptr->radius;
-	float x2 = octSptr->center.x + octSptr->radius;
-	float y1 = octSptr->center.y - octSptr->radius;
-	float y2 = octSptr->center.y + octSptr->radius;
-	float z1 = octSptr->center.z - octSptr->radius;
-	float z2 = octSptr->center.z + octSptr->radius;
+	float x1 = octPtr->center.x - octPtr->radius;
+	float x2 = octPtr->center.x + octPtr->radius;
+	float y1 = octPtr->center.y - octPtr->radius;
+	float y2 = octPtr->center.y + octPtr->radius;
+	float z1 = octPtr->center.z - octPtr->radius;
+	float z2 = octPtr->center.z + octPtr->radius;
 
 	if (point.x >= x1 && point.x <= x2 &&
 		point.y >= y1 && point.y <= y2 &&
@@ -27,31 +27,101 @@ bool IsInBox(OctantSptr octSptr, point3 point)
 	return false;
 }
 
-static bool IsLeafNode(OctantSptr octSptr)
+static bool IsLeafNode(OctantPtr octPtr)
 {
-	return octSptr->child[0] == nullptr;
+	return octPtr->child[0] == nullptr;
+}
+
+void Octree::_InitChildrenCenter(OctantPtr start, int i)
+{
+	switch (i)
+	{
+	case FRONT_UP_LEFT:
+		start->child[i]->center.x = start->center.x - start->child[i]->radius;
+		start->child[i]->center.y = start->center.y + start->child[i]->radius;
+		start->child[i]->center.z = start->center.z - start->child[i]->radius;
+		break;
+	case RRONT_UP_RIGHT:
+		start->child[i]->center.x = start->center.x + start->child[i]->radius;
+		start->child[i]->center.y = start->center.y + start->child[i]->radius;
+		start->child[i]->center.z = start->center.z - start->child[i]->radius;
+		break;
+	case RRONT_DOWN_LEFT:
+		start->child[i]->center.x = start->center.x - start->child[i]->radius;
+		start->child[i]->center.y = start->center.y - start->child[i]->radius;
+		start->child[i]->center.z = start->center.z - start->child[i]->radius;
+		break;
+	case RRONT_DOWN_RIGHT:
+		start->child[i]->center.x = start->center.x + start->child[i]->radius;
+		start->child[i]->center.y = start->center.y - start->child[i]->radius;
+		start->child[i]->center.z = start->center.z - start->child[i]->radius;
+		break;
+	case BACK_UP_LEFT:
+		start->child[i]->center.x = start->center.x - start->child[i]->radius;
+		start->child[i]->center.y = start->center.y + start->child[i]->radius;
+		start->child[i]->center.z = start->center.z + start->child[i]->radius;
+		break;
+	case BACK_UP_RIGHT:
+		start->child[i]->center.x = start->center.x + start->child[i]->radius;
+		start->child[i]->center.y = start->center.y + start->child[i]->radius;
+		start->child[i]->center.z = start->center.z + start->child[i]->radius;
+		break;
+	case BACK_DOWN_LEFT:
+		start->child[i]->center.x = start->center.x - start->child[i]->radius;
+		start->child[i]->center.y = start->center.y - start->child[i]->radius;
+		start->child[i]->center.z = start->center.z + start->child[i]->radius;
+		break;
+	case BACk_DOWN_RIGHT:
+		start->child[i]->center.x = start->center.x + start->child[i]->radius;
+		start->child[i]->center.y = start->center.y - start->child[i]->radius;
+		start->child[i]->center.z = start->center.z + start->child[i]->radius;
+		break;
+	}
 }
 
 Octree::Octree()
+	:_rawMesh(nullptr),
+	_root(nullptr),
+	_maxDepth(0),
+	_maxVSizePerNode(0)
 {
 }
 
 
 Octree::~Octree()
 {
+	Destory();
 }
 
-void Octree::Build(point3 origin, float radius, int maxPerUnit, int maxDepth)
-{
 
+void Octree::BindMesh(Mesh* mesh, point3 origin, float radius)
+{
+	_rawMesh = mesh;
+	_root = new Octant;
+	_root->vertSize = _rawMesh->GetIdxSize();
+	_root->center = origin;
+	_root->radius = radius;
+	_root->indices.assign(_rawMesh->GetIndxs(),
+		_rawMesh->GetIndxs() + _rawMesh->GetIdxSize());
+	InitNodeChildren(_root);
+	_octree.push_back(_root);
 }
 
-void Octree::Generate(OctantSptr start, int depth)
-{
-	_currentDepth = 0;
 
-	if (_maxDepth - _currentDepth == 0 ||
-		start->vertNum <= _maxVertsNum)
+void Octree::Build(int maxSizePerNode, int maxDepth)
+{
+	assert(_rawMesh != nullptr);
+	_maxDepth = maxDepth;
+	_maxVSizePerNode = maxSizePerNode;
+	Generate(_root, _maxDepth);
+	InitOctreeDrawData();
+}
+
+
+void Octree::Generate(OctantPtr start, int depth)
+{
+	if (depth == 0 ||
+		start->vertSize <= _maxVSizePerNode)
 	{
 		return;
 	}
@@ -59,66 +129,25 @@ void Octree::Generate(OctantSptr start, int depth)
 	//Init 8 children nodes
 	for (uint i = 0; i < 8; ++i)
 	{
-		start->child[i] = OctantSptr(new Octant);
-		start->child[i]->vertNum = 0;
+		start->child[i] = new Octant;
+		start->child[i]->vertSize = 0;
 		start->child[i]->radius = (start->radius / 2.0f);
-		start->child[i]->depth = _currentDepth + 1;
-		start->child[i]->indices.reserve(start->vertNum);
+		//Be cautious of the next two
 		InitNodeChildren(start->child[i]);
-		switch (i)
-		{
-		case FRONT_UP_LEFT:
-			start->child[i]->center.x = start->center.x - start->child[i]->radius;
-			start->child[i]->center.y = start->center.y + start->child[i]->radius;
-			start->child[i]->center.z = start->center.z - start->child[i]->radius;
-			break;
-		case RRONT_UP_RIGHT:
-			start->child[i]->center.x = start->center.x + start->child[i]->radius;
-			start->child[i]->center.y = start->center.y + start->child[i]->radius;
-			start->child[i]->center.z = start->center.z - start->child[i]->radius;
-			break;
-		case RRONT_DOWN_LEFT:
-			start->child[i]->center.x = start->center.x - start->child[i]->radius;
-			start->child[i]->center.y = start->center.y - start->child[i]->radius;
-			start->child[i]->center.z = start->center.z - start->child[i]->radius;
-			break;
-		case RRONT_DOWN_RIGHT:
-			start->child[i]->center.x = start->center.x + start->child[i]->radius;
-			start->child[i]->center.y = start->center.y - start->child[i]->radius;
-			start->child[i]->center.z = start->center.z - start->child[i]->radius;
-			break;
-		case BACK_UP_LEFT:
-			start->child[i]->center.x = start->center.x - start->child[i]->radius;
-			start->child[i]->center.y = start->center.y + start->child[i]->radius;
-			start->child[i]->center.z = start->center.z + start->child[i]->radius;
-			break;
-		case BACK_UP_RIGHT:
-			start->child[i]->center.x = start->center.x + start->child[i]->radius;
-			start->child[i]->center.y = start->center.y + start->child[i]->radius;
-			start->child[i]->center.z = start->center.z + start->child[i]->radius;
-			break;
-		case BACK_DOWN_LEFT:
-			start->child[i]->center.x = start->center.x - start->child[i]->radius;
-			start->child[i]->center.y = start->center.y - start->child[i]->radius;
-			start->child[i]->center.z = start->center.z + start->child[i]->radius;
-			break;
-		case BACk_DOWN_RIGHT:
-			start->child[i]->center.x = start->center.x + start->child[i]->radius;
-			start->child[i]->center.y = start->center.y - start->child[i]->radius;
-			start->child[i]->center.z = start->center.z + start->child[i]->radius;
-			break;
-		}
+		_InitChildrenCenter(start, i); //init its children's center//This is corrent for future reference
+		_octree.push_back(start->child[i]);
 	}
 
 	point3 pos;
-	for (uint idx = 0; idx < start->vertNum; ++idx)
+	for (uint idx = 0; idx < start->vertSize; ++idx)
 	{
-		pos = point3(_rawVerts.get()[idx]);
+		pos = point3(_rawMesh->GetVerts()[_rawMesh->GetIndxs()[idx]]);
 		for (int i = 0; i < 8; ++i)
 		{
 			if (IsInBox(start->child[i], pos) && IsLeafNode(start->child[i]))
 			{
-				++start->child[i]->vertNum;
+				start->child[i]->indices.push_back(_rawMesh->GetIndxs()[idx]);
+				++start->child[i]->vertSize;
 			}
 		}
 	}
@@ -126,19 +155,18 @@ void Octree::Generate(OctantSptr start, int depth)
 	start->indices.clear();
 	start->indices.shrink_to_fit();
 
-	++_currentDepth;
-
 	for (uint i = 0; i < 8; ++i)
 	{
-		Generate(start->child[i], _currentDepth);
+		Generate(start->child[i], depth - 1);
 	}
 }
 
-void Octree::_InitOctreeDrawData()
-{
-	uint vertSize = sizeof(point3) * _numOfOctants * 24;
 
-	_octreeVerts = new point3[_numOfOctants * 24];
+void Octree::InitOctreeDrawData()
+{
+	uint vertSize = sizeof(point3) * _octree.size() * 24;
+
+	_octreeVerts = new point3[_octree.size() * 24];
 
 	uint vertsCount = 0;
 
@@ -159,7 +187,8 @@ void Octree::_InitOctreeDrawData()
 	delete[] _octreeVerts;
 }
 
-void Octree::_GenDrawData(OctantSptr node, uint &vertCount)
+
+void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 {
 	if (IsLeafNode(node)){
 		return;
@@ -240,6 +269,7 @@ void Octree::_GenDrawData(OctantSptr node, uint &vertCount)
 	}
 }
 
+
 void Octree::DebugDraw(Camera *cam, Shader *shader)
 {
 	assert(cam != nullptr && shader != nullptr);
@@ -259,6 +289,16 @@ void Octree::DebugDraw(Camera *cam, Shader *shader)
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-	glDrawArrays(GL_LINES, 0, _numOfOctants * 24);
+	glDrawArrays(GL_LINES, 0, _octree.size() * 24);
 	glBindVertexArray(0);
+}
+
+
+void Octree::Destory()
+{
+	_rawMesh = nullptr;
+	for (uint i = 0; i < _octree.size(); ++i)
+	{
+		delete _octree[i];
+	}
 }

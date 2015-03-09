@@ -12,6 +12,7 @@ static normal3 CalculateNorm(point3 curr, point3 x, point3 xz, point3 z)
 	return glm::normalize(n1 + n2);
 }
 
+
 Terrain::Terrain(int len, int width)
 	:_length(len), _width(width),
 	_weight(50.0f)

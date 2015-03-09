@@ -9,18 +9,15 @@
 
 struct Octant;
 
-typedef std::shared_ptr<Octant> OctantSptr;
-typedef std::shared_ptr<point4> VertSptr;
-typedef std::shared_ptr<uint> IndexSptr;
+typedef Octant* OctantPtr;
 
 struct Octant
 {
-	uint vertNum; // number of trianles in this node
-	int depth; // at what level 
+	uint vertSize; // number of trianles in this node
 	point3 center; // the center position of this node
 	float radius; // it's a square radius
 	std::vector<uint> indices;
-	OctantSptr child[8]; // its children
+	OctantPtr child[8]; // its children
 };
 
 class Octree
@@ -28,16 +25,20 @@ class Octree
 public:
 	Octree();
 	~Octree();
-	void Build(point3 origin, float radius, int maxUnit, int maxDepth);
+	void BindMesh(Mesh* mesh, point3 origin, float radius);
+	void Build(int maxUnit, int maxDepth);
+	void Destory();
 	void DebugDraw(Camera *cam, Shader *shader);
 protected:
-	void Generate(OctantSptr start, int depth);
+	void Generate(OctantPtr start, int depth);
+	void InitOctreeDrawData();
 private:
-	OctantSptr _root;
+	Mesh* _rawMesh;
+	OctantPtr _root;
 	int _maxDepth;
-	uint _maxVertsNum;
-	int  _currentDepth;
-	int _numOfOctants;
+	uint _maxVSizePerNode;
+	std::vector<OctantPtr> _octree;
+
 	enum{
 		FRONT_UP_LEFT = 0,
 		RRONT_UP_RIGHT,
@@ -48,13 +49,12 @@ private:
 		BACK_DOWN_LEFT,
 		BACk_DOWN_RIGHT
 	};
-	//std::map<float, OctantSptr> _octree;
 	//float == depth + 0.1 * one of the enum
+	static void _InitChildrenCenter(OctantPtr start, int i);
 private:
 	//Draw Octree;
 	GLuint _vao, _vbo;
 	point3* _octreeVerts;
-	void _InitOctreeDrawData();
-	void _GenDrawData(OctantSptr node, uint &vertCount);
+	void _GenDrawData(OctantPtr nodePtr, uint &vertCount);
 };
 
