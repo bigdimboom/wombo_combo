@@ -124,7 +124,7 @@ void Init()
 	glBindVertexArray(0); // Unbind VAO
 
 	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(50, 2);
+	octree.Build(600, 7);
 }
 
 void CullTest()

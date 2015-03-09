@@ -141,12 +141,12 @@ void Octree::Generate(OctantPtr start, int depth)
 	point3 pos;
 	for (uint idx = 0; idx < start->vertSize; ++idx)
 	{
-		pos = point3(_rawMesh->GetVerts()[_rawMesh->GetIndxs()[idx]]);
+		pos = point3(_rawMesh->GetVerts()[start->indices[idx]]);
 		for (int i = 0; i < 8; ++i)
 		{
 			if (IsInBox(start->child[i], pos) && IsLeafNode(start->child[i]))
 			{
-				start->child[i]->indices.push_back(_rawMesh->GetIndxs()[idx]);
+				start->child[i]->indices.push_back(start->indices[idx]);
 				++start->child[i]->vertSize;
 			}
 		}
