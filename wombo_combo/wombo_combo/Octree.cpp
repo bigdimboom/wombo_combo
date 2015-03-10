@@ -8,30 +8,6 @@ void InitNodeChildren(OctantPtr octPtr)
 	}
 }
 
-bool IsInBox(OctantPtr octPtr, point3 point)
-{
-	float x1 = octPtr->center.x - octPtr->radius;
-	float x2 = octPtr->center.x + octPtr->radius;
-	float y1 = octPtr->center.y - octPtr->radius;
-	float y2 = octPtr->center.y + octPtr->radius;
-	float z1 = octPtr->center.z - octPtr->radius;
-	float z2 = octPtr->center.z + octPtr->radius;
-
-	if (point.x >= x1 && point.x <= x2 &&
-		point.y >= y1 && point.y <= y2 &&
-		point.z >= z1 && point.z <= z2)
-	{
-		return true;
-	}
-
-	return false;
-}
-
-static bool IsLeafNode(OctantPtr octPtr)
-{
-	return octPtr->child[0] == nullptr;
-}
-
 void Octree::_InitChildrenCenter(OctantPtr start, int i)
 {
 	switch (i)
@@ -104,7 +80,7 @@ void Octree::BindMesh(Mesh* mesh, point3 origin, float radius)
 	_root->indices.assign(_rawMesh->GetIndxs(),
 		_rawMesh->GetIndxs() + _rawMesh->GetIdxSize());
 	InitNodeChildren(_root);
-	_octree.push_back(_root);
+	_octree[glm::to_string(_root->center)] = _root;
 }
 
 
@@ -117,6 +93,16 @@ void Octree::Build(int maxSizePerNode, int maxDepth)
 	InitOctreeDrawData();
 }
 
+void Octree::Destory()
+{
+	_rawMesh = nullptr;
+	OctreeIterator itr;
+	for (itr = _octree.begin(); itr != _octree.end(); ++itr)
+	{
+		delete itr->second;
+	}
+	_octree.clear();
+}
 
 void Octree::Generate(OctantPtr start, int depth)
 {
@@ -135,7 +121,7 @@ void Octree::Generate(OctantPtr start, int depth)
 		//Be cautious of the next two
 		InitNodeChildren(start->child[i]);
 		_InitChildrenCenter(start, i); //init its children's center//This is corrent for future reference
-		_octree.push_back(start->child[i]);
+		_octree[glm::to_string(start->child[i]->center)] = start->child[i];
 	}
 
 	point3 pos;
@@ -294,11 +280,44 @@ void Octree::DebugDraw(Camera *cam, Shader *shader)
 }
 
 
-void Octree::Destory()
+bool Octree::IsInBox(OctantPtr octPtr, point3 point)
 {
-	_rawMesh = nullptr;
-	for (uint i = 0; i < _octree.size(); ++i)
+	float x1 = octPtr->center.x - octPtr->radius;
+	float x2 = octPtr->center.x + octPtr->radius;
+	float y1 = octPtr->center.y - octPtr->radius;
+	float y2 = octPtr->center.y + octPtr->radius;
+	float z1 = octPtr->center.z - octPtr->radius;
+	float z2 = octPtr->center.z + octPtr->radius;
+
+	if (point.x >= x1 && point.x <= x2 &&
+		point.y >= y1 && point.y <= y2 &&
+		point.z >= z1 && point.z <= z2)
 	{
-		delete _octree[i];
+		return true;
 	}
+
+	return false;
+}
+
+bool Octree::IsLeafNode(OctantPtr octPtr)
+{
+	if (octPtr->child[0] == nullptr)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+OctantPtr Octree::GetRoot()
+{
+	assert(_octree.size() != 0);
+	return _root;
+}
+
+OctantPtr Octree::GetOcant(point3 pos)
+{
+	assert(_octree.size() != 0);
+	OctreeIterator itr = _octree.find(glm::to_string(pos));
+	return itr->second;
 }

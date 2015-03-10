@@ -28,7 +28,7 @@ Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 Shader gShader;
 Shader gShaderOctree;
 MyTimer gTimer;
-FreeCamera gCamera(point3(100.0f, 25.0f, 50.5f));
+FreeCamera gCamera(point3(100.0f, -30.0f, 50.5f));
 Terrain gTerrain(512, 512);
 
 Texture gTerrainTex_alpha;
@@ -50,9 +50,37 @@ Frustum cullspace;
 
 std::vector<uint> idxBuffer;
 
-void CullTest()
+
+void Test(OctantPtr octptr)
 {
 
+	if (!cullspace.IsCubeInFrustum(octptr->center, octptr->radius))
+	{
+		return;
+	}
+
+	if (Octree::IsLeafNode(octptr))
+	{
+
+		for (uint i = 0; i < octptr->indices.size(); ++i)
+		{
+			idxBuffer.push_back(octptr->indices[i]);
+		}
+
+		return;
+	}
+
+
+	for (int i = 0; i < 8; ++i)
+	{
+		Test(octptr->child[i]);
+	}
+}
+
+void CullTest()
+{
+	//idxBuffer.clear();
+	//Test(octree.GetRoot());
 }
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -118,11 +146,11 @@ void Init()
 	glBufferSubData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes() +
 		gTerrain.GetMesh().GetNormSizeInBytes(), gTerrain.GetMesh().GetUVSizeInBytes(), gTerrain.GetMesh().GetUVs());
 
-
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetMesh().GetIdxSizeInBytes(), gTerrain.GetMesh().GetIndxs(), GL_STATIC_DRAW);
-
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
@@ -135,8 +163,8 @@ void Init()
 	glBindVertexArray(0); // Unbind VAO
 
 	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(300, 5);
-	cullspace.Build(&gCamera, 100);
+	octree.Build(300, 7);
+	cullspace.Build(&gCamera, 1000);
 
 	CullTest();
 }
@@ -215,6 +243,10 @@ void Render()
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, gTerrain.GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxBuffer.size() * sizeof(GLuint), &idxBuffer[0], GL_STATIC_DRAW);
+	//glDrawElements(GL_TRIANGLES, idxBuffer.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
 	glBindVertexArray(0);
 
 	octree.DebugDraw(&gCamera, &gShaderOctree);
@@ -226,8 +258,8 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
-		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
+	if (gTimeElapsed / 1000 >= 1 && gFrameCount < 60){
+		std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;
@@ -247,7 +279,7 @@ int main(int argc, char** argv)
 	gWindow.InitGL();
 
 	Init();
-	gCamera.SetVelocity(2.0f);
+	gCamera.SetVelocity(1.0f);
 
 	SDL_Event e;
 

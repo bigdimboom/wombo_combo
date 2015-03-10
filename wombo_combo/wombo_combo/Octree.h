@@ -10,6 +10,8 @@
 struct Octant;
 
 typedef Octant* OctantPtr;
+typedef std::string PosStr;
+typedef std::map<PosStr, OctantPtr >::iterator OctreeIterator;
 
 struct Octant
 {
@@ -29,6 +31,10 @@ public:
 	void Build(int maxUnit, int maxDepth);
 	void Destory();
 	void DebugDraw(Camera *cam, Shader *shader);
+	static bool IsInBox(OctantPtr octPtr, point3 point);
+	static bool IsLeafNode(OctantPtr octPtr);
+	OctantPtr GetRoot();
+	OctantPtr GetOcant(point3 pos);
 protected:
 	void Generate(OctantPtr start, int depth);
 	void InitOctreeDrawData();
@@ -37,7 +43,7 @@ private:
 	OctantPtr _root;
 	int _maxDepth;
 	uint _maxVSizePerNode;
-	std::vector<OctantPtr> _octree;
+	std::map<PosStr,OctantPtr> _octree;
 
 	enum{
 		FRONT_UP_LEFT = 0,

@@ -14,7 +14,7 @@ public:
 	~Frustum();
 
 	void Build(Camera* cam, float screenDepth);
-	bool CubeInFrustum(const point3 center, float cubeRadius);
+	bool IsCubeInFrustum(const point3 &center, float cubeRadius);
 
 public:
 	enum {
