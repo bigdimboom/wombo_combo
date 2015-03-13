@@ -31,4 +31,6 @@ typedef unsigned int uint;
 typedef unsigned char uchar;
 
 
+typedef glm::quat quaternion;
+
 #define BUFFER_OFFSET(offset) (( void *)(offset))

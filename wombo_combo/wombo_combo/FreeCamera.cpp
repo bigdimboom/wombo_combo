@@ -23,5 +23,4 @@ void FreeCamera::Rotate(Camera_Rotate dir, GLfloat angle)
 	{
 		_pitch = -80.0f;
 	}
-	Update();
 }

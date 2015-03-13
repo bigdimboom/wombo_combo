@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include "Mesh.h"
+#include "Shader.h"
 
 //Using templete pattern
 //user could override terrian-gen methods 

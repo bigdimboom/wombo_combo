@@ -1,13 +1,13 @@
 #include "Frustum.h"
 
-float PlaneDotVector(point4 &p, point3 v)
-{
-	return p.x * v.x + p.y * v.y + p.z * v.z + p.w;
-}
-
 
 Frustum::Frustum()
 {
+	this->dNear = 1.0f;
+	this->dFar = 1000.f;
+	this->aspect = 1.0f;
+	this->fov = 60.f;
+	this->camera = nullptr;
 }
 
 
@@ -15,73 +15,125 @@ Frustum::~Frustum()
 {
 }
 
-void Frustum::Build(Camera* cam, float screenDepth)
+bool Frustum::IsPointInside(const point3& point) const
 {
-	//float zDepth, r;
-	matrix4 view = *(cam->GetViewMatrix());
-	matrix4 proj = *(cam->GetProjMatrix());
-	//zDepth = -proj[3][2] / proj[2][2];
-
-	//r = screenDepth / (screenDepth - zDepth);
-
-	//proj[2][2] = r;
-	//proj[3][2] = -r * zDepth;
-
-	_mat = proj * view;
-
-	_plane[FRUSTUM_NEAR].x = _mat[3][0] + _mat[2][0];
-	_plane[FRUSTUM_NEAR].y = _mat[3][1] + _mat[2][1];
-	_plane[FRUSTUM_NEAR].z = _mat[3][2] + _mat[2][2];
-	_plane[FRUSTUM_NEAR].w = _mat[3][3] + _mat[2][3];
-
-	_plane[FRUSTUM_FAR].x = _mat[3][0] - _mat[2][0];
-	_plane[FRUSTUM_FAR].y = _mat[3][1] - _mat[2][1];
-	_plane[FRUSTUM_FAR].z = _mat[3][2] - _mat[2][2];
-	_plane[FRUSTUM_FAR].w = _mat[3][3] - _mat[2][3];
-
-	_plane[FRUSTUM_LEFT].x = _mat[3][0] + _mat[0][0];
-	_plane[FRUSTUM_LEFT].y = _mat[3][1] + _mat[0][1];
-	_plane[FRUSTUM_LEFT].z = _mat[3][2] + _mat[0][2];
-	_plane[FRUSTUM_LEFT].w = _mat[3][3] + _mat[0][3];
-
-	_plane[FRUSTUM_RIGHT].x = _mat[3][0] - _mat[0][0];
-	_plane[FRUSTUM_RIGHT].y = _mat[3][1] - _mat[0][1];
-	_plane[FRUSTUM_RIGHT].z = _mat[3][2] - _mat[0][2];
-	_plane[FRUSTUM_RIGHT].w = _mat[3][3] - _mat[0][3];
-
-	_plane[FRUSTUM_TOP].x = _mat[3][0] - _mat[1][0];
-	_plane[FRUSTUM_TOP].y = _mat[3][1] - _mat[1][1];
-	_plane[FRUSTUM_TOP].z = _mat[3][2] - _mat[1][2];
-	_plane[FRUSTUM_TOP].w = _mat[3][3] - _mat[1][3];
-
-	_plane[FRUSTUM_BOTTOM].x = _mat[3][0] + _mat[1][0];
-	_plane[FRUSTUM_BOTTOM].y = _mat[3][1] + _mat[1][1];
-	_plane[FRUSTUM_BOTTOM].z = _mat[3][2] + _mat[1][2];
-	_plane[FRUSTUM_BOTTOM].w = _mat[3][3] + _mat[1][3];
-
-	//Normalize it
-	for (int i = 0; i < 6; ++i)
+	for (int i = 0; i<NumPlanes; ++i)
 	{
-		_plane[i] = glm::normalize(_plane[i]);
+		if (!planes[i].Inside(point))
+			return false;
 	}
+	return true;
+}
+
+bool Frustum::IsSphereInside(const point3& point, const float radius) const
+{
+	for (int i = 0; i < NumPlanes; ++i)
+	{
+		if (!planes[i].Inside(point, radius))
+			return false;
+	}
+	// otherwise we are fully in view
+	return true;
+}
+
+const Plane& Frustum::Get(Side side) 
+{ 
+	return this->planes[side]; 
+}
+
+void Frustum::SetFOV(float fov) 
+{ 
+	this->fov = fov; 
+	Init(this->camera, this->fov, 
+		this->aspect, this->dNear, this->dFar); 
+}
+
+void Frustum::SetAspect(float aspect)
+{
+	this->aspect = aspect; 
+	Init(this->camera, this->fov, 
+		this->aspect, this->dNear, this->dFar);
+}
+
+void Frustum::SetNear(float nearClip)
+{
+	this->dNear = nearClip; 
+	Init(this->camera, this->fov, 
+		this->aspect, this->dNear, this->dFar);
+}
+
+void Frustum::SetFar(float farClip)
+{
+	this->dFar = farClip; 
+	Init(this->camera, this->fov, 
+		this->aspect, this->dNear, this->dFar);
+}
+
+void Frustum::SetCamera(Camera* camera)
+{
+	this->camera = camera;
+	Init(this->camera, this->fov,
+		this->aspect, this->dNear, this->dFar);
+}
+
+void Frustum::Init(Camera* cam, const float fov, 
+	const float aspect, const float nearD, const float farD)
+{
+	this->camera = cam;
+	this->fov = fov;
+	this->aspect = aspect;
+	this->dNear = nearD;
+	this->dFar = farD;
+
+	float halfTanFOV = glm::tan(glm::radians(this->fov / 2.0f));
+
+	point3 nearRight = (this->dNear * halfTanFOV) * this->aspect
+		* this->camera->GetRight();
+
+	point3 farRight = (this->dFar * halfTanFOV) * this->aspect
+		* this->camera->GetRight();
+
+	point3 nearUp = (this->dNear * halfTanFOV) * this->camera->GetUp();
+
+	point3 farUp = (this->dFar * halfTanFOV) * this->camera->GetUp();
+
+	// points start in the upper right and go around clockwise
+	nearClip[0] = (this->dNear * cam->GetFront()) - nearRight + nearUp; // leftup
+	nearClip[1] = (this->dNear * cam->GetFront()) + nearRight + nearUp; // rtup
+	nearClip[2] = (this->dNear * cam->GetFront()) + nearRight - nearUp; // rtdown
+	nearClip[3] = (this->dNear * cam->GetFront()) - nearRight - nearUp; // leftdown
+
+	farClip[0] = (this->dFar * cam->GetFront()) - farRight + farUp;
+	farClip[1] = (this->dFar * cam->GetFront()) + farRight + farUp;
+	farClip[2] = (this->dFar * cam->GetFront()) + farRight - farUp;
+	farClip[3] = (this->dFar * cam->GetFront()) - farRight - farUp;
+
+	planes[NEAR].Set(nearClip[0], nearClip[1], nearClip[2]);
+	planes[FAR].Set(farClip[0], farClip[3], nearClip[2]);
+
+	planes[LEFT].Set(farClip[0], nearClip[0], nearClip[3]);
+	planes[RIGHT].Set(nearClip[1], farClip[1], farClip[2]);
+
+	planes[TOP].Set(nearClip[0], farClip[0], farClip[1]);
+	planes[BOTTOM].Set(nearClip[1], farClip[1], farClip[3]);
+}
+
+bool Frustum::IsCubeInside(const point3& center, const float cubeRadius) const
+{
+	if (IsPointInside(point3(center.x - cubeRadius, center.y + cubeRadius, center.z - cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x + cubeRadius, center.y + cubeRadius, center.z - cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x - cubeRadius, center.y - cubeRadius, center.z - cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x + cubeRadius, center.y - cubeRadius, center.z - cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x - cubeRadius, center.y + cubeRadius, center.z + cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x + cubeRadius, center.y + cubeRadius, center.z + cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x - cubeRadius, center.y - cubeRadius, center.z + cubeRadius))){ return true; }
+	if (IsPointInside(point3(center.x + cubeRadius, center.y - cubeRadius, center.z + cubeRadius))){ return true; }
+
+	return false;
 }
 
 
-//test 8 points in a cube
-bool Frustum::IsCubeInFrustum(const point3 &center, float cubeRadius)
+void Frustum::Render()
 {
-	for (int i = 0; i < 6; ++i)
-	{
-		if (PlaneDotVector(_plane[i], point3(center.x - cubeRadius, center.y + cubeRadius, center.z - cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x + cubeRadius, center.y + cubeRadius, center.z - cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x - cubeRadius, center.y - cubeRadius, center.z - cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x + cubeRadius, center.y - cubeRadius, center.z - cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x - cubeRadius, center.y + cubeRadius, center.z + cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x + cubeRadius, center.y + cubeRadius, center.z + cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x - cubeRadius, center.y - cubeRadius, center.z + cubeRadius)) >= 0.0f){ continue; }
-		if (PlaneDotVector(_plane[i], point3(center.x + cubeRadius, center.y - cubeRadius, center.z + cubeRadius)) >= 0.0f){ continue; }
 
-		return false;
-	}
-	return true;
 }

@@ -10,10 +10,11 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "MyTimer.h"
-#include "FreeCamera.h"
 #include "Terrain.h"
 #include "Octree.h"
 #include "Frustum.h"
+#include "Camera.h"
+#include "FreeCamera.h"
 
 
 #define WINDOW_WIDTH 800
@@ -28,7 +29,7 @@ Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 Shader gShader;
 Shader gShaderOctree;
 MyTimer gTimer;
-FreeCamera gCamera(point3(100.0f, -30.0f, 50.5f));
+FreeCamera gCamera(point3(100.0f, 0.0f, 50.5f));
 Terrain gTerrain(512, 512);
 
 Texture gTerrainTex_alpha;
@@ -46,44 +47,7 @@ double gTimeElapsed = 0.0;
 
 Octree octree;
 
-Frustum cullspace;
-
-std::vector<uint> idxBuffer;
-
-
-void Test(OctantPtr octptr)
-{
-
-	if (!cullspace.IsCubeInFrustum(octptr->center, octptr->radius))
-	{
-		return;
-	}
-
-	if (Octree::IsLeafNode(octptr))
-	{
-
-		for (uint i = 0; i < octptr->indices.size(); ++i)
-		{
-			idxBuffer.push_back(octptr->indices[i]);
-		}
-
-		return;
-	}
-
-
-	for (int i = 0; i < 8; ++i)
-	{
-		Test(octptr->child[i]);
-	}
-}
-
-void CullTest()
-{
-	//idxBuffer.clear();
-	//Test(octree.GetRoot());
-}
-
-void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
+void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, Camera* cam){
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -146,9 +110,6 @@ void Init()
 	glBufferSubData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes() +
 		gTerrain.GetMesh().GetNormSizeInBytes(), gTerrain.GetMesh().GetUVSizeInBytes(), gTerrain.GetMesh().GetUVs());
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_STATIC_DRAW);
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetMesh().GetIdxSizeInBytes(), gTerrain.GetMesh().GetIndxs(), GL_STATIC_DRAW);
 
@@ -163,10 +124,7 @@ void Init()
 	glBindVertexArray(0); // Unbind VAO
 
 	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(300, 7);
-	cullspace.Build(&gCamera, 1000);
-
-	CullTest();
+	octree.Build(900, 7);
 }
 
 void EventHandler(SDL_Event &e)
@@ -179,24 +137,21 @@ void EventHandler(SDL_Event &e)
 			gIsGameLoopRunning = 0;
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w){
 			gCamera.Move(FORWARD, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s){
 			gCamera.Move(BACKWARD, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a){
 			gCamera.Move(LEFT, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
 			gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_MOUSEMOTION){
 			CameraMotion((float)e.motion.x, (float)e.motion.y, &gWindow, &gCamera);
-			CullTest();
 		}
+
+		gCamera.Update();
 	}
 }
 
@@ -206,13 +161,12 @@ void Render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	gShader.Use();
-	gCamera.Update();
 
 	/* drawing code in here! */
 	// Create camera transformation
 	glm::mat4 view;
 	view = *(gCamera.GetViewMatrix());
-	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
+	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
 	glm::mat4 projection;
 	projection = *(gCamera.GetProjMatrix());
 	// Get the uniform locations
@@ -244,9 +198,6 @@ void Render()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, gTerrain.GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, idxBuffer.size() * sizeof(GLuint), &idxBuffer[0], GL_STATIC_DRAW);
-	//glDrawElements(GL_TRIANGLES, idxBuffer.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-
 	glBindVertexArray(0);
 
 	octree.DebugDraw(&gCamera, &gShaderOctree);
@@ -258,11 +209,11 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 1 && gFrameCount < 60){
-		std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
+	if (gTimeElapsed / 1000 >= 1 /*&& gFrameCount < 60*/){
+		//std::cout /*<< "Warning:(Frame rate lower than 60 fps) "*/ << gFrameCount << std::endl;
 		gFrameCount = 0;
 		gTimeElapsed = 0;
-		//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;
+
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
 		gLightPos.y += gLightPos.x * sin(1.0f) - gLightPos.y * cos(1.0f);
 	}
@@ -279,7 +230,7 @@ int main(int argc, char** argv)
 	gWindow.InitGL();
 
 	Init();
-	gCamera.SetVelocity(1.0f);
+	gCamera.SetVelocity(1.2f);
 
 	SDL_Event e;
 
