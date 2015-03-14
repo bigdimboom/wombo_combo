@@ -24,10 +24,15 @@ inline void Plane::Normalize()
 
 inline void Plane::Set(const point3 &a, const point3 &b, const point3 &c)
 {
-	_plane.x = (b.y - a.y) * (c.z - a.z) - (c.y - a.y)*(b.z - a.z);
-	_plane.y = (b.z - a.z) * (c.x - a.x) - (c.z - a.z)*(b.x - a.x);
-	_plane.z = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) *(b.y - a.y);
-	_plane.w = -(_plane.x * a.x + _plane.y * a.y + _plane.z * a.z);
+	point3 u = b - a;
+	point3 v = c - a;
+	point3 n = glm::normalize(glm::cross(u, v));
+	float D = -(n.x * a.x + n.y * a.y + n.z * a.z);
+
+	_plane.x = n.x;
+	_plane.y = n.y;
+	_plane.z = n.z;
+	_plane.w = D;
 
 	Normalize();
 }
@@ -47,11 +52,10 @@ bool Plane::Inside(const point3& point)
 
 float Plane::PlaneDotCoord(const point3& vector)
 {
-	float a, b, c, d;
-	a = _plane.x;
-	b = _plane.y;
-	c = _plane.z;
-	d = _plane.w;
+	return (glm::dot(point3(_plane), vector) + _plane.w);
+}
 
-	return a*vector.x + b*vector.y + c*vector.z + d;
+point3 Plane::ProjectAPointFrom(const point3& point)
+{
+	return (point - PlaneDotCoord(point) * point3(_plane));
 }

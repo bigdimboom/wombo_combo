@@ -22,12 +22,21 @@ public:
 		LEFT,
 		NumPlanes
 	};
-	static enum { OUTSIDE, INTERSECT, INSIDE };
+
+	enum
+	{
+		UP_LEFT = 0,
+		UP_RIGHT,
+		BOTTOM_RIGHT,
+		BOTTOM_LEFT,
+		NUM_CONNERS
+	};
+	enum { OUTSIDE, INTERSECT, INSIDE };
 
 
 	Plane planes[NumPlanes]; // planes of the frusum in camera space
-	point3 nearClip[4]; // verts of the near clip plane in camera space
-	point3 farClip[4]; // verts of the far clip plane in camera space
+	point3 nearClip[NUM_CONNERS]; // verts of the near clip plane in camera space
+	point3 farClip[NUM_CONNERS]; // verts of the far clip plane in camera space
 	float fov; // field of view in degree
 	float aspect; // aspect ratio - width divided by height
 	float dNear; // near clipping distance

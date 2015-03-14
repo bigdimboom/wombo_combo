@@ -111,36 +111,36 @@ void Frustum::Init(Camera* cam, const float fov,
 	this->dFar = farD;
 
 	float halfTanFOV = glm::tan(glm::radians(this->fov / 2.0f));
+	float nearHeight_half = dNear * halfTanFOV;
+	float farHeight_half = dFar * halfTanFOV;
+	float nearWidth_half = nearHeight_half * aspect;
+	float farWidth_half = farHeight_half * aspect;
 
-	point3 nearRight = this->camera->GetPosition() + (this->dNear * halfTanFOV) * this->aspect
-		* this->camera->GetRight();
+	point3  nearCenter = cam->GetPosition() + dNear * cam->GetFront();
+	point3  farCenter = cam->GetPosition() + dFar * cam->GetFront();
 
-	point3 farRight = this->camera->GetPosition() +(this->dFar * halfTanFOV) * this->aspect
-		* this->camera->GetRight();
+	nearClip[UP_LEFT] = nearCenter + (camera->GetUp() * nearHeight_half) -
+		(camera->GetRight() * nearWidth_half);
+	nearClip[UP_RIGHT] = nearCenter + (camera->GetUp() * nearHeight_half)+
+		(camera->GetRight() * nearWidth_half);
+	nearClip[BOTTOM_RIGHT] = nearCenter - (camera->GetUp() * nearHeight_half) + (camera->GetRight() * nearWidth_half);
+	nearClip[BOTTOM_LEFT] = nearCenter - (camera->GetUp() * nearHeight_half) - (camera->GetRight() * nearWidth_half);
 
-	point3 nearUp = this->camera->GetPosition() + (this->dNear * halfTanFOV) * this->camera->GetUp();
+	farClip[UP_LEFT] = farCenter + (camera->GetUp() * farHeight_half) -
+		(camera->GetRight() * farWidth_half);
+	farClip[UP_RIGHT] = farCenter + (camera->GetUp() * farHeight_half) +
+		(camera->GetRight() * farWidth_half);
+	farClip[BOTTOM_RIGHT] = farCenter - (camera->GetUp() * farHeight_half) + (camera->GetRight() * farWidth_half);
+	farClip[BOTTOM_LEFT] = nearCenter - (camera->GetUp() * farHeight_half) - (camera->GetRight() * farWidth_half);
 
-	point3 farUp = this->camera->GetPosition() + (this->dFar * halfTanFOV) * this->camera->GetUp();
+	planes[NEARD].Set(nearClip[UP_LEFT], nearClip[UP_RIGHT], nearClip[BOTTOM_RIGHT]);
+	planes[FARD].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], nearClip[BOTTOM_LEFT]);
 
-	// points start in the upper right and go around clockwise
-	nearClip[0] = (this->camera->GetPosition() + this->dNear * cam->GetFront()) - nearRight + nearUp; // leftup
-	nearClip[1] = (this->camera->GetPosition() + this->dNear * cam->GetFront()) + nearRight + nearUp; // rtup
-	nearClip[2] = (this->camera->GetPosition() + this->dNear * cam->GetFront()) + nearRight - nearUp; // rtdown
-	nearClip[3] = (this->camera->GetPosition() + this->dNear * cam->GetFront()) - nearRight - nearUp; // leftdown
-
-	farClip[0] = (this->camera->GetPosition() + this->dFar * cam->GetFront()) - farRight + farUp;
-	farClip[1] = (this->camera->GetPosition() + this->dFar * cam->GetFront()) + farRight + farUp;
-	farClip[2] = (this->camera->GetPosition() + this->dFar * cam->GetFront()) + farRight - farUp;
-	farClip[3] = (this->camera->GetPosition() + this->dFar * cam->GetFront()) - farRight - farUp;
-
-	planes[NEARD].Set(nearClip[0], nearClip[1], nearClip[2]);
-	planes[FARD].Set(farClip[0], farClip[3], nearClip[2]);
-
-	planes[LEFT].Set(farClip[0], nearClip[0], nearClip[3]);
-	planes[RIGHT].Set(nearClip[1], farClip[1], farClip[2]);
-
-	planes[TOP].Set(nearClip[0], farClip[0], farClip[1]);
-	planes[BOTTOM].Set(nearClip[1], farClip[1], farClip[3]);
+	planes[LEFT].Set(nearClip[UP_LEFT], nearClip[BOTTOM_LEFT], farClip[BOTTOM_LEFT]);
+	planes[RIGHT].Set(nearClip[BOTTOM_RIGHT], nearClip[UP_RIGHT], farClip[BOTTOM_RIGHT]);
+	
+	planes[TOP].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], farClip[UP_LEFT]);
+	planes[BOTTOM].Set(nearClip[BOTTOM_LEFT], nearClip[BOTTOM_RIGHT], farClip[BOTTOM_RIGHT]);
 }
 
 bool Frustum::IsCubeInside(const point3& center, const float cubeRadius)
@@ -165,12 +165,12 @@ bool Frustum::IsCubeInside(const point3& center, const float cubeRadius)
 		}
 		//if all corners are out
 		if (!in)
-			return (OUTSIDE);
+			return false;
 		// if some corners are out and others are in
 		else if (out)
 			result = INTERSECT;
 	}
-	return(result);
+	return true;
 }
 
 

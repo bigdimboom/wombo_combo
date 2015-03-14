@@ -168,7 +168,7 @@ void Init()
 	glBindVertexArray(0); // Unbind VAO
 
 	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(300, 0);
+	octree.Build(300, 1);
 
 	gCamera.SetFrustum(60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 1000.0f);
 	gFrustrum.Init(&gCamera, 60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 1000.0f);
@@ -207,7 +207,7 @@ void EventHandler(SDL_Event &e)
 		}
 
 		gCamera.Update();
-		gFrustrum.Init(&gCamera, 60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
+		gFrustrum.Init(&gCamera, 60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 1000.0f);
 		Cull(octree.GetRoot());
 	}
 }
