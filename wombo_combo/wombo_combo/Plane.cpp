@@ -1,16 +1,5 @@
 #include "Plane.h"
 
-static float PlaneDotCoord(const point4 &plane, const point3 &vector)
-{
-	float a, b, c, d;
-	a = plane.x;
-	b = plane.y;
-	c = plane.z;
-	d = plane.w;
-
-	return a*vector.x + b*vector.y + c*vector.z + d;
-}
-
 
 Plane::Plane()
 	:_plane(0)
@@ -43,15 +32,26 @@ inline void Plane::Set(const point3 &a, const point3 &b, const point3 &c)
 	Normalize();
 }
 
-bool Plane::Inside(const point3& point, const float radius) const
+bool Plane::Inside(const point3& point, const float radius)
 {
 	float fDistance; 
-	fDistance = PlaneDotCoord(_plane, point);
+	fDistance = PlaneDotCoord(point);
 	return (fDistance >= -radius);
 }
 
-bool Plane::Inside(const point3& point) const
+bool Plane::Inside(const point3& point)
 {
-	float result = PlaneDotCoord(_plane, point);
+	float result = PlaneDotCoord(point);
 	return (result >= 0.0f);
+}
+
+float Plane::PlaneDotCoord(const point3& vector)
+{
+	float a, b, c, d;
+	a = _plane.x;
+	b = _plane.y;
+	c = _plane.z;
+	d = _plane.w;
+
+	return a*vector.x + b*vector.y + c*vector.z + d;
 }

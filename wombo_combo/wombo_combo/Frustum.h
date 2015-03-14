@@ -14,14 +14,16 @@ class Frustum
 public:
 	enum Side
 	{
-		NEAR = 0,
-		FAR,
+		NEARD = 0,
+		FARD,
 		TOP,
 		RIGHT,
 		BOTTOM,
 		LEFT,
 		NumPlanes
 	};
+	static enum { OUTSIDE, INTERSECT, INSIDE };
+
 
 	Plane planes[NumPlanes]; // planes of the frusum in camera space
 	point3 nearClip[4]; // verts of the near clip plane in camera space
@@ -35,9 +37,9 @@ public:
 public:
 	Frustum();
 	~Frustum();
-	bool IsPointInside(const point3& point) const;
-	bool IsSphereInside(const point3& point, const float radius) const;
-	bool IsCubeInside(const point3& center, const float cubeRadius) const;
+	bool IsPointInside(const point3& point);
+	bool IsSphereInside(const point3& point, const float radius);
+	bool IsCubeInside(const point3& center, const float cubeRadius);
 
 	const Plane &Get(Side side);
 	void SetCamera(Camera* camera);

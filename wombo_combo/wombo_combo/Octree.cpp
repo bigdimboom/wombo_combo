@@ -134,6 +134,16 @@ void Octree::Generate(OctantPtr start, int depth)
 			{
 				start->child[i]->indices.push_back(start->indices[idx]);
 				++start->child[i]->vertSize;
+
+				if (start->child[i]->vertSize % 3 != 0){
+					start->child[i]->indices.push_back(start->indices[idx + 1]);
+					++start->child[i]->vertSize;
+				}
+
+				if (start->child[i]->vertSize % 3 != 0){
+					start->child[i]->indices.push_back(start->indices[idx + 2]);
+					++start->child[i]->vertSize;
+				}
 			}
 		}
 	}
@@ -176,10 +186,6 @@ void Octree::InitOctreeDrawData()
 
 void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 {
-	if (IsLeafNode(node)){
-		return;
-	}
-
 	point3 ftop_left;
 	ftop_left.x = node->center.x - node->radius;
 	ftop_left.y = node->center.y + node->radius;
@@ -248,6 +254,10 @@ void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 	_octreeVerts[vertCount++] = bdown_right;
 	_octreeVerts[vertCount++] = fdown_left;
 	_octreeVerts[vertCount++] = bdown_left;
+
+	if (IsLeafNode(node)){
+		return;
+	}
 
 	for (uint i = 0; i < 8; ++i)
 	{

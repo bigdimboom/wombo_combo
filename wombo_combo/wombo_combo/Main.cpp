@@ -15,6 +15,7 @@
 #include "Frustum.h"
 #include "Camera.h"
 #include "FreeCamera.h"
+#include "Plane.h"
 
 
 #define WINDOW_WIDTH 800
@@ -46,6 +47,46 @@ int gFrameCount = 0;
 double gTimeElapsed = 0.0;
 
 Octree octree;
+
+Frustum gFrustrum;
+
+bool gCullEnable = true;
+
+std::vector<std::vector<uint> > gIdx;
+
+void Cull(OctantPtr ptr)
+{
+	if (ptr == nullptr)
+	{
+		return;
+	}
+
+	if (gCullEnable == false)
+	{
+		return;
+	}
+
+	if (ptr == octree.GetRoot())
+	{
+		gIdx.clear();
+	}
+
+	if (!gFrustrum.IsCubeInside(ptr->center, ptr->radius))
+	{
+		return;
+	}
+
+	if (octree.IsLeafNode(ptr) && ptr->indices.size() != 0)
+	{
+		gIdx.push_back(ptr->indices);
+		return;
+	}
+
+	for (uint i = 0; i < 8; ++i)
+	{
+		Cull(ptr->child[i]);
+	}
+}
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, Camera* cam){
 	if (firstMouse)
@@ -110,8 +151,11 @@ void Init()
 	glBufferSubData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes() +
 		gTerrain.GetMesh().GetNormSizeInBytes(), gTerrain.GetMesh().GetUVSizeInBytes(), gTerrain.GetMesh().GetUVs());
 
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetMesh().GetIdxSizeInBytes(), gTerrain.GetMesh().GetIndxs(), GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetMesh().GetIdxSizeInBytes(), gTerrain.GetMesh().GetIndxs(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, NULL, GL_DYNAMIC_DRAW);
+
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
@@ -124,7 +168,12 @@ void Init()
 	glBindVertexArray(0); // Unbind VAO
 
 	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(900, 7);
+	octree.Build(300, 0);
+
+	gCamera.SetFrustum(60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 1000.0f);
+	gFrustrum.Init(&gCamera, 60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 1000.0f);
+
+	Cull(octree.GetRoot());
 }
 
 void EventHandler(SDL_Event &e)
@@ -147,16 +196,25 @@ void EventHandler(SDL_Event &e)
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
 			gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
 		}
+		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
+			gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
+		}
+		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_c){
+			gCullEnable = !gCullEnable;
+		}
 		else if (e.type == SDL_MOUSEMOTION){
 			CameraMotion((float)e.motion.x, (float)e.motion.y, &gWindow, &gCamera);
 		}
 
 		gCamera.Update();
+		gFrustrum.Init(&gCamera, 60.0f, (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
+		Cull(octree.GetRoot());
 	}
 }
 
 void Render()
 {
+
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -166,7 +224,6 @@ void Render()
 	// Create camera transformation
 	glm::mat4 view;
 	view = *(gCamera.GetViewMatrix());
-	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
 	glm::mat4 projection;
 	projection = *(gCamera.GetProjMatrix());
 	// Get the uniform locations
@@ -196,7 +253,18 @@ void Render()
 	glUniform1i(glGetUniformLocation(gShader.GetID(), "alpha_texture"), 4);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, gTerrain.GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	//glDrawElements(GL_TRIANGLES, gTerrain.GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+
+	for (uint i = 0; i < gIdx.size(); ++i)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * gIdx[i].size(), &gIdx[i][0], GL_DYNAMIC_DRAW);
+		glDrawElements(GL_TRIANGLES, gIdx[i].size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	}
+	
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * gIdx.size(), &gIdx[0], GL_DYNAMIC_DRAW);
+	//glDrawElements(GL_TRIANGLES, gIdx.size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 	glBindVertexArray(0);
 
@@ -230,7 +298,7 @@ int main(int argc, char** argv)
 	gWindow.InitGL();
 
 	Init();
-	gCamera.SetVelocity(1.2f);
+	gCamera.SetVelocity(2.2f);
 
 	SDL_Event e;
 

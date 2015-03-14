@@ -84,5 +84,5 @@ void Camera::Update()
 
 void Camera::SetFrustum(float angle, float ratio, float nearPlane, float farPlane)
 {
-	_projMat = glm::perspective(angle, ratio, nearPlane, farPlane);
+	_projMat = glm::perspective(glm::radians(angle), ratio, nearPlane, farPlane);
 }
