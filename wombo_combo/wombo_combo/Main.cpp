@@ -86,8 +86,8 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	//octree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	//octree.Build(600, 7);
+	octree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	octree.Build(600, 7);
 }
 
 void CullTest()
@@ -136,7 +136,7 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	//octree.DebugDraw(&gCamera, &gShaderOctree);
+	octree.DebugDraw(&gCamera, &gShaderOctree);
 
 	gWindow.SwapBuffers();
 }
