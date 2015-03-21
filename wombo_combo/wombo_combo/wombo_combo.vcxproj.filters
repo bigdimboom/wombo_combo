@@ -88,6 +88,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="TerrainRenderable.cpp">
+      <Filter>Source Files\Terrain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -145,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="Mesh.h">
       <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainRenderable.h">
+      <Filter>Source Files\Terrain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

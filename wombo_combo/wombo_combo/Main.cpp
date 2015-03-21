@@ -11,8 +11,8 @@
 #include "Texture.h"
 #include "MyTimer.h"
 #include "FreeCamera.h"
-#include "Terrain.h"
 #include "Octree.h"
+#include "TerrainRenderable.h"
 
 
 #define WINDOW_WIDTH 800
@@ -28,22 +28,16 @@ Shader gShader;
 Shader gShaderOctree;
 MyTimer gTimer;
 FreeCamera gCamera(point3(100.0f, 25.0f, 50.5f));
-Terrain gTerrain(512, 512);
-
-Texture gTerrainTex_alpha;
-Texture gTerrainTex_grass;
-Texture gTerrainTex_dirt;
-Texture gTerrainTex_rock;
-Texture gTerrainTex_snow;
 
 point3 gLightPos = point3(-1.0, 100, 1.5);
-GLuint gVAO, gVBO, gEBO;
 
 bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
 
 Octree octree;
+
+TerrainRenderable gTerrain;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -85,46 +79,15 @@ void Init()
 
 	gTimer.Reset();
 
-	gTerrain.GenTerrian("Assets/Terrain/heightmap.jpeg", true, true);
+	gTerrain.AttachTexture("Assets/Terrain/terrain_tex.jpg", "grass_texture");
+	gTerrain.AttachTexture("Assets/Terrain/dirt.JPG", "dirt_texture");
+	gTerrain.AttachTexture("Assets/Terrain/Rock.jpg", "rock_texture");
+	gTerrain.AttachTexture("Assets/Terrain/snow.JPG", "snow_texture");
+	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
+	gTerrain.Init();
 
-	gTerrainTex_alpha.Load("Assets/Terrain/heightmap.jpeg", true);
-	gTerrainTex_grass.Load("Assets/Terrain/terrain_tex.jpg", true);
-	gTerrainTex_dirt.Load("Assets/Terrain/dirt.JPG", true);
-	gTerrainTex_rock.Load("Assets/Terrain/Rock.jpg", true);
-	gTerrainTex_snow.Load("Assets/Terrain/snow.JPG", true);
-
-	glGenVertexArrays(1, &gVAO);
-	glGenBuffers(1, &gVBO);
-	glGenBuffers(1, &gEBO);
-
-	glBindVertexArray(gVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, gVBO);
-	glBufferData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes() +
-		gTerrain.GetMesh().GetNormSizeInBytes() +
-		gTerrain.GetMesh().GetIdxSizeInBytes(), nullptr, GL_STATIC_DRAW);
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0, gTerrain.GetMesh().GetVSizeInBytes(), gTerrain.GetMesh().GetVerts());
-	glBufferSubData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes(), gTerrain.GetMesh().GetNormSizeInBytes(), gTerrain.GetMesh().GetNorms());
-
-	glBufferSubData(GL_ARRAY_BUFFER, gTerrain.GetMesh().GetVSizeInBytes() +
-		gTerrain.GetMesh().GetNormSizeInBytes(), gTerrain.GetMesh().GetUVSizeInBytes(), gTerrain.GetMesh().GetUVs());
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gEBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, gTerrain.GetMesh().GetIdxSizeInBytes(), gTerrain.GetMesh().GetIndxs(), GL_STATIC_DRAW);
-
-
-	// Position attribute
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(gTerrain.GetMesh().GetVSizeInBytes()));
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_TRUE, 0, BUFFER_OFFSET(gTerrain.GetMesh().GetVSizeInBytes() + gTerrain.GetMesh().GetNormSizeInBytes()));
-
-	glBindVertexArray(0); // Unbind VAO
-
-	octree.BindMesh(&gTerrain.GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(600, 7);
+	//octree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	//octree.Build(600, 7);
 }
 
 void CullTest()
@@ -171,44 +134,9 @@ void Render()
 	gShader.Use();
 	gCamera.Update();
 
-	/* drawing code in here! */
-	// Create camera transformation
-	glm::mat4 view;
-	view = *(gCamera.GetViewMatrix());
-	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
-	glm::mat4 projection;
-	projection = *(gCamera.GetProjMatrix());
-	// Get the uniform locations
-	GLint modelLoc = glGetUniformLocation(gShader.GetID(), "model");
-	GLint viewLoc = glGetUniformLocation(gShader.GetID(), "view");
-	GLint projLoc = glGetUniformLocation(gShader.GetID(), "projection");
+	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	GLint lightPosLoc = glGetUniformLocation(gShader.GetID(), "lightPosition");
-	glUniform3f(lightPosLoc, gLightPos.x, gLightPos.y, gLightPos.z);
-	// Pass the matrices to the shader
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0f)));
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-	glBindVertexArray(gVAO);
-
-	gTerrainTex_grass.Bind(0);
-	glUniform1i(glGetUniformLocation(gShader.GetID(), "grass_texture"), 0);
-	gTerrainTex_dirt.Bind(1);
-	glUniform1i(glGetUniformLocation(gShader.GetID(), "dirt_texture"), 1);
-	gTerrainTex_rock.Bind(2);
-	glUniform1i(glGetUniformLocation(gShader.GetID(), "rock_texture"), 2);
-	gTerrainTex_snow.Bind(3);
-	glUniform1i(glGetUniformLocation(gShader.GetID(), "snow_texture"), 3);
-
-	gTerrainTex_alpha.Bind(4);
-	glUniform1i(glGetUniformLocation(gShader.GetID(), "alpha_texture"), 4);
-
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glDrawElements(GL_TRIANGLES, gTerrain.GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
-	glBindVertexArray(0);
-
-	octree.DebugDraw(&gCamera, &gShaderOctree);
+	//octree.DebugDraw(&gCamera, &gShaderOctree);
 
 	gWindow.SwapBuffers();
 }
@@ -221,7 +149,6 @@ void Update()
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFrameCount = 0;
 		gTimeElapsed = 0;
-		//std::cout << camera.GetPosition()->x << camera.GetPosition()->y << camera.GetPosition()->z << std::endl;
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
 		gLightPos.y += gLightPos.x * sin(1.0f) - gLightPos.y * cos(1.0f);
 	}
@@ -239,6 +166,7 @@ int main(int argc, char** argv)
 
 	Init();
 	gCamera.SetVelocity(2.0f);
+	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
 
 	SDL_Event e;
 
