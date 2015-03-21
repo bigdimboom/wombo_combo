@@ -57,8 +57,8 @@ void TerrainRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 
 	for (uint i = 0; i < _textures.size(); ++i)
 	{
-		_textures[0].first->Bind(i);
-		glUniform1i( glGetUniformLocation( shader->GetID(), _textures[0].second.second), i );
+		_textures[i].first->Bind(i);
+		glUniform1i( glGetUniformLocation( shader->GetID(), _textures[i].second.second), i );
 	}
 
 	glBindVertexArray(_vao);

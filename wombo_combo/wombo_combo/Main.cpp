@@ -1,10 +1,3 @@
-//TODO:
-//1. Generate a grid 1024 * 1024
-//2. Use a hightmap texture to replace y
-//3. Generate normals 
-//4. Generate UV
-//5. Apply a Terrian Texture to it
-
 #include "Global.h"
 #include "Window.h"
 #include "Shader.h"
@@ -86,13 +79,8 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	octree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	octree.Build(600, 7);
-}
-
-void CullTest()
-{
-
+	//octree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	//octree.Build(600, 7);
 }
 
 void EventHandler(SDL_Event &e)
@@ -105,23 +93,18 @@ void EventHandler(SDL_Event &e)
 			gIsGameLoopRunning = 0;
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w){
 			gCamera.Move(FORWARD, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s){
 			gCamera.Move(BACKWARD, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a){
 			gCamera.Move(LEFT, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
 			gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
-			CullTest();
 		}
 		else if (e.type == SDL_MOUSEMOTION){
 			CameraMotion((float)e.motion.x, (float)e.motion.y, &gWindow, &gCamera);
-			CullTest();
 		}
 	}
 }
@@ -136,7 +119,7 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	octree.DebugDraw(&gCamera, &gShaderOctree);
+	//octree.DebugDraw(&gCamera, &gShaderOctree);
 
 	gWindow.SwapBuffers();
 }
