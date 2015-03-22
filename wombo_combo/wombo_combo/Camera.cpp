@@ -2,7 +2,7 @@
 
 
 Camera::Camera(point3 cameraPos, point3 wolrdUp)
-	:_pos(cameraPos),
+	:Actor(cameraPos),
 	_up(point3(0.0f, 1.0f, 0.0f)),
 	_worldUp(_up),
 	_front(point3(0.0f, 0.0f, -1.0f)),
@@ -20,10 +20,10 @@ Camera::~Camera()
 
 void Camera::Reset()
 {
-	_pos = point3(0.0f, 0.0f, 3.0f);
+	position = point3(0.0f, 0.0f, 3.0f);
 	_up = point3(0.0f, 1.0f, 0.0f);
 	_front = point3(0.0f, 0.0f, -1.0f);
-	_viewMat = glm::lookAt(_pos, _pos + _front, _up);
+	_viewMat = glm::lookAt(position, position + _front, _up);
 	_right = glm::normalize(glm::cross(_front, _up));
 }
 
@@ -34,16 +34,16 @@ void Camera::Move(Camera_Movement dir, GLfloat dTime)
 
 	switch (dir){
 	case FORWARD:
-		_pos += _front * dist;
+		position += _front * dist;
 		break;
 	case BACKWARD:
-		_pos -= _front * dist;
+		position -= _front * dist;
 		break;
 	case LEFT:
-		_pos -= _right * dist;
+		position -= _right * dist;
 		break;
 	case RIGHT:
-		_pos += _right * dist;
+		position += _right * dist;
 		break;
 	}
 }
@@ -79,7 +79,7 @@ void Camera::Update()
 	_right = glm::normalize(glm::cross(_front, _worldUp));
 	_up = glm::normalize(glm::cross(_right, _front));
 	// Update ViewMat
-	_viewMat = glm::lookAt(_pos, _pos + _front, _up);
+	_viewMat = glm::lookAt(position, position + _front, _up);
 }
 
 void Camera::SetFrustum(float angle, float ratio, float nearPlane, float farPlane)

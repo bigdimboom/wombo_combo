@@ -4,7 +4,6 @@
 FreeCamera::FreeCamera(point3 pos, point3 worldUp)
 	:Camera(pos, worldUp)
 {
-
 }
 
 

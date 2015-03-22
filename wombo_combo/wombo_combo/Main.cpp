@@ -28,9 +28,9 @@ bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
 
-Octree octree;
+Octree gOctree;
 
-TerrainRenderable gTerrain;
+TerrainRenderable gTerrain(512, 512);
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -79,8 +79,8 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	//octree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	//octree.Build(600, 7);
+	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	//gOctree.Build(600, 7);
 }
 
 void EventHandler(SDL_Event &e)
@@ -119,7 +119,7 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	//octree.DebugDraw(&gCamera, &gShaderOctree);
+	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
 
 	gWindow.SwapBuffers();
 }
@@ -135,6 +135,11 @@ void Update()
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
 		gLightPos.y += gLightPos.x * sin(1.0f) - gLightPos.y * cos(1.0f);
 	}
+}
+
+void CleanUp()
+{
+	gOctree.Destory();
 }
 
 int main(int argc, char** argv)
@@ -164,7 +169,7 @@ int main(int argc, char** argv)
 		Update();
 		gTimer.Stop();
 	}
-
+	CleanUp();
 	gWindow.DestoryGL();
 	SDL_Quit();
 	return 0;

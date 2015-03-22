@@ -14,7 +14,8 @@ static normal3 CalculateNorm(point3 curr, point3 x, point3 xz, point3 z)
 
 
 Terrain::Terrain(int len, int width)
-	:_length(len), _width(width),
+	:Actor(point3(0.0f,0.0f,0.0f)),
+	_length(len), _width(width),
 	_weight(50.0f)
 {
 }

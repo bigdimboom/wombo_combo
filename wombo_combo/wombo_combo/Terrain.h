@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iomanip>
 #include "Mesh.h"
+#include "Actor.h"
 
 //Using templete pattern
 //user could override terrian-gen methods 
@@ -14,7 +15,7 @@
 
 #define NORMAL_MAP_FILE "NORMAL.Data"
 
-class Terrain
+class Terrain : public Actor
 {
 public:
 	Terrain(int length = 1024, int width = 1024);

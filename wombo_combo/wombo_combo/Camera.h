@@ -1,5 +1,6 @@
 #pragma once
 #include "Global.h"
+#include "Actor.h"
 
 enum Camera_Movement {
 	FORWARD,
@@ -14,7 +15,7 @@ enum Camera_Rotate {
 	ROLL
 };
 
-class Camera
+class Camera  : public Actor
 {
 public:
 	Camera(point3 cameraPos = point3(0.0f, 0.0f, 3.0f), 
@@ -24,7 +25,6 @@ public:
 	inline matrix4* GetViewMatrix(){return &_viewMat; }
 	void SetFrustum(float angle, float ratio, float nearPlane, float farPlane);
 	inline matrix4* GetProjMatrix(){ return &_projMat; }
-	inline point3* GetPosition(){ return &_pos; }
 	virtual void Move(Camera_Movement dir, GLfloat dTime);
 	virtual void Rotate(Camera_Rotate dir, GLfloat angle);
 	inline void SetVelocity(GLfloat velocity) { _velocity = velocity; }
@@ -39,7 +39,6 @@ protected:
 	point3 _up;
 	point3 _right;
 	point3 _front;
-	point3 _pos; // only position is a point
 	//Other Options
 	GLfloat _sensitivity;
 	GLfloat _velocity;
