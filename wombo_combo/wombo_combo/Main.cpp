@@ -146,7 +146,7 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 
-	gFlock.MoveAll(0.3);
+	gFlock.MoveAll(0.5);
 
 	++gFrameCount;
 	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
