@@ -31,7 +31,6 @@ point3 gLightPos = point3(-1.0, 100, 1.5);
 bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
-double gTimeElapsed_GlobalTime = 0.0;
 
 Octree gOctree;
 
@@ -145,19 +144,20 @@ void Render()
 
 void Update()
 {
-	gTimeElapsed_GlobalTime += gTimer.GetElapsedTime();
-
 	gTimeElapsed += gTimer.GetElapsedTime();
 
+	gFlock.MoveAll(0.3);
+
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 0.01/* && gTimeElapsed < 60*/){
+	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
-		gFlock.MoveAll(gTimeElapsed);
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
 		gLightPos.y += gLightPos.x * sin(1.0f) - gLightPos.y * cos(1.0f);
 	}
+
+	
 }
 
 void CleanUp()

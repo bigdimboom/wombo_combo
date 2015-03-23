@@ -107,14 +107,14 @@ void FlockRenderable::Init()
 
 	glBindVertexArray(0); // Unbind VAO
 
-	int boidSize = 20;
+	int boidSize = 100;
 	point3 pos, vel;
 
 	pos = point3(0.0, 20.0f, 0.0f);
 	for (int i = 0; i < boidSize; ++i)
 	{
 		vel = point3(glm::linearRand(-0.1f, 0.1f), 0.0f, glm::linearRand(-0.1f, 0.1f));
-		pos = point3(glm::linearRand(-30.0f, 30.0f), 50.0f, glm::linearRand(-30.0f, 30.0f));
+		pos = point3(glm::linearRand(-30.0f, 30.0f), 30.0f, glm::linearRand(-30.0f, 30.0f));
 		flock.push_back(new Boid(pos, vel));
 		flock[i]->SetRadius(4.0f);
 		flock[i]->SetMesh(&meshes["test"]);

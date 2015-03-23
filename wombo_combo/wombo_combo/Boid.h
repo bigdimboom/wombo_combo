@@ -17,6 +17,7 @@ public:
 	inline float GetRadius() const { return _radius; }
 	inline Mesh* GetMesh() const { return _mesh; }
 	void SetVelocity(point3 velocity) { _velocity = velocity; }
+	void ApplyVelocity(point3 velocity) { _velocity += velocity; }
 	void SetRadius(float size);
 	void SetMesh(Mesh* mesh);
 	void Move(float elapsedTime);

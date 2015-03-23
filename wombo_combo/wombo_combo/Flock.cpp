@@ -29,7 +29,8 @@ void Flock::MoveAll(float elaspedTime)
 		v1 = RuleCohesion(flock[i]);
 		v2 = RuleSeparation(flock[i]);
 		v3 = RuleAlignment(flock[i]);
-		//flock[i]->SetVelocity(v1 + v2 + v3);
+
+		flock[i]->ApplyVelocity(v2);
 
 		v4 = RuleSpeedLimit(flock[i]);
 		
@@ -48,6 +49,20 @@ point3 Flock::RuleSeparation(Boid* b)
 point3 Flock::RuleCohesion(Boid* b)
 {
 	point3 pCenter; //perceived center
+	for (uint i = 0; i < flock.size(); ++i)
+	{
+		if (flock[i] != b)
+		{
+			pCenter = pCenter + flock[i]->GetPosition();
+		}
+	}
+
+	pCenter /= flock.size() - 1;
+	pCenter = (pCenter - b->GetPosition()) /= 500;
+	
+	pCenter = glm::normalize(pCenter);
+
+	pCenter.y = 0.0f;
 
 	return pCenter;
 }
@@ -61,7 +76,7 @@ point3 Flock::RuleAlignment(Boid* b)
 
 point3 Flock::RuleSpeedLimit(Boid* b)
 {
-	float speedLimit = 8.0f;
+	float speedLimit = 2.0f;
 	point3 v = b->GetVelocity();
 
 	if (glm::length(b->GetVelocity()) > speedLimit)
