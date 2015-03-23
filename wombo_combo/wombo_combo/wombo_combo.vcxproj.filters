@@ -53,6 +53,9 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{4460e260-e0db-487c-9e10-aa52f1c4d084}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Flock">
+      <UniqueIdentifier>{67672a9c-0fe0-444e-86ec-0341a90575df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -100,6 +103,15 @@
     <ClCompile Include="UniqueID.cpp">
       <Filter>Source Files\Tools</Filter>
     </ClCompile>
+    <ClCompile Include="Boid.cpp">
+      <Filter>Source Files\Flock</Filter>
+    </ClCompile>
+    <ClCompile Include="Flock.cpp">
+      <Filter>Source Files\Flock</Filter>
+    </ClCompile>
+    <ClCompile Include="FlockRenderable.cpp">
+      <Filter>Source Files\Flock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -112,6 +124,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\vs_octree.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\fs_flock.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\vs_flock.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -166,6 +184,15 @@
     </ClInclude>
     <ClInclude Include="UniqueID.h">
       <Filter>Source Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Boid.h">
+      <Filter>Source Files\Flock</Filter>
+    </ClInclude>
+    <ClInclude Include="Flock.h">
+      <Filter>Source Files\Flock</Filter>
+    </ClInclude>
+    <ClInclude Include="FlockRenderable.h">
+      <Filter>Source Files\Flock</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

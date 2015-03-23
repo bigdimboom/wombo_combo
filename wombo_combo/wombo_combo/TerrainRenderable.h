@@ -5,6 +5,7 @@
 #include "Global.h"
 #include <vector>
 #include <string>
+#include "Shader.h"
 
 typedef const char* Path;
 typedef const char* Name;

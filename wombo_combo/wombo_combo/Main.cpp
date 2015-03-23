@@ -6,6 +6,7 @@
 #include "FreeCamera.h"
 #include "Octree.h"
 #include "TerrainRenderable.h"
+#include "FlockRenderable.h"
 
 
 #define WINDOW_WIDTH 800
@@ -19,7 +20,10 @@ Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 
 Shader gShader;
 Shader gShaderOctree;
+Shader gShaderFlock;
+
 MyTimer gTimer;
+
 FreeCamera gCamera(point3(100.0f, 25.0f, 50.5f));
 
 point3 gLightPos = point3(-1.0, 100, 1.5);
@@ -27,10 +31,12 @@ point3 gLightPos = point3(-1.0, 100, 1.5);
 bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
+double gTimeElapsed_GlobalTime = 0.0;
 
 Octree gOctree;
 
 TerrainRenderable gTerrain(512, 512);
+FlockRenderable gFlock;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -68,7 +74,8 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 void Init()
 {
 	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
-	gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
+	//gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
+	gShaderFlock.Comiple("Shaders/vs_flock.glsl", "Shaders/fs_flock.glsl");
 
 	gTimer.Reset();
 
@@ -79,6 +86,7 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
+	gFlock.Init();
 	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
 	//gOctree.Build(600, 7);
 }
@@ -91,17 +99,26 @@ void EventHandler(SDL_Event &e)
 			gIsGameLoopRunning = 0;
 		else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)
 			gIsGameLoopRunning = 0;
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_w){
-			gCamera.Move(FORWARD, (float)gTimer.GetElapsedTime());
-		}
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_s){
-			gCamera.Move(BACKWARD, (float)gTimer.GetElapsedTime());
-		}
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_a){
-			gCamera.Move(LEFT, (float)gTimer.GetElapsedTime());
-		}
-		else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_d){
-			gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
+		else if (e.type == SDL_KEYDOWN)
+		{
+			switch (e.key.keysym.sym)
+			{
+			case SDLK_w:
+				gCamera.Move(FORWARD, (float)gTimer.GetElapsedTime());
+				break;
+			case SDLK_s:
+				gCamera.Move(BACKWARD, (float)gTimer.GetElapsedTime());
+				break;
+			case SDLK_a:
+				gCamera.Move(LEFT, (float)gTimer.GetElapsedTime());
+				break;
+			case SDLK_d:
+				gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
+				break;
+			default:
+				break;
+			}
+			//std::cout << glm::to_string(gCamera.GetPosition()) << std::endl;
 		}
 		else if (e.type == SDL_MOUSEMOTION){
 			CameraMotion((float)e.motion.x, (float)e.motion.y, &gWindow, &gCamera);
@@ -119,6 +136,8 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
+	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+
 	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
 
 	gWindow.SwapBuffers();
@@ -126,10 +145,14 @@ void Render()
 
 void Update()
 {
+	gTimeElapsed_GlobalTime += gTimer.GetElapsedTime();
+
 	gTimeElapsed += gTimer.GetElapsedTime();
+
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
+	if (gTimeElapsed / 1000 >= 0.01/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
+		gFlock.MoveAll(gTimeElapsed);
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
@@ -139,7 +162,7 @@ void Update()
 
 void CleanUp()
 {
-	gOctree.Destory();
+
 }
 
 int main(int argc, char** argv)
@@ -152,9 +175,11 @@ int main(int argc, char** argv)
 	gWindow.Open();
 	gWindow.InitGL();
 
+	srand(time(NULL));
+
 	Init();
 	gCamera.SetVelocity(2.0f);
-	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
+	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
 
 	SDL_Event e;
 

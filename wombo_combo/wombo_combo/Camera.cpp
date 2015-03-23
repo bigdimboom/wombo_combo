@@ -5,7 +5,7 @@ Camera::Camera(point3 cameraPos, point3 wolrdUp)
 	:Actor(cameraPos),
 	_up(point3(0.0f, 1.0f, 0.0f)),
 	_worldUp(_up),
-	_front(point3(0.0f, 0.0f, -1.0f)),
+	_front(point3(0.0f, 0.0f, 1.0f)),
 	_sensitivity(0.5f),
 	_velocity(0.05f),
 	_projMat(1.0)
@@ -22,7 +22,7 @@ void Camera::Reset()
 {
 	position = point3(0.0f, 0.0f, 3.0f);
 	_up = point3(0.0f, 1.0f, 0.0f);
-	_front = point3(0.0f, 0.0f, -1.0f);
+	_front = point3(0.0f, 0.0f, 1.0f);
 	_viewMat = glm::lookAt(position, position + _front, _up);
 	_right = glm::normalize(glm::cross(_front, _up));
 }

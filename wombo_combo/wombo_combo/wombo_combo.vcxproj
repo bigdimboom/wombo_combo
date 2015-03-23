@@ -12,7 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Boid.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Flock.cpp" />
+    <ClCompile Include="FlockRenderable.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
     <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="InputHandler.cpp" />
@@ -29,13 +32,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl" />
+    <None Include="Shaders\fs_flock.glsl" />
     <None Include="Shaders\fs_octree.glsl" />
     <None Include="Shaders\vs.glsl" />
+    <None Include="Shaders\vs_flock.glsl" />
     <None Include="Shaders\vs_octree.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="Boid.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Flock.h" />
+    <ClInclude Include="FlockRenderable.h" />
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Global.h" />
