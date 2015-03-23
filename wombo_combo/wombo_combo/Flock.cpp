@@ -30,10 +30,10 @@ void Flock::MoveAll(float elaspedTime)
 		v2 = RuleSeparation(flock[i]);
 		v3 = RuleAlignment(flock[i]);
 
-		flock[i]->ApplyVelocity(v2);
+		flock[i]->ApplyVelocity(v1 + v2);
 
 		v4 = RuleSpeedLimit(flock[i]);
-		
+
 		flock[i]->SetVelocity(v4);
 		flock[i]->Move(elaspedTime);
 	}
@@ -42,6 +42,20 @@ void Flock::MoveAll(float elaspedTime)
 point3 Flock::RuleSeparation(Boid* b)
 {
 	point3 pVelocity; //perceived velocity
+	for (uint i = 0; i < flock.size(); ++i)
+	{
+		if (flock[i] != b)
+		{
+			if (glm::distance(b->GetPosition(), flock[i]->GetPosition()) < b->GetRadius() * 100)
+			{
+				pVelocity += flock[i]->GetVelocity() - b->GetVelocity();
+			}
+		}
+	}
+
+	pVelocity.x *= -1;
+	pVelocity.z *= -1;
+	pVelocity.y = 0.0f;
 
 	return pVelocity;
 }
@@ -49,19 +63,30 @@ point3 Flock::RuleSeparation(Boid* b)
 point3 Flock::RuleCohesion(Boid* b)
 {
 	point3 pCenter; //perceived center
+	int count = 0;
 	for (uint i = 0; i < flock.size(); ++i)
 	{
 		if (flock[i] != b)
 		{
-			pCenter = pCenter + flock[i]->GetPosition();
+			if (glm::distance(b->GetPosition(), flock[i]->GetPosition()) < b->GetRadius() * 10)
+			{
+				++count;
+			}
+			pCenter += flock[i]->GetPosition();
 		}
 	}
 
 	pCenter /= flock.size() - 1;
-	pCenter = (pCenter - b->GetPosition()) /= 500;
-	
-	pCenter = glm::normalize(pCenter);
+	if (count == 0)
+	{
+		pCenter = (pCenter - b->GetPosition()) /= 100;
+	}
+	else
+	{
+		pCenter = (pCenter - b->GetPosition()) /= count;
+	}
 
+	pCenter = glm::normalize(pCenter);
 	pCenter.y = 0.0f;
 
 	return pCenter;

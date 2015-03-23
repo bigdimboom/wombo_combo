@@ -113,7 +113,7 @@ void FlockRenderable::Init()
 	pos = point3(0.0, 20.0f, 0.0f);
 	for (int i = 0; i < boidSize; ++i)
 	{
-		vel = point3(glm::linearRand(-0.1f, 0.1f), 0.0f, glm::linearRand(-0.1f, 0.1f));
+		vel = point3(glm::linearRand(-0.5f, 0.5f), glm::linearRand(0.1f, 0.2f), glm::linearRand(-0.5f, 0.5f));
 		pos = point3(glm::linearRand(-30.0f, 30.0f), 30.0f, glm::linearRand(-30.0f, 30.0f));
 		flock.push_back(new Boid(pos, vel));
 		flock[i]->SetRadius(4.0f);
