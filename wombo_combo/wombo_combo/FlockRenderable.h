@@ -1,6 +1,7 @@
 #pragma once
 #include "Flock.h"
 #include "IRenderable.h"
+#include "Cube.h"
 
 class FlockRenderable :
 	public Flock, IRenderable

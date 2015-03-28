@@ -125,7 +125,7 @@ point3 Flock::RuleAlignment(Boid* b)
 
 point3 Flock::RuleSpeedLimit(Boid* b)
 {
-	float speedLimit = 2.0f;
+	float speedLimit = 1.0f;
 	point3 v = b->GetVelocity();
 
 	if (glm::length(b->GetVelocity()) > speedLimit)

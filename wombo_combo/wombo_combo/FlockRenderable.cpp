@@ -9,6 +9,7 @@ FlockRenderable::FlockRenderable()
 
 FlockRenderable::~FlockRenderable()
 {
+
 }
 
 void FlockRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
@@ -52,43 +53,7 @@ void FlockRenderable::Init()
 	assert(_isInited == false);
 	_isInited = true;
 
-	point4 verts[] = {
-		point4(-1.0f, -1.0f, 1.0f, 1.0f),
-		point4(1.0f, -1.0f, 1.0f, 1.0f),
-		point4(1.0f, 1.0f, 1.0f, 1.0f),
-		point4(-1.0f, 1.0f, 1.0f, 1.0f),
-		point4(-1.0f, -1.0f, -1.0f, 1.0f),
-		point4(1.0f, -1.0f, -1.0f, 1.0f),
-		point4(1.0f, 1.0f, -1.0f, 1.0f),
-		point4(-1.0f, 1.0f, -1.0f, 1.0f)
-	};
-
-	uint cube_elements[] = {
-		// front
-		0, 1, 2,
-		2, 3, 0,
-		// top
-		3, 2, 6,
-		6, 7, 3,
-		// back
-		7, 6, 5,
-		5, 4, 7,
-		// bottom
-		4, 5, 1,
-		1, 0, 4,
-		// left
-		4, 0, 3,
-		3, 7, 4,
-		// right
-		1, 5, 6,
-		6, 2, 1,
-	};
-
-	meshes["test"] = Mesh();
-	meshes["test"].SetVertSize(8);
-	memcpy(meshes["test"].GetVerts(), verts, sizeof(point4) * 8);
-	meshes["test"].SetIdxSize(6 * 6);
-	memcpy(meshes["test"].GetIndxs(), cube_elements, sizeof(uint) * 36);
+	meshes["test"] = Mesh_SPtr(new Cube);
 
 	glGenVertexArrays(1, &_vao);
 	glGenBuffers(1, &_vbo);
@@ -96,10 +61,10 @@ void FlockRenderable::Init()
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, meshes["test"].GetVSizeInBytes(), meshes["test"].GetVerts(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, meshes["test"]->GetVSizeInBytes(), meshes["test"]->GetVerts(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshes["test"].GetIdxSizeInBytes(), meshes["test"].GetIndxs(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, meshes["test"]->GetIdxSizeInBytes(), meshes["test"]->GetIndxs(), GL_STATIC_DRAW);
 
 	// Position attribute
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -107,7 +72,7 @@ void FlockRenderable::Init()
 
 	glBindVertexArray(0); // Unbind VAO
 
-	int boidSize = 100;
+	int boidSize = 50;
 	point3 pos, vel;
 
 	pos = point3(0.0, 20.0f, 0.0f);
@@ -116,7 +81,7 @@ void FlockRenderable::Init()
 		vel = point3(glm::linearRand(-0.1f, 0.1f), glm::linearRand(-0.1f, 0.1f), glm::linearRand(-0.1f, 0.1f));
 		pos = point3(glm::linearRand(-30.0f, 30.0f), 30.0f, glm::linearRand(-30.0f, 30.0f));
 		flock.push_back(new Boid(pos,vel));
-		flock[i]->SetRadius(4.0f);
-		flock[i]->SetMesh(&meshes["test"]);
+		flock[i]->SetRadius(5.0f);
+		flock[i]->SetMesh(meshes["test"].get());
 	}
 }

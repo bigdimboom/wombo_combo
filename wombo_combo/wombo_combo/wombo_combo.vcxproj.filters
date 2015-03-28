@@ -112,6 +112,9 @@
     <ClCompile Include="FlockRenderable.cpp">
       <Filter>Source Files\Flock</Filter>
     </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="FlockRenderable.h">
       <Filter>Source Files\Flock</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube.h">
+      <Filter>Source Files\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

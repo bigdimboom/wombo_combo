@@ -5,7 +5,8 @@ class Mesh
 {
 public:
 	Mesh();
-	~Mesh();
+	virtual ~Mesh();
+
 	inline point4* GetVerts() const { return _verts; }
 	inline uint* GetIndxs() const { return _indices; }
 	inline normal3* GetNorms() const { return _normals; }
@@ -35,6 +36,7 @@ public:
 
 	void OptimizeNorm();
 private:
+
 	int _vertSize;
 	int _normalSize;
 	int _indexSize;

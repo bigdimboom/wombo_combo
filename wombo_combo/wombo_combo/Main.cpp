@@ -85,7 +85,7 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	gFlock.Init();
+	//gFlock.Init();
 	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
 	//gOctree.Build(600, 7);
 }
@@ -135,7 +135,7 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
 	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
 
@@ -146,7 +146,11 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 
-	gFlock.MoveAll(0.5);
+	++gFrameCount;
+	if (gTimeElapsed / 1000 >= 0.1/* && gTimeElapsed < 60*/){
+		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
+		gFlock.MoveAll(0.3);
+	}
 
 	++gFrameCount;
 	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
@@ -156,8 +160,6 @@ void Update()
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
 		gLightPos.y += gLightPos.x * sin(1.0f) - gLightPos.y * cos(1.0f);
 	}
-
-	
 }
 
 void CleanUp()
@@ -178,7 +180,7 @@ int main(int argc, char** argv)
 	srand(time(NULL));
 
 	Init();
-	gCamera.SetVelocity(2.0f);
+	gCamera.SetVelocity(0.8f);
 	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
 
 	SDL_Event e;
