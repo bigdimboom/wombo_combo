@@ -35,8 +35,8 @@ public:
 	void ClearAll();
 
 	void OptimizeNorm();
-private:
 
+private:
 	int _vertSize;
 	int _normalSize;
 	int _indexSize;

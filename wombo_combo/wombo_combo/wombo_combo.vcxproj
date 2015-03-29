@@ -27,6 +27,7 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainRenderable.cpp" />
+    <ClCompile Include="TetraSphere.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="UniqueID.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainRenderable.h" />
+    <ClInclude Include="TetraSphere.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="UniqueID.h" />
     <ClInclude Include="Window.h" />

@@ -56,6 +56,9 @@
     <Filter Include="Source Files\Flock">
       <UniqueIdentifier>{67672a9c-0fe0-444e-86ec-0341a90575df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Renderable">
+      <UniqueIdentifier>{491f2f7e-374c-46bb-884c-5bc35a29c288}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -94,9 +97,6 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="TerrainRenderable.cpp">
-      <Filter>Source Files\Terrain</Filter>
-    </ClCompile>
     <ClCompile Include="InputHandler.cpp">
       <Filter>Source Files\Input</Filter>
     </ClCompile>
@@ -109,11 +109,17 @@
     <ClCompile Include="Flock.cpp">
       <Filter>Source Files\Flock</Filter>
     </ClCompile>
-    <ClCompile Include="FlockRenderable.cpp">
-      <Filter>Source Files\Flock</Filter>
-    </ClCompile>
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TetraSphere.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainRenderable.cpp">
+      <Filter>Source Files\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="FlockRenderable.cpp">
+      <Filter>Source Files\Renderable</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,9 +158,6 @@
     <ClInclude Include="Camera.h">
       <Filter>Source Files\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="IRenderable.h">
-      <Filter>Source Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="MyTimer.h">
       <Filter>Source Files\Tools</Filter>
     </ClInclude>
@@ -179,9 +182,6 @@
     <ClInclude Include="Mesh.h">
       <Filter>Source Files\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="TerrainRenderable.h">
-      <Filter>Source Files\Terrain</Filter>
-    </ClInclude>
     <ClInclude Include="InputHandler.h">
       <Filter>Source Files\Input</Filter>
     </ClInclude>
@@ -194,11 +194,20 @@
     <ClInclude Include="Flock.h">
       <Filter>Source Files\Flock</Filter>
     </ClInclude>
-    <ClInclude Include="FlockRenderable.h">
-      <Filter>Source Files\Flock</Filter>
-    </ClInclude>
     <ClInclude Include="Cube.h">
       <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TetraSphere.h">
+      <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainRenderable.h">
+      <Filter>Source Files\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="FlockRenderable.h">
+      <Filter>Source Files\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>Source Files\Renderable</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

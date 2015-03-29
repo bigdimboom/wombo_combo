@@ -32,3 +32,5 @@ typedef unsigned char uchar;
 
 
 #define BUFFER_OFFSET(offset) (( void *)(offset))
+
+const GLfloat  DivideByZeroTolerance = GLfloat(1.0e-07);
