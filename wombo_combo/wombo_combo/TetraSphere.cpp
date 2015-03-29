@@ -3,6 +3,8 @@
 
 TetraSphere::TetraSphere()
 {
+	_isBuilt = false;
+	Build();
 }
 
 
@@ -12,6 +14,7 @@ TetraSphere::~TetraSphere()
 
 void TetraSphere::Build()
 {
+	assert(_isBuilt == false);
 	_Tetrahedron();
 	this->SetVertSize(_verts.size());
 	memcpy(this->GetVerts(), &_verts[0], sizeof(point4) * _verts.size());
@@ -20,6 +23,7 @@ void TetraSphere::Build()
 	_edges.clear();
 	_verts.clear();
 	_indices.clear();
+	_isBuilt = true;
 }
 
 
@@ -50,11 +54,12 @@ void TetraSphere::_Subdivided(uint i0, uint i1, uint i2, int count)
 		int ii1 = _LookUpIndex(i0, i2);
 		int ii2 = _LookUpIndex(i1, i2);
 		_Subdivided(i0, ii0, ii1, count - 1);
-		_Subdivided(i1, ii2, ii0, count - 1);
 		_Subdivided(i2, ii1, ii2, count - 1);
+		_Subdivided(i1, ii2, ii0, count - 1);
 		_Subdivided(ii0, ii1, ii2, count - 1);
 	}
-	else {
+	else 
+	{
 		_Trianlge(i0, i1, i2);
 	}
 }
@@ -66,7 +71,7 @@ int TetraSphere::_LookUpIndex(uint index0, uint index1)
 		std::swap(index0, index1);
 	}
 
-	std::string key = index0 + "," + index1;
+	std::string key = std::to_string(index0) + "," + std::to_string(index1);
 	if ( _edges.count(key) == 0)
 	{
 		_verts.push_back(_Uint(_verts[index0], _verts[index1]));

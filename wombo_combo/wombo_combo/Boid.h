@@ -20,7 +20,7 @@ public:
 	void ApplyVelocity(point3 velocity) { _velocity += velocity; }
 	void SetRadius(float size);
 	void SetMesh(Mesh* mesh);
-	void Move(float elapsedTime);
+	void Move(float dTime);
 	inline const point3& GetVelocity() const { return _velocity; }
 private:
 	float _radius;

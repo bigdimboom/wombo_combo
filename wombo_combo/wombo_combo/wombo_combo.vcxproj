@@ -15,6 +15,7 @@
     <ClCompile Include="Boid.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="EntityRenderable.cpp" />
     <ClCompile Include="Flock.cpp" />
     <ClCompile Include="FlockRenderable.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
@@ -45,6 +46,7 @@
     <ClInclude Include="Boid.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="EntityRenderable.h" />
     <ClInclude Include="Flock.h" />
     <ClInclude Include="FlockRenderable.h" />
     <ClInclude Include="FreeCamera.h" />

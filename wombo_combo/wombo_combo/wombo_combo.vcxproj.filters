@@ -121,6 +121,9 @@
     <ClCompile Include="FlockRenderable.cpp">
       <Filter>Source Files\Renderable</Filter>
     </ClCompile>
+    <ClCompile Include="EntityRenderable.cpp">
+      <Filter>Source Files\Renderable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -207,6 +210,9 @@
       <Filter>Source Files\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
+      <Filter>Source Files\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityRenderable.h">
       <Filter>Source Files\Renderable</Filter>
     </ClInclude>
   </ItemGroup>

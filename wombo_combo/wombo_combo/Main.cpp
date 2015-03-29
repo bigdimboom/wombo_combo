@@ -7,6 +7,8 @@
 #include "Octree.h"
 #include "TerrainRenderable.h"
 #include "FlockRenderable.h"
+#include "EntityRenderable.h"
+#include "TetraSphere.h"
 
 
 #define WINDOW_WIDTH 800
@@ -36,6 +38,9 @@ Octree gOctree;
 
 TerrainRenderable gTerrain(512, 512);
 FlockRenderable gFlock;
+EntityRenderable gSphere;
+
+bool gShoot = false;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -73,7 +78,7 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 void Init()
 {
 	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
-	//gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
+	gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
 	gShaderFlock.Comiple("Shaders/vs_flock.glsl", "Shaders/fs_flock.glsl");
 
 	gTimer.Reset();
@@ -85,9 +90,12 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
+	gSphere.Init(new TetraSphere);
+	gSphere.Scale(10.0f);
+
 	//gFlock.Init();
-	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	//gOctree.Build(600, 7);
+	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	gOctree.Build(600, 7);
 }
 
 void EventHandler(SDL_Event &e)
@@ -122,6 +130,18 @@ void EventHandler(SDL_Event &e)
 		else if (e.type == SDL_MOUSEMOTION){
 			CameraMotion((float)e.motion.x, (float)e.motion.y, &gWindow, &gCamera);
 		}
+		if (e.type == SDL_MOUSEBUTTONDOWN)
+		{
+			/* If the left button was pressed. */
+			if (e.button.button == SDL_BUTTON_LEFT)
+			{
+				//std::cout << "Clicked\n";
+				point3 front = *gCamera.GetFront();
+				gSphere.SetVelocity(front);
+				gSphere.SetPosition(gCamera.GetPosition());
+				gShoot = true;
+			}
+		}
 	}
 }
 
@@ -137,7 +157,10 @@ void Render()
 
 	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
-	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
+	gOctree.DebugDraw(&gCamera, &gShaderOctree);
+	if (gShoot){
+		gSphere.Render(&gCamera, nullptr, &gShaderFlock);
+	}
 
 	gWindow.SwapBuffers();
 }
@@ -150,6 +173,7 @@ void Update()
 	if (gTimeElapsed / 1000 >= 0.1/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFlock.MoveAll(0.3);
+		gSphere.Move(0.1);
 	}
 
 	++gFrameCount;
@@ -180,7 +204,7 @@ int main(int argc, char** argv)
 	srand(time(NULL));
 
 	Init();
-	gCamera.SetVelocity(0.8f);
+	gCamera.SetVelocity(3.0f);
 	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
 
 	SDL_Event e;

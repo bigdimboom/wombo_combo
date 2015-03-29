@@ -23,7 +23,7 @@ void Boid::SetMesh(Mesh* mesh)
 	_mesh = mesh;
 }
 
-void Boid::Move(float elapsedTime)
+void Boid::Move(float dTime)
 {
 	//for debugging purpose
 	if (_velocity == point3(0.0f, 0.0f, 0.0f))
@@ -31,5 +31,5 @@ void Boid::Move(float elapsedTime)
 		std::cout << "Velocity is " << glm::to_string(_velocity) << std::endl;
 	}
 
-	position += elapsedTime *_velocity;
+	position += dTime *_velocity;
 }
