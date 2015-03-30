@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "Global.h"
 #include "Window.h"
 #include "Shader.h"
@@ -9,6 +11,7 @@
 #include "FlockRenderable.h"
 #include "EntityRenderable.h"
 #include "TetraSphere.h"
+#include <time.h>
 
 
 #define WINDOW_WIDTH 800
@@ -155,7 +158,7 @@ bool IsCollide()
 	int size = gTerrain.GetRawTerrain()->GetMesh().GetIdxSize();
 	uint* idxs = gTerrain.GetRawTerrain()->GetMesh().GetIndxs();
 	point4* verts = gTerrain.GetRawTerrain()->GetMesh().GetVerts();
-	for (uint i = 0; i < size; i += 3)
+	for (int i = 0; i < size; i += 3)
 	{
 		//if (gSphere.IsCollideWith_NaiveVersion(verts[idxs[i]], verts[idxs[i + 1]], verts[idxs[i + 2]]))
 		//{
@@ -195,8 +198,8 @@ void Update()
 	++gFrameCount;
 	if (gTimeElapsed / 1000 >= 0.01/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
-		gFlock.MoveAll(0.3);
-		gSphere.Move(0.1);
+		gFlock.MoveAll(0.3f);
+		gSphere.Move(0.1f);
 	}
 
 	if (gShoot == 1)
@@ -233,8 +236,7 @@ int main(int argc, char** argv)
 
 	gWindow.Open();
 	gWindow.InitGL();
-
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	Init();
 	gCamera.SetVelocity(3.0f);

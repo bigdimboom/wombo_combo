@@ -2,7 +2,7 @@
 
 
 EntityRenderable::EntityRenderable()
-	:Boid()
+	:ActorMovable()
 {
 	_scaleModel = matrix4(1.0);
 }

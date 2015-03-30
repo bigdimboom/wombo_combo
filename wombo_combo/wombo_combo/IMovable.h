@@ -2,7 +2,7 @@
 class IMovable
 {
 public:
-	~IMovable();
+	virtual ~IMovable() {}
 	virtual void Move(float dTime) = 0;
 };
 

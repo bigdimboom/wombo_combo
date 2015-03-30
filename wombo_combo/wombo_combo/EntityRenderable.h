@@ -1,12 +1,12 @@
 #pragma once
-#include "Boid.h"
+#include "ActorMovable.h"
 #include "IRenderable.h"
 #include "Mesh.h"
 #include "Plane.h"
 
 
 class EntityRenderable :
-	public Boid, IRenderable
+	public ActorMovable, IRenderable
 {
 public:
 	EntityRenderable();
