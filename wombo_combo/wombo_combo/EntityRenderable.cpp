@@ -79,3 +79,38 @@ void EntityRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 
 	glBindVertexArray(0);
 }
+
+bool EntityRenderable::IsCollideWith_NaiveVersion(point4& a, point4& b, point4& c)
+{
+	point3 v0 = point3(a);
+	point3 v1 = point3(b);
+	point3 v2 = point3(c);
+
+	Plane p(v0, v1, v2);
+	if (!p.Inside(GetPosition(), GetRadius()))
+	{
+		return false;
+	}
+
+	point3  pp = p.ProjectAPointFrom(GetPosition());
+
+	// edge 0
+	point3 edge0 = v1 - v0;
+	point3 VP0 = pp - v0;
+	if (glm::dot(edge0, VP0) < 0) // angles > 90 degree
+		return false; // P is on the right side
+
+	// edge 1
+	point3 edge1 = v2 - v1;
+	point3 VP1 = pp - v1;
+	if (glm::dot(edge1, VP1) < 0)
+		return false; // P is on the right side
+
+	// edge 2
+	point3 edge2 = v0 - v2;
+	point3 VP2 = pp - v2;
+	if (glm::dot(edge2, VP2) < 0)
+		return false; // P is on the right side;
+
+	return false; // this ray hits the triangle
+}

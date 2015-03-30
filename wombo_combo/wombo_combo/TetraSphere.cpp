@@ -102,3 +102,23 @@ void TetraSphere::_Trianlge(uint i0, uint i1, uint i2)
 	_indices.push_back(i1);
 	_indices.push_back(i2);
 }
+
+float TetraSphere::GetRadius()
+{
+	point4 yMax, yMin;
+
+	for (uint i = 0; i < GetVSize(); ++i)
+	{
+		if (GetVerts()[i].y > yMax.y)
+		{
+			yMax = GetVerts()[i];
+		}
+
+		if (GetVerts()[i].y < yMin.y)
+		{
+			yMin = GetVerts()[i];
+		}
+	}
+
+	return glm::distance(yMax, yMin);
+}

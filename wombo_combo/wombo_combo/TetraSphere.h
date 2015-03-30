@@ -12,6 +12,7 @@ public:
 	TetraSphere();
 	~TetraSphere();
 	void Build();
+	float GetRadius();
 private:
 	void _Subdivided(uint i0, uint i1, uint i2, int count); //Done
 	void _Tetrahedron(); // Done

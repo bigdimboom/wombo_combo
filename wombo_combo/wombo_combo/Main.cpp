@@ -40,7 +40,8 @@ TerrainRenderable gTerrain(512, 512);
 FlockRenderable gFlock;
 EntityRenderable gSphere;
 
-bool gShoot = false;
+int gShoot = 0;
+point3 gSavePos;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -90,12 +91,15 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	gSphere.Init(new TetraSphere);
-	gSphere.Scale(10.0f);
+	TetraSphere* ptr = nullptr;
+
+	gSphere.Init(ptr = new TetraSphere);
+	gSphere.Scale(5.0f);
+	gSphere.SetRadius(ptr->GetRadius());
 
 	//gFlock.Init();
-	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	gOctree.Build(600, 7);
+	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
+	//gOctree.Build(600, 7);
 }
 
 void EventHandler(SDL_Event &e)
@@ -139,10 +143,26 @@ void EventHandler(SDL_Event &e)
 				point3 front = *gCamera.GetFront();
 				gSphere.SetVelocity(front);
 				gSphere.SetPosition(gCamera.GetPosition());
-				gShoot = true;
+				gShoot = 1;
 			}
 		}
 	}
+}
+
+// It lookd like I need Octree to detect collision
+bool IsCollide()
+{
+	int size = gTerrain.GetRawTerrain()->GetMesh().GetIdxSize();
+	uint* idxs = gTerrain.GetRawTerrain()->GetMesh().GetIndxs();
+	point4* verts = gTerrain.GetRawTerrain()->GetMesh().GetVerts();
+	for (uint i = 0; i < size; i += 3)
+	{
+		//if (gSphere.IsCollideWith_NaiveVersion(verts[idxs[i]], verts[idxs[i + 1]], verts[idxs[i + 2]]))
+		//{
+		//	return true;
+		//}
+	}
+	return false;
 }
 
 void Render()
@@ -157,8 +177,9 @@ void Render()
 
 	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
-	gOctree.DebugDraw(&gCamera, &gShaderOctree);
-	if (gShoot){
+	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
+	if (gShoot)
+	{
 		gSphere.Render(&gCamera, nullptr, &gShaderFlock);
 	}
 
@@ -169,11 +190,23 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 
+	gSavePos = gSphere.GetPosition();
+
 	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 0.1/* && gTimeElapsed < 60*/){
+	if (gTimeElapsed / 1000 >= 0.01/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFlock.MoveAll(0.3);
 		gSphere.Move(0.1);
+	}
+
+	if (gShoot == 1)
+	{
+		if (IsCollide())
+		{
+			gSphere.SetVelocity(point3(0.0f, 0.0f, 0.0f));
+			gSphere.SetPosition(gSavePos);
+			gShoot = 2;
+		}
 	}
 
 	++gFrameCount;

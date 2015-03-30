@@ -59,6 +59,9 @@
     <Filter Include="Source Files\Renderable">
       <UniqueIdentifier>{491f2f7e-374c-46bb-884c-5bc35a29c288}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Math">
+      <UniqueIdentifier>{e867e674-1d3a-4d88-872a-e35fa687eaa2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -123,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="EntityRenderable.cpp">
       <Filter>Source Files\Renderable</Filter>
+    </ClCompile>
+    <ClCompile Include="Plane.cpp">
+      <Filter>Source Files\Math</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +220,9 @@
     </ClInclude>
     <ClInclude Include="EntityRenderable.h">
       <Filter>Source Files\Renderable</Filter>
+    </ClInclude>
+    <ClInclude Include="Plane.h">
+      <Filter>Source Files\Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
