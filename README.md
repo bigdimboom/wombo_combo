@@ -8,3 +8,5 @@ s: backward
 w: forward
 
 camera rotates: mouse
+
+Shoot a ball from camera: mouse left button
