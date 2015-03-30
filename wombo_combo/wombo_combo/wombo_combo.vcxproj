@@ -53,6 +53,7 @@
     <ClInclude Include="FreeCamera.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="IMovable.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="IRenderable.h" />
     <ClInclude Include="ICommand.h" />

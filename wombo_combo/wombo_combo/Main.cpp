@@ -97,7 +97,7 @@ void Init()
 	gSphere.Scale(5.0f);
 	gSphere.SetRadius(ptr->GetRadius());
 
-	//gFlock.Init();
+	gFlock.Init();
 	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
 	//gOctree.Build(600, 7);
 }
@@ -175,7 +175,7 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
 	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
 	if (gShoot)

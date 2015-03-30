@@ -224,6 +224,9 @@
     <ClInclude Include="Plane.h">
       <Filter>Source Files\Math</Filter>
     </ClInclude>
+    <ClInclude Include="IMovable.h">
+      <Filter>Source Files\Actor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\awesomeface.png">
