@@ -14,6 +14,7 @@
     <ClCompile Include="Actor.cpp" />
     <ClCompile Include="ActorMovable.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="DebugDrawManager.cpp" />
     <ClCompile Include="Line.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Actor.h" />
     <ClInclude Include="ActorMovable.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Circle.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="DebugDrawManager.h" />
     <ClInclude Include="Line.h" />

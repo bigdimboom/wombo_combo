@@ -20,10 +20,10 @@ void DebugDrawManager::AddLine(const point4& from,
 	bool isDepthEnabled)
 {
 	MeshRender* lineMesh = new MeshRender();
-	lineMesh->Init(new Line(from, to), GL_LINE);
+	lineMesh->Init(new Line(from, to), GL_LINES);
 	DebugDrawObject line;
 	line.isPrimitive = true;
-	line.drawType = GL_LINE;
+	line.drawType = GL_LINES;
 	line.color = color;
 	line.lineWidth = lineWidth;
 	line.expireAt = _timer.GetElapsedTime() + 1000 * duration;
@@ -100,7 +100,17 @@ void DebugDrawManager::AddTriangle(const point4& v0,
 	float duration,
 	bool isDepthEnabled)
 {
-
+	MeshRender* triangleMesh = new MeshRender();
+	triangleMesh->Init(new Triangle(v0, v1, v2), GL_TRIANGLES);
+	DebugDrawObject triangle;
+	triangle.isPrimitive = true;
+	triangle.drawType = GL_TRIANGLES;
+	triangle.color = color;
+	triangle.lineWidth = lineWidth;
+	triangle.expireAt = _timer.GetElapsedTime() + 1000 * duration;
+	triangle.transform = matrix4(1.0f);
+	triangle.isDepthEnabled = isDepthEnabled;
+	triangle.render = triangleMesh;
 }
 
 

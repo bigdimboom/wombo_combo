@@ -2,6 +2,7 @@
 
 
 Cube::Cube()
+	:_isBuilt(false)
 {
 	Init();
 }
@@ -13,6 +14,8 @@ Cube::~Cube()
 
 void Cube::Init()
 {
+	assert(_isBuilt != true);
+
 	point4 verts[] = {
 		point4(-1.0f, -1.0f, 1.0f, 1.0f),
 		point4(1.0f, -1.0f, 1.0f, 1.0f),
@@ -49,4 +52,6 @@ void Cube::Init()
 	memcpy(this->GetVerts(), verts, sizeof(point4) * 8);
 	SetIdxSize(6 * 6);
 	memcpy(this->GetIndxs(), cube_elements, sizeof(uint) * 36);
+
+	_isBuilt = true;
 }

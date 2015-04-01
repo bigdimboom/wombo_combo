@@ -14,7 +14,7 @@ Sphere::~Sphere()
 
 void Sphere::Build()
 {
-	assert(_isBuilt == false);
+	assert(_isBuilt != true);
 	_Tetrahedron();
 	this->SetVertSize(_verts.size());
 	memcpy(this->GetVerts(), &_verts[0], sizeof(point4) * _verts.size());

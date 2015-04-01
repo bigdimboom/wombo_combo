@@ -9,6 +9,8 @@
 #include <list>
 #include <map>
 #include "Shader.h"
+#include "Camera.h"
+#include "Triangle.h"
 
 
 typedef struct 
@@ -98,7 +100,7 @@ public:
 		float duration = 0.0f,
 		bool isDepthEnabled = true);
 
-	void Render();
+	void Render(Camera* debugCamera, Shader* debugShader);
 
 private:
 

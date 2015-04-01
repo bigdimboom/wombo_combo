@@ -7,5 +7,7 @@ public:
 	Cube();
 	~Cube();
 	void Init();
+private:
+	bool _isBuilt;
 };
 
