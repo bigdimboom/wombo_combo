@@ -50,6 +50,34 @@ bool Texture::Load(const char* img_path, bool isMipMaps)
 	return true;
 }
 
+bool Texture::Load(void* pixels, int width, int height, GLenum format, bool isMipMaps)
+{
+	//Gen a texture object
+	glGenTextures(1, &_texture);
+	glBindTexture(GL_TEXTURE_2D, _texture);
+	glGenSamplers(1, &_sampler);
+
+	// Set our texture parameters
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	// Set texture wrapping to GL_REPEAT
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	// Set texture filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pixels);
+
+	if (isMipMaps)
+	{
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+
+	_isMipMapsRequested = isMipMaps;
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return true;
+}
+
 void Texture::Bind(int textureUnit)
 {
 	glActiveTexture(GL_TEXTURE0 + textureUnit);

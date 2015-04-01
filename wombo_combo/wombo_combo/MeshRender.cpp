@@ -12,6 +12,8 @@ MeshRender::~MeshRender()
 	if (_mesh != nullptr)
 	{
 		_mesh->ClearAll();
+		delete _mesh;
+		_mesh = nullptr;
 	}
 }
 
@@ -69,7 +71,7 @@ void MeshRender::Render(Camera* cam, Shader* shader, color4& color, matrix4& mod
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	if (!isDepthEnabled)
-	{
+	{ 
 		glDisable(GL_DEPTH_TEST);
 	}
 	glDisable(GL_CULL_FACE);

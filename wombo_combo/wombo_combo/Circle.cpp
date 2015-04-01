@@ -18,5 +18,5 @@ void Circle::Init(const point4& center,
 	float radius)
 {
 	assert(_isBuilt != true);
-
+	point3 normal = glm::normalize(planeNormal);
 }

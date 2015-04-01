@@ -9,6 +9,7 @@ public:
 	Texture();
 	~Texture();
 	bool Load(const char* img_path, bool isMipMaps = false);
+	bool Load(void* pixels, int width, int height, GLenum format, bool isMipMaps = false);
 	void Bind(int textureUnit=0);
 	void Release();
 private:

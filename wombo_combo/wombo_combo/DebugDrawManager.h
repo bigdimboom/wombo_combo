@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Triangle.h"
+#include "WorldPlane.h"
 
 
 typedef struct 
@@ -19,7 +20,7 @@ typedef struct
 	GLenum drawType;
 	color4 color;
 	float lineWidth;
-	float expireAt; // in seconds
+	double expireAt; // in seconds
 	matrix4 transform;
 	bool isDepthEnabled;
 	MeshRender* render;
@@ -100,7 +101,24 @@ public:
 		float duration = 0.0f,
 		bool isDepthEnabled = true);
 
-	void Render(Camera* debugCamera, Shader* debugShader);
+	//Adds a text to the debug drawing queue
+	void EnableWorldPlane(
+		color4& color,
+		int size = 50,
+		float lineWidth = 1.0f,
+		float duration = 0.0f,
+		bool isDepthEnabled = true);
+
+	//Adds a text to the debug drawing queue
+	void AddGrid(matrix4& transform,
+		color4& color,
+		int size = 10,
+		float lineWidth = 1.0f,
+		float duration = 0.0f,
+		bool isDepthEnabled = true);
+
+
+	//void Render(Camera* debugCamera, Shader* debugShader);
 
 private:
 

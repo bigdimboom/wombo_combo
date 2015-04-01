@@ -30,6 +30,7 @@ void DebugDrawManager::AddLine(const point4& from,
 	line.transform = matrix4(1.0f);
 	line.isDepthEnabled = isDepthEnabled;
 	line.render = lineMesh;
+	_debugDrawingQueue.push_back(line);
 }
 
 
@@ -111,6 +112,7 @@ void DebugDrawManager::AddTriangle(const point4& v0,
 	triangle.transform = matrix4(1.0f);
 	triangle.isDepthEnabled = isDepthEnabled;
 	triangle.render = triangleMesh;
+	_debugDrawingQueue.push_back(triangle);
 }
 
 
@@ -147,4 +149,60 @@ void DebugDrawManager::AddString(const point4& position,
 	bool isDepthEnabled)
 {
 
+}
+
+void DebugDrawManager::EnableWorldPlane(
+	color4& color,
+	int size,
+	float lineWidth,
+	float duration,
+	bool isDepthEnabled)
+{
+	static int worldSize = 0;
+
+	if (worldSize != size)
+	{
+		worldSize = size;
+		MeshRender* lineMesh = new MeshRender();
+		lineMesh->Init(new WorldPlane(worldSize), GL_LINES);
+		if (_nonePrimitives.count("WorldGrid") != 0)
+		{
+			delete _nonePrimitives["WorldGrid"];
+			_nonePrimitives.erase("WorldGrid");
+		}
+		_nonePrimitives["WorldGrid"] = lineMesh;
+	}
+
+	DebugDrawObject worldPlane;
+	worldPlane.isPrimitive = false;
+	worldPlane.drawType = GL_LINES;
+	worldPlane.color = color;
+	worldPlane.lineWidth = lineWidth;
+	worldPlane.expireAt = _timer.GetElapsedTime() + 1000 * duration;
+	worldPlane.transform = matrix4(1.0f);
+	worldPlane.isDepthEnabled = isDepthEnabled;
+	worldPlane.render = _nonePrimitives["WordGrid"];
+	_debugDrawingQueue.push_back(worldPlane);
+}
+
+//Adds a text to the debug drawing queue
+void DebugDrawManager::AddGrid(matrix4& transform,
+	color4& color,
+	int size,
+	float lineWidth,
+	float duration,
+	bool isDepthEnabled)
+{
+	MeshRender* gridMesh = new MeshRender();
+	gridMesh->Init(new WorldPlane(size), GL_LINES);
+	DebugDrawObject grid;
+	grid.isPrimitive = true;
+	grid.drawType = GL_LINES;
+	grid.color = color;
+	grid.lineWidth = lineWidth;
+	grid.expireAt = _timer.GetElapsedTime() + 1000 * duration;
+	grid.transform = transform;
+	grid.isDepthEnabled = isDepthEnabled;
+	grid.render = gridMesh;
+	_debugDrawingQueue.push_back(grid);
 }
