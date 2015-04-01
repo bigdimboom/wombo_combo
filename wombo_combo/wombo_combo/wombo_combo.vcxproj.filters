@@ -112,16 +112,10 @@
     <ClCompile Include="Cube.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="TetraSphere.cpp">
-      <Filter>Source Files\Mesh</Filter>
-    </ClCompile>
     <ClCompile Include="TerrainRenderable.cpp">
       <Filter>Source Files\Renderable</Filter>
     </ClCompile>
     <ClCompile Include="FlockRenderable.cpp">
-      <Filter>Source Files\Renderable</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityRenderable.cpp">
       <Filter>Source Files\Renderable</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
@@ -129,6 +123,21 @@
     </ClCompile>
     <ClCompile Include="ActorMovable.cpp">
       <Filter>Source Files\Actor</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDrawManager.cpp">
+      <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="Sphere.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRender.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp">
+      <Filter>Source Files\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -144,10 +153,10 @@
     <None Include="Shaders\vs_octree.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\fs_flock.glsl">
+    <None Include="Shaders\vs_debug.glsl">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Shaders\vs_flock.glsl">
+    <None Include="Shaders\fs_debug.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -203,9 +212,6 @@
     <ClInclude Include="Cube.h">
       <Filter>Source Files\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="TetraSphere.h">
-      <Filter>Source Files\Mesh</Filter>
-    </ClInclude>
     <ClInclude Include="TerrainRenderable.h">
       <Filter>Source Files\Renderable</Filter>
     </ClInclude>
@@ -213,9 +219,6 @@
       <Filter>Source Files\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="IRenderable.h">
-      <Filter>Source Files\Renderable</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityRenderable.h">
       <Filter>Source Files\Renderable</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
@@ -226,6 +229,21 @@
     </ClInclude>
     <ClInclude Include="ActorMovable.h">
       <Filter>Source Files\Actor</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDrawManager.h">
+      <Filter>Source Files\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="Sphere.h">
+      <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRender.h">
+      <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Triangle.h">
+      <Filter>Source Files\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

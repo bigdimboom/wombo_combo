@@ -1,18 +1,18 @@
-#include "TetraSphere.h"
+#include "Sphere.h"
 
 
-TetraSphere::TetraSphere()
+Sphere::Sphere()
 {
 	_isBuilt = false;
 	Build();
 }
 
 
-TetraSphere::~TetraSphere()
+Sphere::~Sphere()
 {
 }
 
-void TetraSphere::Build()
+void Sphere::Build()
 {
 	assert(_isBuilt == false);
 	_Tetrahedron();
@@ -27,7 +27,7 @@ void TetraSphere::Build()
 }
 
 
-void TetraSphere::_Tetrahedron() 
+void Sphere::_Tetrahedron() 
 {
 	point4 tera[4] = { point4(0.0f, 0.0f, 1.0f, 1.0f), point4(0.0f, 0.942809f,
 		-0.333333f, 1.0f), point4(-0.816497f, -0.471405f, -0.333333f, 1.0f),
@@ -46,7 +46,7 @@ void TetraSphere::_Tetrahedron()
 }
 
 //i0, i1, i2 are indcies
-void TetraSphere::_Subdivided(uint i0, uint i1, uint i2, int count)
+void Sphere::_Subdivided(uint i0, uint i1, uint i2, int count)
 {
 	if (count > 0) 
 	{
@@ -64,7 +64,7 @@ void TetraSphere::_Subdivided(uint i0, uint i1, uint i2, int count)
 	}
 }
 
-int TetraSphere::_LookUpIndex(uint index0, uint index1)
+int Sphere::_LookUpIndex(uint index0, uint index1)
 {
 	if (index0 > index1)
 	{
@@ -81,7 +81,7 @@ int TetraSphere::_LookUpIndex(uint index0, uint index1)
 	return _edges[key];
 }
 
-point4 TetraSphere::_Uint(point4& a, point4& b)
+point4 Sphere::_Uint(point4& a, point4& b)
 {
 	point4 p = a + b;
 	float len = p.x * p.x + p.y * p.y + p.z * p.z;
@@ -96,29 +96,14 @@ point4 TetraSphere::_Uint(point4& a, point4& b)
 	return t;
 }
 
-void TetraSphere::_Trianlge(uint i0, uint i1, uint i2)
+void Sphere::_Trianlge(uint i0, uint i1, uint i2)
 {
 	_indices.push_back(i0);
 	_indices.push_back(i1);
 	_indices.push_back(i2);
 }
 
-float TetraSphere::GetRadius()
+float Sphere::GetRadius()
 {
-	point4 yMax, yMin;
-
-	for (uint i = 0; i < GetVSize(); ++i)
-	{
-		if (GetVerts()[i].y > yMax.y)
-		{
-			yMax = GetVerts()[i];
-		}
-
-		if (GetVerts()[i].y < yMin.y)
-		{
-			yMin = GetVerts()[i];
-		}
-	}
-
-	return glm::distance(yMax, yMin);
+	return 0.5f;
 }

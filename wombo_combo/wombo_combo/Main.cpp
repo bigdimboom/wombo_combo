@@ -9,8 +9,8 @@
 #include "Octree.h"
 #include "TerrainRenderable.h"
 #include "FlockRenderable.h"
-#include "EntityRenderable.h"
-#include "TetraSphere.h"
+#include "Sphere.h"
+#include "MeshRender.h"
 #include <time.h>
 
 
@@ -29,7 +29,7 @@ Shader gShaderFlock;
 
 MyTimer gTimer;
 
-FreeCamera gCamera(point3(100.0f, 25.0f, 50.5f));
+FreeCamera gCamera(point3(10.0f, 25.0f, 10.5f));
 
 point3 gLightPos = point3(-1.0, 100, 1.5);
 
@@ -41,10 +41,7 @@ Octree gOctree;
 
 TerrainRenderable gTerrain(512, 512);
 FlockRenderable gFlock;
-EntityRenderable gSphere;
-
-int gShoot = 0;
-point3 gSavePos;
+MeshRender cube;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -83,7 +80,7 @@ void Init()
 {
 	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
 	gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
-	gShaderFlock.Comiple("Shaders/vs_flock.glsl", "Shaders/fs_flock.glsl");
+	gShaderFlock.Comiple("Shaders/vs_debug.glsl", "Shaders/fs_debug.glsl");
 
 	gTimer.Reset();
 
@@ -94,13 +91,10 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	TetraSphere* ptr = nullptr;
+	cube.Init(new Sphere, GL_TRIANGLES);
 
-	gSphere.Init(ptr = new TetraSphere);
-	gSphere.Scale(5.0f);
-	gSphere.SetRadius(ptr->GetRadius());
-
-	gFlock.Init();
+	//gFlock.Init();
+	
 	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
 	//gOctree.Build(600, 7);
 }
@@ -143,29 +137,9 @@ void EventHandler(SDL_Event &e)
 			if (e.button.button == SDL_BUTTON_LEFT)
 			{
 				//std::cout << "Clicked\n";
-				point3 front = *gCamera.GetFront();
-				gSphere.SetVelocity(front);
-				gSphere.SetPosition(gCamera.GetPosition());
-				gShoot = 1;
 			}
 		}
 	}
-}
-
-// It lookd like I need Octree to detect collision
-bool IsCollide()
-{
-	int size = gTerrain.GetRawTerrain()->GetMesh().GetIdxSize();
-	uint* idxs = gTerrain.GetRawTerrain()->GetMesh().GetIndxs();
-	point4* verts = gTerrain.GetRawTerrain()->GetMesh().GetVerts();
-	for (int i = 0; i < size; i += 3)
-	{
-		//if (gSphere.IsCollideWith_NaiveVersion(verts[idxs[i]], verts[idxs[i + 1]], verts[idxs[i + 2]]))
-		//{
-		//	return true;
-		//}
-	}
-	return false;
 }
 
 void Render()
@@ -178,14 +152,11 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+
+	cube.Render(&gCamera, &gShaderFlock, point4(0.2, 1.0, 0.5, 1.0), glm::scale(matrix4(1.0), point3(5.0f,5.0f,5.0f)));
 
 	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
-	if (gShoot)
-	{
-		gSphere.Render(&gCamera, nullptr, &gShaderFlock);
-	}
-
 	gWindow.SwapBuffers();
 }
 
@@ -193,23 +164,10 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 
-	gSavePos = gSphere.GetPosition();
-
 	++gFrameCount;
 	if (gTimeElapsed / 1000 >= 0.01/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
 		gFlock.MoveAll(0.3f);
-		gSphere.Move(0.1f);
-	}
-
-	if (gShoot == 1)
-	{
-		if (IsCollide())
-		{
-			gSphere.SetVelocity(point3(0.0f, 0.0f, 0.0f));
-			gSphere.SetPosition(gSavePos);
-			gShoot = 2;
-		}
 	}
 
 	++gFrameCount;

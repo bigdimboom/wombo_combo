@@ -15,7 +15,9 @@
     <ClCompile Include="ActorMovable.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cube.cpp" />
-    <ClCompile Include="EntityRenderable.cpp" />
+    <ClCompile Include="DebugDrawManager.cpp" />
+    <ClCompile Include="Line.cpp" />
+    <ClCompile Include="MeshRender.cpp" />
     <ClCompile Include="Flock.cpp" />
     <ClCompile Include="FlockRenderable.cpp" />
     <ClCompile Include="FreeCamera.cpp" />
@@ -29,17 +31,18 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainRenderable.cpp" />
-    <ClCompile Include="TetraSphere.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UniqueID.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl" />
-    <None Include="Shaders\fs_flock.glsl" />
+    <None Include="Shaders\fs_debug.glsl" />
     <None Include="Shaders\fs_octree.glsl" />
     <None Include="Shaders\vs.glsl" />
-    <None Include="Shaders\vs_flock.glsl" />
+    <None Include="Shaders\vs_debug.glsl" />
     <None Include="Shaders\vs_octree.glsl" />
   </ItemGroup>
   <ItemGroup>
@@ -47,7 +50,9 @@
     <ClInclude Include="ActorMovable.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cube.h" />
-    <ClInclude Include="EntityRenderable.h" />
+    <ClInclude Include="DebugDrawManager.h" />
+    <ClInclude Include="Line.h" />
+    <ClInclude Include="MeshRender.h" />
     <ClInclude Include="Flock.h" />
     <ClInclude Include="FlockRenderable.h" />
     <ClInclude Include="FreeCamera.h" />
@@ -64,8 +69,9 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainRenderable.h" />
-    <ClInclude Include="TetraSphere.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Triangle.h" />
     <ClInclude Include="UniqueID.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>

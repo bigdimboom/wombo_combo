@@ -5,12 +5,12 @@
 
 #define LOD 4
 
-class TetraSphere :
+class Sphere :
 	public Mesh
 {
 public:
-	TetraSphere();
-	~TetraSphere();
+	Sphere();
+	~Sphere();
 	void Build();
 	float GetRadius();
 private:
