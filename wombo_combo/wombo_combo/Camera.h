@@ -25,12 +25,15 @@ public:
 	inline matrix4* GetViewMatrix(){return &_viewMat; }
 	void SetFrustum(float angle, float ratio, float nearPlane, float farPlane);
 	inline matrix4* GetProjMatrix(){ return &_projMat; }
-	inline point3* GetFront(){ return &_front; }
 	virtual void Move(Camera_Movement dir, GLfloat dTime);
 	virtual void Rotate(Camera_Rotate dir, GLfloat angle);
 	inline void SetVelocity(GLfloat velocity) { _velocity = velocity; }
 	inline void SetSensitivity(GLfloat sensitivity) { _sensitivity = sensitivity; }
 	// If you want to override the camera class
+	inline point3 GetFront() const{ return _front; }
+	inline point3 GetRight() const { return _right; }
+	inline point3 GetUp() const { return _up; }
+
 	virtual void Update();
 	//view matrix
 protected:

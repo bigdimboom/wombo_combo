@@ -170,7 +170,7 @@ void Octree::GenerateChildren(OctantPtr &start, int depth)
 
 void Octree::InitOctreeDrawData()
 {
-	uint size = _octree.size() * 24;
+	uint size = (uint)_octree.size() * 24;
 
 	_octreeVerts = new point3[size];
 

@@ -11,8 +11,8 @@ public:
 	inline void Normalize();
 	inline void Set(const point3 &p0, const point3 &p1, const point3 &p2); // p1 - p0 cross p2 - p0
 
-	bool Inside(const point3& point, const float radius);
-	bool Inside(const point3& point);
+	bool IsInside(const point3& point, const float radius);
+	bool IsInside(const point3& point);
 
 	inline point4* Get() { return &_plane; }
 	inline point3 GetNormal() { return point3(_plane); }

@@ -16,9 +16,9 @@ void Sphere::Build()
 {
 	assert(_isBuilt != true);
 	_Tetrahedron();
-	this->SetVertSize(_verts.size());
+	this->SetVertSize((uint)_verts.size());
 	memcpy(this->GetVerts(), &_verts[0], sizeof(point4) * _verts.size());
-	SetIdxSize(_indices.size());
+	SetIdxSize((uint)_indices.size());
 	memcpy(this->GetIndxs(), &_indices[0], sizeof(uint) * _indices.size());
 	_edges.clear();
 	_verts.clear();
@@ -75,7 +75,7 @@ uint Sphere::_LookUpIndex(uint index0, uint index1)
 	if ( _edges.count(key) == 0)
 	{
 		_verts.push_back(_Uint(_verts[index0], _verts[index1]));
-		_edges[key] = _verts.size() - 1;
+		_edges[key] = (uint)_verts.size() - 1;
 	}
 
 	return _edges[key];

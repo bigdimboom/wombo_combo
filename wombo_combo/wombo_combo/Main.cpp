@@ -99,7 +99,7 @@ void Init()
 	gFlock.Init();
 	
 	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), gTerrain.GetRawTerrain()->GetPosition(), 512.0f / 2.0f);
-	gOctree.Build(600, 5);
+	gOctree.Build(600, 8);
 }
 
 void EventHandler(SDL_Event &e)

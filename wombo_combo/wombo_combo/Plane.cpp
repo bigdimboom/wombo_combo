@@ -37,14 +37,14 @@ inline void Plane::Set(const point3 &a, const point3 &b, const point3 &c)
 	Normalize();
 }
 
-bool Plane::Inside(const point3& point, const float radius)
+bool Plane::IsInside(const point3& point, const float radius)
 {
-	float fDistance; 
+	float fDistance;
 	fDistance = PlaneDotCoord(point);
-	return (fDistance < radius);
+	return (fDistance >= -radius);
 }
 
-bool Plane::Inside(const point3& point)
+bool Plane::IsInside(const point3& point)
 {
 	float result = PlaneDotCoord(point);
 	return (result >= 0.0f);
