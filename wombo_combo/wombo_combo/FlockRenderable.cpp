@@ -43,7 +43,7 @@ void FlockRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 		model = glm::translate(matrix4(1.0), flock[i]->GetPosition());
 		glUniform4fv(colorLoc, 1, glm::value_ptr(color));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glDrawElements(GL_TRIANGLES, flock[i]->GetMesh()->GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+		glDrawElements(GL_TRIANGLES, (GLsizei)flock[i]->GetMesh()->GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	}
 	glBindVertexArray(0);
 }

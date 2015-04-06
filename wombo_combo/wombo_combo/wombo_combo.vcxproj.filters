@@ -62,6 +62,9 @@
     <Filter Include="Source Files\Math">
       <UniqueIdentifier>{e867e674-1d3a-4d88-872a-e35fa687eaa2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\DebugDraw">
+      <UniqueIdentifier>{f2d08fbb-9f06-47c0-996c-b5cdb09bb117}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -124,9 +127,6 @@
     <ClCompile Include="ActorMovable.cpp">
       <Filter>Source Files\Actor</Filter>
     </ClCompile>
-    <ClCompile Include="DebugDrawManager.cpp">
-      <Filter>Source Files\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="Sphere.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
@@ -144,6 +144,9 @@
     </ClCompile>
     <ClCompile Include="WorldPlane.cpp">
       <Filter>Source Files\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDrawManager.cpp">
+      <Filter>Source Files\DebugDraw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +239,6 @@
     <ClInclude Include="ActorMovable.h">
       <Filter>Source Files\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="DebugDrawManager.h">
-      <Filter>Source Files\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>Source Files\Mesh</Filter>
     </ClInclude>
@@ -256,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="WorldPlane.h">
       <Filter>Source Files\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDrawManager.h">
+      <Filter>Source Files\DebugDraw</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

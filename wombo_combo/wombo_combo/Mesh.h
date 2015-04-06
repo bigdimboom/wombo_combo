@@ -37,10 +37,10 @@ public:
 	void OptimizeNorm();
 
 private:
-	int _vertSize;
-	int _normalSize;
-	int _indexSize;
-	int _uvSize;
+	uint _vertSize;
+	uint _normalSize;
+	uint _indexSize;
+	uint _uvSize;
 	point4* _verts;
 	normal3* _normals;
 	point2* _uv;

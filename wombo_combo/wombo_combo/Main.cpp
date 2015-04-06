@@ -94,15 +94,12 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-
-	//point4 v0(1.0f, 0.0f, 0.0f, 1.0f);
-	//point4 v1(0.0f, 1.0f, 0.0f, 1.0f);
 	cube.Init(new WorldPlane(10), GL_LINES);
 
-	//gFlock.Init();
+	gFlock.Init();
 	
-	//gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), point3(0.0f, 0.0f, 0.0f), 512.0f / 2.0f);
-	//gOctree.Build(600, 7);
+	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), gTerrain.GetRawTerrain()->GetPosition(), 512.0f / 2.0f);
+	gOctree.Build(600, 5);
 }
 
 void EventHandler(SDL_Event &e)
@@ -158,11 +155,11 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
 	cube.Render(&gCamera, &gShaderFlock, point4(0.2, 1.0, 0.5, 1.0), glm::scale(matrix4(1.0), point3(5.0f,5.0f,5.0f)), 1.0f, false);
 
-	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
+	gOctree.DebugDraw(&gCamera, &gShaderOctree);
 	gWindow.SwapBuffers();
 }
 
@@ -170,15 +167,14 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 
-	++gFrameCount;
-	if (gTimeElapsed / 1000 >= 0.01/* && gTimeElapsed < 60*/){
-		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
-		gFlock.MoveAll(0.3f);
+	if (gTimeElapsed / 1000 >= 0.1){
+		//gFlock.MoveAll(1.0f);
 	}
 
 	++gFrameCount;
 	if (gTimeElapsed / 1000 >= 1/* && gTimeElapsed < 60*/){
 		//std::cout << "Warning:(Frame rate lower than 60 fps) " << gFrameCount << std::endl;
+		SDL_SetWindowTitle(gWindow.GetWindowRef(), std::to_string(gFrameCount / 2).c_str());
 		gFrameCount = 0;
 		gTimeElapsed = 0;
 		gLightPos.x += gLightPos.x * cos(1.0f) - gLightPos.y * sin(1.0f);
@@ -195,6 +191,7 @@ int main(int argc, char** argv)
 {
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
+		SDL_Quit();
 		return 1;
 	}
 

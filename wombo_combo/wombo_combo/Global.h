@@ -27,7 +27,7 @@ typedef glm::vec3 normal3;
 
 typedef glm::mat4 matrix4;
 
-typedef unsigned int uint;
+typedef glm::uint_t uint;
 typedef unsigned char uchar;
 
 

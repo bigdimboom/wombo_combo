@@ -77,7 +77,7 @@ void MeshRender::Render(Camera* cam, Shader* shader, color4& color, matrix4& mod
 	glDisable(GL_CULL_FACE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(lineWidth);
-	glDrawElements(_drawMode, _mesh->GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	glDrawElements(_drawMode, (GLsizei)_mesh->GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 
 	//Recover from old states
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

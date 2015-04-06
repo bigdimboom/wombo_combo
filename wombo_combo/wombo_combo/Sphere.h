@@ -18,7 +18,7 @@ private:
 	void _Tetrahedron(); // Done
 	void _Trianlge(uint i0, uint i1, uint i2); //Triangle
 	point4 _Uint(point4& a, point4& b); //Done
-	int _LookUpIndex(uint index0, uint index1); // Done
+	uint _LookUpIndex(uint index0, uint index1); // Done
 
 	//void _GouraudOptimize();
 	//void _OptimizeNormal();

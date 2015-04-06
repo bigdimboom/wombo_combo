@@ -56,7 +56,7 @@ void Terrain::GenHeightMap(const char* hightmap)
 	uchar color = 0;
 	float h = 0.0f;
 
-	int size = _length * _width;
+	uint size = _length * _width;
 	_mesh.SetVertSize((uint)size);
 
 	//only red for heightmap
@@ -96,7 +96,7 @@ void Terrain::GenHeightMap(const char* hightmap)
 
 void Terrain::GenIndicesArray()
 {
-	int indexSize = (_width - 1) * (_length - 1) * 6;
+	uint indexSize = (_width - 1) * (_length - 1) * 6;
 	_mesh.SetIdxSize(indexSize);
 	int i = 0;
 
@@ -126,7 +126,7 @@ void Terrain::GenNormals()
 
 	normal3* normalSum = new normal3[_width*_length];
 	int* counts = new int[_width*_length];
-	int curr_index;
+	size_t curr_index;
 	point4 currentPoint;
 
 	//Next time don't use l and 1 together
@@ -207,7 +207,7 @@ void Terrain::GenNormals()
 
 void Terrain::GenTextureCoords()
 {
-	int size = _length * _width;
+	uint size = _length * _width;
 	_mesh.SetUVSize(size);
 
 	//map all index in (0,0) to (1,1) scale

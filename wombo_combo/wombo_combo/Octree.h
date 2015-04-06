@@ -13,7 +13,7 @@ typedef Octant* OctantPtr;
 
 struct Octant
 {
-	uint vertSize; // number of trianles in this node
+	//bool isLeafNode; // number of trianles in this node
 	point3 center; // the center position of this node
 	float radius; // it's a square radius
 	std::vector<uint> indices;
@@ -25,12 +25,13 @@ class Octree
 public:
 	Octree();
 	~Octree();
-	void BindMesh(Mesh* mesh, point3 origin, float radius);
+	void BindMesh(Mesh* mesh, const point3& origin, float radius);
 	void Build(int maxUnit, int maxDepth);
 	void Destory();
 	void DebugDraw(Camera *cam, Shader *shader);
 protected:
-	void Generate(OctantPtr start, int depth);
+	void GenerateChildren(OctantPtr &start, int depth);
+	void AddIndices(OctantPtr& up, OctantPtr& start);
 	void InitOctreeDrawData();
 private:
 	Mesh* _rawMesh;

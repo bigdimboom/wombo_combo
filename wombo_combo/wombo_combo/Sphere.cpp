@@ -50,9 +50,9 @@ void Sphere::_Subdivided(uint i0, uint i1, uint i2, int count)
 {
 	if (count > 0) 
 	{
-		int ii0 = _LookUpIndex(i0, i1);
-		int ii1 = _LookUpIndex(i0, i2);
-		int ii2 = _LookUpIndex(i1, i2);
+		uint ii0 = _LookUpIndex(i0, i1);
+		uint ii1 = _LookUpIndex(i0, i2);
+		uint ii2 = _LookUpIndex(i1, i2);
 		_Subdivided(i0, ii0, ii1, count - 1);
 		_Subdivided(i2, ii1, ii2, count - 1);
 		_Subdivided(i1, ii2, ii0, count - 1);
@@ -64,7 +64,7 @@ void Sphere::_Subdivided(uint i0, uint i1, uint i2, int count)
 	}
 }
 
-int Sphere::_LookUpIndex(uint index0, uint index1)
+uint Sphere::_LookUpIndex(uint index0, uint index1)
 {
 	if (index0 > index1)
 	{

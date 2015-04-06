@@ -1,6 +1,6 @@
 #include "Octree.h"
 
-void InitNodeChildren(OctantPtr octPtr)
+void InitToChildrenPtr(OctantPtr octPtr)
 {
 	for (int i = 0; i < 8; ++i)
 	{
@@ -8,7 +8,7 @@ void InitNodeChildren(OctantPtr octPtr)
 	}
 }
 
-bool IsInBox(OctantPtr octPtr, point3 point)
+bool IsInBox(OctantPtr octPtr, const point4* point)
 {
 	float x1 = octPtr->center.x - octPtr->radius;
 	float x2 = octPtr->center.x + octPtr->radius;
@@ -17,9 +17,9 @@ bool IsInBox(OctantPtr octPtr, point3 point)
 	float z1 = octPtr->center.z - octPtr->radius;
 	float z2 = octPtr->center.z + octPtr->radius;
 
-	if (point.x >= x1 && point.x <= x2 &&
-		point.y >= y1 && point.y <= y2 &&
-		point.z >= z1 && point.z <= z2)
+	if (point->x >= x1 && point->x <= x2 &&
+		point->y >= y1 && point->y <= y2 &&
+		point->z >= z1 && point->z <= z2)
 	{
 		return true;
 	}
@@ -79,6 +79,23 @@ void Octree::_InitChildrenCenter(OctantPtr start, int i)
 	}
 }
 
+void Octree::AddIndices(OctantPtr& up, OctantPtr& child)
+{
+	for (uint idx = 0; idx < up->indices.size(); idx = idx + 3)
+	{
+		point4* p0 = &_rawMesh->GetVerts()[up->indices[idx]];
+		point4* p1 = &_rawMesh->GetVerts()[up->indices[idx + 1]];
+		point4* p2 = &_rawMesh->GetVerts()[up->indices[idx + 2]];
+
+		if (IsInBox(child, p0) || IsInBox(child, p1) || IsInBox(child, p2)/*&& IsLeafNode(child)*/)
+		{
+			child->indices.push_back(up->indices[idx]);
+			child->indices.push_back(up->indices[idx + 1]);
+			child->indices.push_back(up->indices[idx + 2]);
+		}
+	}
+}
+
 Octree::Octree()
 	:_rawMesh(nullptr),
 	_root(nullptr),
@@ -94,16 +111,16 @@ Octree::~Octree()
 }
 
 
-void Octree::BindMesh(Mesh* mesh, point3 origin, float radius)
+void Octree::BindMesh(Mesh* mesh, const point3& origin, float radius)
 {
 	_rawMesh = mesh;
 	_root = new Octant;
-	_root->vertSize = _rawMesh->GetIdxSize();
+	//_root->isLeafNode = true;
 	_root->center = origin;
 	_root->radius = radius;
 	_root->indices.assign(_rawMesh->GetIndxs(),
 		_rawMesh->GetIndxs() + _rawMesh->GetIdxSize());
-	InitNodeChildren(_root);
+	InitToChildrenPtr(_root);
 	_octree.push_back(_root);
 }
 
@@ -113,15 +130,15 @@ void Octree::Build(int maxSizePerNode, int maxDepth)
 	assert(_rawMesh != nullptr);
 	_maxDepth = maxDepth;
 	_maxVSizePerNode = maxSizePerNode;
-	Generate(_root, _maxDepth);
+	GenerateChildren(_root, _maxDepth);
 	InitOctreeDrawData();
 }
 
 
-void Octree::Generate(OctantPtr start, int depth)
+void Octree::GenerateChildren(OctantPtr &start, int depth)
 {
 	if (depth == 0 ||
-		start->vertSize <= _maxVSizePerNode)
+		start->indices.size() <= _maxVSizePerNode /*|| IsLeafNode(start)*/)
 	{
 		return;
 	}
@@ -130,43 +147,32 @@ void Octree::Generate(OctantPtr start, int depth)
 	for (uint i = 0; i < 8; ++i)
 	{
 		start->child[i] = new Octant;
-		start->child[i]->vertSize = 0;
+		//start->child[i]->isLeafNode = true;
 		start->child[i]->radius = (start->radius / 2.0f);
 		//Be cautious of the next two
-		InitNodeChildren(start->child[i]);
-		_InitChildrenCenter(start, i); //init its children's center//This is corrent for future reference
-		_octree.push_back(start->child[i]);
-	}
-
-	point3 pos;
-	for (uint idx = 0; idx < start->vertSize; ++idx)
-	{
-		pos = point3(_rawMesh->GetVerts()[start->indices[idx]]);
-		for (int i = 0; i < 8; ++i)
-		{
-			if (IsInBox(start->child[i], pos) && IsLeafNode(start->child[i]))
-			{
-				start->child[i]->indices.push_back(start->indices[idx]);
-				++start->child[i]->vertSize;
-			}
-		}
+		InitToChildrenPtr(start->child[i]); // make childen's children ptr to nullptr
+		_InitChildrenCenter(start, (int)i); // init its children's center;
+		_octree.push_back(start->child[i]); // after the initilization of children push to octree
+		AddIndices(start, start->child[i]);
 	}
 
 	start->indices.clear();
 	start->indices.shrink_to_fit();
 
+	--depth;
+
 	for (uint i = 0; i < 8; ++i)
 	{
-		Generate(start->child[i], depth - 1);
+		GenerateChildren(start->child[i], depth);
 	}
 }
 
 
 void Octree::InitOctreeDrawData()
 {
-	uint vertSize = sizeof(point3) * _octree.size() * 24;
+	uint size = _octree.size() * 24;
 
-	_octreeVerts = new point3[_octree.size() * 24];
+	_octreeVerts = new point3[size];
 
 	uint vertsCount = 0;
 
@@ -177,7 +183,7 @@ void Octree::InitOctreeDrawData()
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertSize, _octreeVerts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(point3) * size, _octreeVerts, GL_STATIC_DRAW);
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
@@ -190,10 +196,6 @@ void Octree::InitOctreeDrawData()
 
 void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 {
-	if (IsLeafNode(node)){
-		return;
-	}
-
 	point3 ftop_left;
 	ftop_left.x = node->center.x - node->radius;
 	ftop_left.y = node->center.y + node->radius;
@@ -263,6 +265,10 @@ void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 	_octreeVerts[vertCount++] = fdown_left;
 	_octreeVerts[vertCount++] = bdown_left;
 
+	if (IsLeafNode(node)){
+		return;
+	}
+
 	for (uint i = 0; i < 8; ++i)
 	{
 		_GenDrawData(node->child[i], vertCount);
@@ -289,7 +295,7 @@ void Octree::DebugDraw(Camera *cam, Shader *shader)
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-	glDrawArrays(GL_LINES, 0, _octree.size() * 24);
+	glDrawArrays(GL_LINES, 0, (GLsizei)_octree.size() * 24);
 	glBindVertexArray(0);
 }
 
