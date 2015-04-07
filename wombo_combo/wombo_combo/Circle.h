@@ -1,16 +1,16 @@
 #pragma once
 #include "Mesh.h"
+#include <vector>
+
+#define CONNERS 360
+
 class Circle :
 	public Mesh
 {
 public:
-	Circle(const point4& center,
-		const point3& planeNormal,
-		float radius);
+	Circle();
 	~Circle();
-	void Init(const point4& center,
-		const point3& planeNormal,
-		float radius);
+	void Init();
 private:
 	bool _isBuilt;
 };

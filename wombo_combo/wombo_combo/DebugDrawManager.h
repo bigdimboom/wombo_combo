@@ -11,7 +11,9 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Triangle.h"
+#include "Circle.h"
 #include "Grid.h"
+#include <glm/gtx/vector_angle.hpp>
 
 
 typedef struct 
@@ -35,6 +37,7 @@ public:
 	{
 		SPHERE = 0,
 		WORLD_GRID,
+		CIRCLE,
 		SIZE
 	};
 

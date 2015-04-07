@@ -100,6 +100,8 @@ void Init()
 	gOctree.Build(600, 8);
 
 	DebugDrawManager::getInstance().EnableWorldPlane(color4(1.0,0.3,0.8,1.0), 10000.0f, 50, 1.0f, false);
+
+	DebugDrawManager::getInstance().AddCircle(point4(0.0f, 10.0f, 0.0f, 1.0), point3(0.0f, 0.0f, 1.0f), 10.0f, color4(0.4, 0.4, 0.6, 1.0), 1000.0f, false);
 }
 
 void EventHandler(SDL_Event &e)

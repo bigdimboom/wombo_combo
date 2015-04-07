@@ -4,7 +4,12 @@ DebugDrawManager::DebugDrawManager()
 {
 	_nonePrimitives[SPHERE] = new MeshRender();
 	_nonePrimitives[SPHERE]->Init(new Sphere, GL_TRIANGLES);
-	if (_nonePrimitives[SPHERE] == nullptr)
+
+	_nonePrimitives[CIRCLE] = new MeshRender();
+	_nonePrimitives[CIRCLE]->Init(new Circle, GL_LINE_LOOP);
+
+	if (_nonePrimitives[SPHERE] == nullptr
+		|| _nonePrimitives[CIRCLE] == nullptr)
 	{
 		std::cout << "error init sphere\n";
 		system("PAUSE");
@@ -76,7 +81,24 @@ void DebugDrawManager::AddCircle(const point4& center,
 	float duration,
 	bool isDepthEnabled)
 {
-
+	DebugDrawObject circle;
+	circle.isPrimitive = false;
+	circle.color = color;
+	circle.lineWidth = 2.0f;
+	circle.expireAt = _timer.GetElapsedTime() + duration * 1000;
+	//////////////////////
+	float scale = radius;
+	point3 normal = glm::normalize(planeNormal);
+	point3 up = point3(0.0f, 1.0f, 0.0f);
+	point3 nn = glm::cross(up, normal);
+	/////////////////////
+	circle.transform = glm::translate(matrix4(1.0), point3(center)) *
+		glm::rotate(matrix4(1.0), glm::orientedAngle(up, normal, nn), nn) *
+		glm::scale(matrix4(1.0), point3(scale, scale, scale));
+	circle.isDepthEnabled = isDepthEnabled;
+	circle.render = _nonePrimitives[CIRCLE];
+	//put circle in the drawing queue
+	_debugDrawingQueue.push_back(circle);
 }
 
 
