@@ -15,6 +15,7 @@
 #include "Line.h"
 #include <time.h>
 #include "DebugDrawManager.h"
+#include "Frustum.h"
 
 
 #define WINDOW_WIDTH 800
@@ -46,6 +47,7 @@ TerrainRenderable gTerrain(512, 512);
 FlockRenderable gFlock;
 MeshRender cube;
 
+Frustum gFrustrum;
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -142,6 +144,7 @@ void EventHandler(SDL_Event &e)
 			if (e.button.button == SDL_BUTTON_LEFT)
 			{
 				//std::cout << "Clicked\n";
+				gFrustrum.Set(&gCamera);
 			}
 		}
 	}

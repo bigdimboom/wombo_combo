@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Global.h"
 #include "Plane.h"
+#include "DebugDrawManager.h"
 
 /*
 The frustrum class is ported from
@@ -51,14 +52,6 @@ public:
 	bool IsCubeInside(const point3& center, const float cubeRadius);
 
 	const Plane &Get(Side side);
-	void SetCamera(Camera* camera);
-	void SetFOV(float fov);
-	void SetAspect(float aspect);
-	void SetNear(float nearClip);
-	void SetFar(float farClip);
-	void Init(Camera* cam, const float fov, const float aspect,
-		const float nearD, const float farD);
-	void Render();
-
+	void Set(Camera* cam);
 };
 

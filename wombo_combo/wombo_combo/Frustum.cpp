@@ -67,49 +67,14 @@ const Plane& Frustum::Get(Side side)
 	return this->planes[side];
 }
 
-void Frustum::SetFOV(float fov)
+void Frustum::Set(Camera* cam)
 {
-	this->fov = fov;
-	Init(this->camera, this->fov,
-		this->aspect, this->dNear, this->dFar);
-}
-
-void Frustum::SetAspect(float aspect)
-{
-	this->aspect = aspect;
-	Init(this->camera, this->fov,
-		this->aspect, this->dNear, this->dFar);
-}
-
-void Frustum::SetNear(float nearClip)
-{
-	this->dNear = nearClip;
-	Init(this->camera, this->fov,
-		this->aspect, this->dNear, this->dFar);
-}
-
-void Frustum::SetFar(float farClip)
-{
-	this->dFar = farClip;
-	Init(this->camera, this->fov,
-		this->aspect, this->dNear, this->dFar);
-}
-
-void Frustum::SetCamera(Camera* camera)
-{
-	this->camera = camera;
-	Init(this->camera, this->fov,
-		this->aspect, this->dNear, this->dFar);
-}
-
-void Frustum::Init(Camera* cam, const float fov,
-	const float aspect, const float nearD, const float farD)
-{
+	assert(cam != nullptr);
 	this->camera = cam;
-	this->fov = fov;
-	this->aspect = aspect;
-	this->dNear = nearD;
-	this->dFar = farD;
+	this->fov = cam->GetFov();
+	this->aspect = cam->GetDisplayRatio();
+	this->dNear = cam->GetNearDistance();
+	this->dFar = cam->GetFarDistance();
 
 	float halfTanFOV = glm::tan(glm::radians(this->fov / 2.0f));
 	float nearHeight_half = dNear * halfTanFOV;
@@ -117,22 +82,22 @@ void Frustum::Init(Camera* cam, const float fov,
 	float nearWidth_half = nearHeight_half * aspect;
 	float farWidth_half = farHeight_half * aspect;
 
-	point3  nearCenter = cam->GetPosition() + dNear * cam->GetFront();
-	point3  farCenter = cam->GetPosition() + dFar * cam->GetFront();
+	point3  nearCenter = /*cam->GetPosition()*/ dNear * cam->GetFront();
+	point3  farCenter = /*cam->GetPosition()*/  dFar * cam->GetFront();
 
-	nearClip[UP_LEFT] = nearCenter + (camera->GetUp() * nearHeight_half) -
+	nearClip[UP_LEFT] = nearCenter + (camera->GetUp() * nearHeight_half) +
 		(camera->GetRight() * nearWidth_half);
-	nearClip[UP_RIGHT] = nearCenter + (camera->GetUp() * nearHeight_half) +
+	nearClip[UP_RIGHT] = nearCenter + (camera->GetUp() * nearHeight_half) -
 		(camera->GetRight() * nearWidth_half);
-	nearClip[BOTTOM_RIGHT] = nearCenter - (camera->GetUp() * nearHeight_half) + (camera->GetRight() * nearWidth_half);
-	nearClip[BOTTOM_LEFT] = nearCenter - (camera->GetUp() * nearHeight_half) - (camera->GetRight() * nearWidth_half);
+	nearClip[BOTTOM_RIGHT] = nearCenter - (camera->GetUp() * nearHeight_half) - (camera->GetRight() * nearWidth_half);
+	nearClip[BOTTOM_LEFT] = nearCenter - (camera->GetUp() * nearHeight_half) + (camera->GetRight() * nearWidth_half);
 
-	farClip[UP_LEFT] = farCenter + (camera->GetUp() * farHeight_half) -
+	farClip[UP_LEFT] = farCenter + (camera->GetUp() * farHeight_half) +
 		(camera->GetRight() * farWidth_half);
-	farClip[UP_RIGHT] = farCenter + (camera->GetUp() * farHeight_half) +
+	farClip[UP_RIGHT] = farCenter + (camera->GetUp() * farHeight_half) -
 		(camera->GetRight() * farWidth_half);
-	farClip[BOTTOM_RIGHT] = farCenter - (camera->GetUp() * farHeight_half) + (camera->GetRight() * farWidth_half);
-	farClip[BOTTOM_LEFT] = nearCenter - (camera->GetUp() * farHeight_half) - (camera->GetRight() * farWidth_half);
+	farClip[BOTTOM_RIGHT] = farCenter - (camera->GetUp() * farHeight_half) - (camera->GetRight() * farWidth_half);
+	farClip[BOTTOM_LEFT] = nearCenter - (camera->GetUp() * farHeight_half) + (camera->GetRight() * farWidth_half);
 
 	planes[NEARD].Set(nearClip[UP_LEFT], nearClip[UP_RIGHT], nearClip[BOTTOM_RIGHT]);
 	planes[FARD].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], nearClip[BOTTOM_LEFT]);
@@ -142,6 +107,12 @@ void Frustum::Init(Camera* cam, const float fov,
 
 	planes[TOP].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], farClip[UP_LEFT]);
 	planes[BOTTOM].Set(nearClip[BOTTOM_LEFT], nearClip[BOTTOM_RIGHT], farClip[BOTTOM_RIGHT]);
+
+	DebugDrawManager::getInstance().
+		AddFrustum(point4(nearClip[UP_LEFT],1.0f), point4(nearClip[UP_RIGHT],1.0f),
+		point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f), 
+		point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
+		point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f),color4(0.1f, 0.4f, 0.5f, 1.0f), 100.0f, 1.0f, 5.0f, false);
 }
 
 bool Frustum::IsCubeInside(const point3& center, const float cubeRadius)
@@ -174,8 +145,3 @@ bool Frustum::IsCubeInside(const point3& center, const float cubeRadius)
 	return true;
 }
 
-
-void Frustum::Render()
-{
-
-}

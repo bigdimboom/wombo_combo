@@ -8,7 +8,8 @@ Camera::Camera(point3 cameraPos, point3 wolrdUp)
 	_front(point3(0.0f, 0.0f, 1.0f)),
 	_sensitivity(0.5f),
 	_velocity(0.05f),
-	_projMat(1.0)
+	_projMat(1.0),
+	_isProjSet(false)
 {
 	Update();
 }
@@ -85,4 +86,9 @@ void Camera::Update()
 void Camera::SetFrustum(float angle, float ratio, float nearPlane, float farPlane)
 {
 	_projMat = glm::perspective(angle, ratio, nearPlane, farPlane);
+	_fov = angle;
+	_ratio = ratio;
+	_nearPlane = nearPlane;
+	_farPlane = farPlane;
+	_isProjSet = true;
 }

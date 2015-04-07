@@ -33,9 +33,13 @@ public:
 	inline point3 GetFront() const{ return _front; }
 	inline point3 GetRight() const { return _right; }
 	inline point3 GetUp() const { return _up; }
-
 	virtual void Update();
 	//view matrix
+	inline float GetFov() const { assert(_isProjSet); return _fov; }
+	inline float GetDisplayRatio() const { assert(_isProjSet); return _ratio; }
+	inline float GetNearDistance() const { assert(_isProjSet); return _nearPlane; }
+	inline float GetFarDistance() const { assert(_isProjSet); return _farPlane; }
+
 protected:
 	matrix4 _viewMat;
 	matrix4 _projMat;
@@ -52,5 +56,11 @@ protected:
 	GLfloat _roll;
 	//World UP
 	point3 _worldUp;
+private:
+	float _fov;
+	float _ratio;
+	float _nearPlane;
+	float _farPlane;
+	bool _isProjSet;
 };
 
