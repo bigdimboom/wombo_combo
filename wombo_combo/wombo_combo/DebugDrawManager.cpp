@@ -2,13 +2,14 @@
 
 DebugDrawManager::DebugDrawManager()
 {
-	_nonePrimitives["sphere"] = new MeshRender();
-	_nonePrimitives["sphere"]->Init(new Sphere, GL_TRIANGLES);
-	if (_nonePrimitives.count("sphere") == 0)
+	_nonePrimitives[SPHERE] = new MeshRender();
+	_nonePrimitives[SPHERE]->Init(new Sphere, GL_TRIANGLES);
+	if (_nonePrimitives[SPHERE] == nullptr)
 	{
 		std::cout << "error init sphere\n";
 		system("PAUSE");
 	}
+	_timer.Start();
 };
 
 //Adds a line segment to the debug drawing queue
@@ -23,7 +24,7 @@ void DebugDrawManager::AddLine(const point4& from,
 	lineMesh->Init(new Line(from, to), GL_LINES);
 	DebugDrawObject line;
 	line.isPrimitive = true;
-	line.drawType = GL_LINES;
+	//line.drawType = GL_LINES;
 	line.color = color;
 	line.lineWidth = lineWidth;
 	line.expireAt = _timer.GetElapsedTime() + 1000 * duration;
@@ -54,15 +55,15 @@ void DebugDrawManager::AddSphere(const point4& center,
 {
 	DebugDrawObject sphere;
 	sphere.isPrimitive = false;
-	sphere.drawType = GL_TRIANGLES;
-	sphere.color = point4(1.0f, 0.0f, 0.0f, 1.0f);
+	//sphere.drawType = GL_TRIANGLES;
+	sphere.color =color;
 	sphere.lineWidth = 1.0f;
 	sphere.expireAt = _timer.GetElapsedTime() + duration * 1000;
 	float scale = radius / 0.5f;
 	sphere.transform = glm::translate(matrix4(1.0), point3(center)) *
 		glm::scale(matrix4(1.0), point3(scale, scale, scale));
 	sphere.isDepthEnabled = isDepthEnabled;
-	sphere.render = _nonePrimitives["sphere"];
+	sphere.render = _nonePrimitives[SPHERE];
 	//put sphere in the drawing queue
 	_debugDrawingQueue.push_back(sphere);
 }
@@ -105,7 +106,7 @@ void DebugDrawManager::AddTriangle(const point4& v0,
 	triangleMesh->Init(new Triangle(v0, v1, v2), GL_TRIANGLES);
 	DebugDrawObject triangle;
 	triangle.isPrimitive = true;
-	triangle.drawType = GL_TRIANGLES;
+	//triangle.drawType = GL_TRIANGLES;
 	triangle.color = color;
 	triangle.lineWidth = lineWidth;
 	triangle.expireAt = _timer.GetElapsedTime() + 1000 * duration;
@@ -165,23 +166,23 @@ void DebugDrawManager::EnableWorldPlane(
 		worldSize = size;
 		MeshRender* lineMesh = new MeshRender();
 		lineMesh->Init(new WorldPlane(worldSize), GL_LINES);
-		if (_nonePrimitives.count("WorldGrid") != 0)
+		if (_nonePrimitives[WORLD_GRID] != nullptr)
 		{
-			delete _nonePrimitives["WorldGrid"];
-			_nonePrimitives.erase("WorldGrid");
+			std::cout << "You can only draw world grid once.\n";
+			delete _nonePrimitives[WORLD_GRID];
 		}
-		_nonePrimitives["WorldGrid"] = lineMesh;
+		_nonePrimitives[WORLD_GRID] = lineMesh;
 	}
 
 	DebugDrawObject worldPlane;
 	worldPlane.isPrimitive = false;
-	worldPlane.drawType = GL_LINES;
+	//worldPlane.drawType = GL_LINES;
 	worldPlane.color = color;
 	worldPlane.lineWidth = lineWidth;
 	worldPlane.expireAt = _timer.GetElapsedTime() + 1000 * duration;
 	worldPlane.transform = matrix4(1.0f);
 	worldPlane.isDepthEnabled = isDepthEnabled;
-	worldPlane.render = _nonePrimitives["WordGrid"];
+	worldPlane.render = _nonePrimitives[WORLD_GRID];
 	_debugDrawingQueue.push_back(worldPlane);
 }
 
@@ -197,7 +198,7 @@ void DebugDrawManager::AddGrid(matrix4& transform,
 	gridMesh->Init(new WorldPlane(size), GL_LINES);
 	DebugDrawObject grid;
 	grid.isPrimitive = true;
-	grid.drawType = GL_LINES;
+	//grid.drawType = GL_LINES;
 	grid.color = color;
 	grid.lineWidth = lineWidth;
 	grid.expireAt = _timer.GetElapsedTime() + 1000 * duration;
@@ -205,4 +206,29 @@ void DebugDrawManager::AddGrid(matrix4& transform,
 	grid.isDepthEnabled = isDepthEnabled;
 	grid.render = gridMesh;
 	_debugDrawingQueue.push_back(grid);
+}
+
+void DebugDrawManager::Render(Camera* debugCamera, Shader* debugShader)
+{
+	_timer.Stop();
+	DrawIterator itr;
+	for (itr = _debugDrawingQueue.begin(); itr != _debugDrawingQueue.end();)
+	{
+		itr->render->Render(debugCamera, debugShader,
+			itr->color, itr->transform, itr->lineWidth, itr->isDepthEnabled);
+
+		if (_timer.GetElapsedTime() >= itr->expireAt)
+		{
+			if (itr->isPrimitive)
+			{
+				delete itr->render;
+			}
+			//watch out: the iterator usage
+			itr = _debugDrawingQueue.erase(itr);
+		}
+		else
+		{
+			++itr;
+		}
+	}
 }

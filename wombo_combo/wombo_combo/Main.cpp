@@ -15,6 +15,7 @@
 #include "WorldPlane.h"
 #include "Line.h"
 #include <time.h>
+#include "DebugDrawManager.h"
 
 
 #define WINDOW_WIDTH 800
@@ -94,12 +95,16 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	cube.Init(new WorldPlane(10), GL_LINES);
+	//cube.Init(new WorldPlane(10), GL_LINES);
 
 	gFlock.Init();
 	
 	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), gTerrain.GetRawTerrain()->GetPosition(), 512.0f / 2.0f);
 	gOctree.Build(600, 8);
+
+	DebugDrawManager::getInstance().EnableWorldPlane(color4(1.0,0.3,0.8,1.0), 10, 1.0f, 10.0f, false);
+
+	DebugDrawManager::getInstance().AddSphere(point4(20.0f,20.0f,20.0f, 1.0f), 10.0f, point4(0.1f,0.3f,0.7f,1.0f), 5.0f, false);
 }
 
 void EventHandler(SDL_Event &e)
@@ -157,9 +162,12 @@ void Render()
 
 	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
-	cube.Render(&gCamera, &gShaderFlock, point4(0.2, 1.0, 0.5, 1.0), glm::scale(matrix4(1.0), point3(5.0f,5.0f,5.0f)), 1.0f, false);
+	//cube.Render(&gCamera, &gShaderFlock, point4(0.2, 1.0, 0.5, 1.0), glm::scale(matrix4(1.0), point3(5.0f,5.0f,5.0f)), 1.0f, false);
 
-	gOctree.DebugDraw(&gCamera, &gShaderOctree);
+	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
+
+	DebugDrawManager::getInstance().Render(&gCamera, &gShaderFlock);
+
 	gWindow.SwapBuffers();
 }
 

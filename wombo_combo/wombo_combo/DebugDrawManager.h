@@ -17,7 +17,7 @@
 typedef struct 
 {
 	bool isPrimitive;
-	GLenum drawType;
+	//GLenum drawType;
 	color4 color;
 	float lineWidth;
 	double expireAt; // in seconds
@@ -26,10 +26,18 @@ typedef struct
 	MeshRender* render;
 }DebugDrawObject;
 
+typedef std::list<DebugDrawObject>::iterator DrawIterator;
 
 class DebugDrawManager
 {
 public:
+	enum
+	{
+		SPHERE = 0,
+		WORLD_GRID,
+		SIZE
+	};
+
 	//Adds a line segment to the debug drawing queue
 	void AddLine(const point4& from, 
 		const point4& to, 
@@ -118,13 +126,13 @@ public:
 		bool isDepthEnabled = true);
 
 
-	//void Render(Camera* debugCamera, Shader* debugShader);
+	void Render(Camera* debugCamera, Shader* debugShader);
 
 private:
 
 	//To prevent code from being fragmentation, we need this to
 	//store advanced mesh, e.g. cube, sphere, etc..
-	std::map<const char*, MeshRender*> _nonePrimitives;
+	MeshRender* _nonePrimitives[SIZE];
 
 	std::list<DebugDrawObject> _debugDrawingQueue;
 	MyTimer _timer;
