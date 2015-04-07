@@ -231,6 +231,58 @@ void DebugDrawManager::AddGrid(matrix4& transform,
 	_debugDrawingQueue.push_back(grid);
 }
 
+void DebugDrawManager::AddFrustum(point4 nearTopLeft, point4 nearTopRight,
+	point4 nearBottomRight, point4 nearBottomLeft,
+	point4 farTopLeft, point4 farTopRight,
+	point4 farBottomRight, point4 farBottomLeft,
+	color4 color, float duration, float lineWidth, bool isDepthEnabled)
+{
+	Mesh* mesh = new Mesh();
+	mesh->SetVertSize(8);
+	mesh->SetIdxSize(12 * 2);
+	///////////////////////////////////
+	mesh->GetVerts()[0] = nearTopLeft;
+	mesh->GetVerts()[1] = nearTopRight;
+	mesh->GetVerts()[2] = nearBottomRight;
+	mesh->GetVerts()[3] = nearBottomLeft;
+	mesh->GetVerts()[4] = farTopLeft;
+	mesh->GetVerts()[5] = farTopRight;
+	mesh->GetVerts()[6] = farBottomRight;
+	mesh->GetVerts()[7] = farBottomLeft;
+	///////////////////////////////////
+	uint indices[] = 
+	{
+		0,1,
+		1,2,
+		2,3,
+		3,0,
+		///
+		4,7,
+		7,6,
+		6,5,
+		5,4,
+		///
+		4,0,
+		3,7,
+		///
+		1,5,
+		6,2
+	};
+	memcpy(mesh->GetIndxs(), indices, sizeof(indices));
+	MeshRender* frustrumMesh = new MeshRender();
+	frustrumMesh->Init(mesh, GL_LINES);
+	DebugDrawObject frustrum;
+	frustrum.isPrimitive = true;
+	//grid.drawType = GL_LINES;
+	frustrum.color = color;
+	frustrum.lineWidth = lineWidth;
+	frustrum.expireAt = _timer.GetElapsedTime() + 1000 * duration;
+	frustrum.transform = matrix4(1.0f);
+	frustrum.isDepthEnabled = isDepthEnabled;
+	frustrum.render = frustrumMesh;
+	_debugDrawingQueue.push_back(frustrum);
+}
+
 void DebugDrawManager::Render(Camera* debugCamera, Shader* debugShader)
 {
 	_timer.Stop();
