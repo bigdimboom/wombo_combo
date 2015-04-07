@@ -165,7 +165,7 @@ void DebugDrawManager::EnableWorldPlane(
 	{
 		worldSize = size;
 		MeshRender* lineMesh = new MeshRender();
-		lineMesh->Init(new WorldPlane(worldSize), GL_LINES);
+		lineMesh->Init(new Grid(size), GL_LINES);
 		if (_nonePrimitives[WORLD_GRID] != nullptr)
 		{
 			std::cout << "You can only draw world grid once.\n";
@@ -189,13 +189,14 @@ void DebugDrawManager::EnableWorldPlane(
 //Adds a text to the debug drawing queue
 void DebugDrawManager::AddGrid(matrix4& transform,
 	color4& color,
-	int size,
+	int sizex,
+	int sizez,
 	float lineWidth,
 	float duration,
 	bool isDepthEnabled)
 {
 	MeshRender* gridMesh = new MeshRender();
-	gridMesh->Init(new WorldPlane(size), GL_LINES);
+	gridMesh->Init(new Grid(sizex, sizez), GL_LINES);
 	DebugDrawObject grid;
 	grid.isPrimitive = true;
 	//grid.drawType = GL_LINES;

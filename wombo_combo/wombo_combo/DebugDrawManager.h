@@ -11,7 +11,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Triangle.h"
-#include "WorldPlane.h"
+#include "Grid.h"
 
 
 typedef struct 
@@ -120,7 +120,8 @@ public:
 	//Adds a text to the debug drawing queue
 	void AddGrid(matrix4& transform,
 		color4& color,
-		int size = 10,
+		int sizex = 10,
+		int sizez = 10,
 		float lineWidth = 1.0f,
 		float duration = 0.0f,
 		bool isDepthEnabled = true);

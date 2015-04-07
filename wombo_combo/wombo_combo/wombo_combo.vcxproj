@@ -45,7 +45,7 @@
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UniqueID.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="WorldPlane.cpp" />
+    <ClCompile Include="Grid.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl" />
@@ -85,7 +85,7 @@
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="UniqueID.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="WorldPlane.h" />
+    <ClInclude Include="Grid.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\awesomeface.png" />

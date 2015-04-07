@@ -92,7 +92,7 @@ void Texture::Release()
 
 GLenum Texture::_Convert(SDL_PixelFormat* sdl_img_format)
 {
-	GLenum textureFormat;
+	GLenum textureFormat = 0;
 	if (sdl_img_format->BytesPerPixel == 4) // contains an alpha channel
 	{
 		if (sdl_img_format->Rshift == 24 && sdl_img_format->Aloss == 0) textureFormat = GL_ABGR_EXT;
