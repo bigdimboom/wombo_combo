@@ -261,7 +261,7 @@ void DebugDrawManager::AddFrustum(point4 nearTopLeft, point4 nearTopRight,
 		7,6,
 		6,5,
 		5,4,
-		///
+		/////
 		4,0,
 		3,7,
 		///
@@ -277,7 +277,8 @@ void DebugDrawManager::AddFrustum(point4 nearTopLeft, point4 nearTopRight,
 	frustrum.color = color;
 	frustrum.lineWidth = lineWidth;
 	frustrum.expireAt = _timer.GetElapsedTime() + 1000 * duration;
-	frustrum.transform = glm::scale(matrix4(1.0f), point3(scale, scale,scale));
+	//frustrum.transform = glm::scale(matrix4(1.0f), point3(scale, scale,scale));
+	frustrum.transform = matrix4(1.0f);
 	frustrum.isDepthEnabled = isDepthEnabled;
 	frustrum.render = frustrumMesh;
 	_debugDrawingQueue.push_back(frustrum);
