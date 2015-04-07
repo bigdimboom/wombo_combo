@@ -42,8 +42,8 @@ public:
 	void AddLine(const point4& from, 
 		const point4& to, 
 		color4& color, 
+		float duration = 0.0f,
 		float lineWidth = 1.0f, 
-		float duration = 0.0f, 
 		bool isDepthEnabled = true);
 
 	//Adds an axis-aligned cross (3 lines converging at a point) to the debug drawing queue
@@ -81,16 +81,16 @@ public:
 		const point4& v1,
 		const point4& v2,
 		color4& color,
-		float lineWidth = 1.0f,
 		float duration = 0.0f,
+		float lineWidth = 1.0f,
 		bool isDepthEnabled = true);
 
 	//Adds an axis-aligned bounding box to the debug queue
 	void AddAABB(const point4& minCoords,
 		const point4& maxCorrds,
 		color4& color,
-		float lineWidth = 1.0f,
 		float duration = 0.0f,
+		float lineWidth = 1.0f,
 		bool isDepthEnabled = true);
 
 	//Adds an oriented bounding box to the debug queue
@@ -98,8 +98,8 @@ public:
 	void AddOBB(const matrix4& transformCenter,
 		const point3& scale,
 		color4& color,
-		float lineWidth = 1.0f,
 		float duration = 0.0f,
+		float lineWidth = 1.0f,
 		bool isDepthEnabled = true);
 
 	//Adds a text to the debug drawing queue
@@ -112,18 +112,18 @@ public:
 	//Adds a text to the debug drawing queue
 	void EnableWorldPlane(
 		color4& color,
+		float duration = 0.0f,
 		int size = 50,
 		float lineWidth = 1.0f,
-		float duration = 0.0f,
 		bool isDepthEnabled = true);
 
 	//Adds a text to the debug drawing queue
 	void AddGrid(matrix4& transform,
 		color4& color,
+		float duration = 0.0f,
 		int sizex = 10,
 		int sizez = 10,
 		float lineWidth = 1.0f,
-		float duration = 0.0f,
 		bool isDepthEnabled = true);
 
 

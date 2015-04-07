@@ -16,8 +16,8 @@ DebugDrawManager::DebugDrawManager()
 void DebugDrawManager::AddLine(const point4& from,
 	const point4& to,
 	color4& color,
-	float lineWidth,
 	float duration,
+	float lineWidth,
 	bool isDepthEnabled)
 {
 	MeshRender* lineMesh = new MeshRender();
@@ -98,8 +98,8 @@ void DebugDrawManager::AddTriangle(const point4& v0,
 	const point4& v1,
 	const point4& v2,
 	color4& color,
-	float lineWidth,
 	float duration,
+	float lineWidth,
 	bool isDepthEnabled)
 {
 	MeshRender* triangleMesh = new MeshRender();
@@ -121,8 +121,8 @@ void DebugDrawManager::AddTriangle(const point4& v0,
 void DebugDrawManager::AddAABB(const point4& minCoords,
 	const point4& maxCorrds,
 	color4& color,
-	float lineWidth,
 	float duration,
+	float lineWidth,
 	bool isDepthEnabled)
 {
 
@@ -134,8 +134,8 @@ void DebugDrawManager::AddAABB(const point4& minCoords,
 void DebugDrawManager::AddOBB(const matrix4& centerTransform,
 	const point3& scale,
 	color4& color,
-	float lineWidth,
 	float duration,
+	float lineWidth,
 	bool isDepthEnabled)
 {
 
@@ -154,9 +154,9 @@ void DebugDrawManager::AddString(const point4& position,
 
 void DebugDrawManager::EnableWorldPlane(
 	color4& color,
+	float duration,
 	int size,
 	float lineWidth,
-	float duration,
 	bool isDepthEnabled)
 {
 	static int worldSize = 0;
@@ -189,10 +189,10 @@ void DebugDrawManager::EnableWorldPlane(
 //Adds a text to the debug drawing queue
 void DebugDrawManager::AddGrid(matrix4& transform,
 	color4& color,
+	float duration,
 	int sizex,
 	int sizez,
 	float lineWidth,
-	float duration,
 	bool isDepthEnabled)
 {
 	MeshRender* gridMesh = new MeshRender();

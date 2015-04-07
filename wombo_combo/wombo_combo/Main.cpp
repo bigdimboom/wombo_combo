@@ -94,12 +94,12 @@ void Init()
 	gTerrain.AttachTexture("Assets/Terrain/heightmap.jpeg", "alpha_texture");
 	gTerrain.Init();
 
-	gFlock.Init();
+	//gFlock.Init();
 	
 	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), gTerrain.GetRawTerrain()->GetPosition(), 512.0f / 2.0f);
 	gOctree.Build(600, 8);
 
-	DebugDrawManager::getInstance().EnableWorldPlane(color4(1.0,0.3,0.8,1.0), 50, 1.0f, 100000.0f, false);
+	DebugDrawManager::getInstance().EnableWorldPlane(color4(1.0,0.3,0.8,1.0), 10000.0f, 50, 1.0f, false);
 }
 
 void EventHandler(SDL_Event &e)
@@ -155,7 +155,7 @@ void Render()
 
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
-	gFlock.Render(&gCamera, nullptr, &gShaderFlock);
+	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 
 	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
 
