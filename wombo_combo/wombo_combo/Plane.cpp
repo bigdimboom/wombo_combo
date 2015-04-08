@@ -30,16 +30,11 @@ void Plane::Set(const point3& p0, const point3& p1, const point3& p2)
 
 float Plane::Distance(const point3& point) const
 {
-	return PlaneDotCoord(point);
-}
-
-float Plane::PlaneDotCoord(const point3& point)const 
-{
 	//determining the plane's relationship 
 	//with a coordinate in 3D space.
-	return _plane.x * point.x + 
-		_plane.y * point.y + 
-		_plane.z * point.z + 
+	return _plane.x * point.x +
+		_plane.y * point.y +
+		_plane.z * point.z +
 		_plane.w;
 }
 
@@ -73,7 +68,7 @@ bool Plane::IsCubeInstersect(const point3& center,
 	return false;
 }
 
-point3 Plane::GetPointFromCube(point3 center, float radius, int i)
+point3 Plane::GetPointFromCube(const point3& center, float radius, int i)
 {
 	switch (i)
 	{

@@ -61,18 +61,18 @@ void Frustum::Set(Camera* cam)
 	planes[TOP].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], farClip[UP_LEFT]);
 	planes[BOTTOM].Set(nearClip[BOTTOM_LEFT], nearClip[BOTTOM_RIGHT], farClip[BOTTOM_RIGHT]);
 
-	DebugDrawManager::getInstance().
-		AddFrustum(point4(nearClip[UP_LEFT],1.0f), point4(nearClip[UP_RIGHT],1.0f),
-		point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f), 
-		point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
-		point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f),color4(0.1f, 0.4f, 0.5f, 1.0f), 100.0f, 1.5f, false);
+	//DebugDrawManager::getInstance().
+	//	AddFrustum(point4(nearClip[UP_LEFT],1.0f), point4(nearClip[UP_RIGHT],1.0f),
+	//	point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f), 
+	//	point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
+	//	point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f),color4(0.1f, 0.4f, 0.5f, 1.0f), 100.0f, 1.5f, false);
 }
 
 bool Frustum::IsCubeInside(const point3& center, const float cubeRadius) const
 {
 	for (int i = 0; i < NumPlanes; ++i)
 	{
-		if (planes[i].IsCubeInstersect(center, cubeRadius) == true)
+		if (planes[i].IsCubeInstersect(center, cubeRadius))
 		{
 			return true;
 		}
@@ -80,7 +80,3 @@ bool Frustum::IsCubeInside(const point3& center, const float cubeRadius) const
 	return false;
 }
 
-bool Frustum::IsTriangleInside(const point3& v0, const point3& v1, const point3& v2) const
-{
-	return false;
-}

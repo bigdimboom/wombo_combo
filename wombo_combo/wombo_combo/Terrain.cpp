@@ -227,3 +227,12 @@ void Terrain::GenTextureCoords()
 	}
 
 }
+
+uint Terrain::GetMaxSize() const
+{
+	if (_width >= _length)
+	{
+		return _width;
+	}
+	return _length;
+}

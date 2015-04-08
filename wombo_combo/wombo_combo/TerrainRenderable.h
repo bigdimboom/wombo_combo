@@ -6,6 +6,8 @@
 #include <vector>
 #include <string>
 #include "Shader.h"
+#include "Frustum.h"
+#include "Octree.h"
 
 typedef const char* Path;
 typedef const char* Name;
@@ -21,11 +23,16 @@ public:
 	void Render(Camera* cam, point3* lightPos, Shader* shader) override;
 	inline Terrain* GetRawTerrain() const { return _terrain; }
 	void AttachTexture(Path, Name);
+	void EnableCull(bool isCull);
 private:
 	Terrain* _terrain;
 	GLuint _vao, _vbo, _ebo;
 	bool _isOutsideInstance;
 	std::vector<std::pair<Texture*, std::pair<Path, Name> > > _textures;
 	void _InitMembers();
+private:
+	Frustum _frustum;
+	Octree _octree;
+	bool _isCull;
 };
 

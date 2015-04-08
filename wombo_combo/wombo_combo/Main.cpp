@@ -155,7 +155,7 @@ void Render()
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
 	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
-	gOctree.DebugDraw(&gCamera, &gShaderDebug, color4(1.0,0.0f,0.0f,1.0f));
+	//gOctree.DebugDraw(&gCamera, &gShaderDebug, color4(1.0,0.0f,0.0f,1.0f));
 	DebugDrawManager::getInstance().Render(&gCamera, &gShaderDebug);
 
 	gWindow.SwapBuffers();

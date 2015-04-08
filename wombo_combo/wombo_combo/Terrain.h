@@ -24,6 +24,7 @@ public:
 	void GenTerrian(const char* hightmap, bool genNormals = false, bool genUVs = false);
 	inline void SetWeight(float weight){ _weight = weight; }
 	inline Mesh& GetMesh() { return _mesh; }
+	uint GetMaxSize() const;
 protected:
 	virtual void GenHeightMap(const char* hightmap);
 	virtual void GenIndicesArray();
