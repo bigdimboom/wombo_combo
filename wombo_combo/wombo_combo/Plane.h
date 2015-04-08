@@ -11,9 +11,16 @@ public:
 	inline point4 Get() const { return _plane; }
 	inline point3 GetNormal() const { return point3(_plane); }
 public:
-	float Distance(point3& point);
-	float PlaneDotCoord(point3& point);
-	point3 ProjPointFrom(point3& point);
+	//Basic Methods
+	inline float Distance(const point3& point) const;
+	inline float PlaneDotCoord(const point3& point) const;
+	inline point3 ProjPointFrom(const point3& point) const;
+public:
+	//Testing Methods
+	bool IsPointInstersect(const point3& point) const;
+	bool IsCubeInstersect(const point3& center,
+		const float radius) const;
+	static point3 GetPointFromCube(point3 center, float radius, int i);
 private:
 	point4 _plane;
 };

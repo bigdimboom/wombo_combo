@@ -1,8 +1,8 @@
 #pragma once
 #include "Camera.h"
 #include "Global.h"
-#include "Plane.h"
 #include "DebugDrawManager.h"
+#include "Plane.h"
 
 /*
 The frustrum class is ported from
@@ -48,8 +48,8 @@ public:
 public:
 	Frustum();
 	~Frustum();
-	bool IsCubeInside(const point3& center, const float cubeRadius);
-	bool IsTriangleInside(const point3& v0, const point3& v1, const point3& v2);
+	bool IsCubeInside(const point3& center, const float cubeRadius) const;
+	bool IsTriangleInside(const point3& v0, const point3& v1, const point3& v2) const;
 
 	const Plane &Get(Side side);
 	void Set(Camera* cam);

@@ -28,7 +28,7 @@ public:
 	void BindMesh(Mesh* mesh, const point3& origin, float radius);
 	void Build(int maxUnit, int maxDepth);
 	void Destory();
-	void DebugDraw(Camera *cam, Shader *shader);
+	void DebugDraw(Camera *cam, Shader *shader, color4 color);
 protected:
 	void GenerateChildren(OctantPtr &start, int depth);
 	void AddIndices(OctantPtr& up, OctantPtr& start);
@@ -55,7 +55,7 @@ private:
 private:
 	//Draw Octree;
 	GLuint _vao, _vbo;
-	point3* _octreeVerts;
+	point4* _octreeVerts;
 	void _GenDrawData(OctantPtr nodePtr, uint &vertCount);
 };
 

@@ -28,8 +28,7 @@ bool firstMouse = true;
 Window gWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Procedural Terrian");
 
 Shader gShader;
-Shader gShaderOctree;
-Shader gShaderFlock;
+Shader gShaderDebug;
 
 MyTimer gTimer;
 
@@ -84,8 +83,7 @@ void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 void Init()
 {
 	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
-	gShaderOctree.Comiple("Shaders/vs_octree.glsl", "Shaders/fs_octree.glsl");
-	gShaderFlock.Comiple("Shaders/vs_debug.glsl", "Shaders/fs_debug.glsl");
+	gShaderDebug.Comiple("Shaders/vs_debug.glsl", "Shaders/fs_debug.glsl");
 
 	gTimer.Reset();
 
@@ -97,13 +95,9 @@ void Init()
 	gTerrain.Init();
 
 	//gFlock.Init();
-	
 	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), gTerrain.GetRawTerrain()->GetPosition(), 512.0f / 2.0f);
 	gOctree.Build(600, 8);
 
-	//DebugDrawManager::getInstance().EnableWorldPlane(color4(1.0,0.3,0.8,1.0), 10000.0f, 20, 1.0f, false);
-
-	//DebugDrawManager::getInstance().AddCircle(point4(0.0f, 10.0f, 0.0f, 1.0), point3(0.0f, 0.0f, 1.0f), 10.0f, color4(0.2, 0.8, 0.7, 1.0), 10.0f, false);
 }
 
 void EventHandler(SDL_Event &e)
@@ -161,10 +155,8 @@ void Render()
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
 	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
-
-	//gOctree.DebugDraw(&gCamera, &gShaderOctree);
-
-	DebugDrawManager::getInstance().Render(&gCamera, &gShaderFlock);
+	gOctree.DebugDraw(&gCamera, &gShaderDebug, color4(1.0,0.0f,0.0f,1.0f));
+	DebugDrawManager::getInstance().Render(&gCamera, &gShaderDebug);
 
 	gWindow.SwapBuffers();
 }

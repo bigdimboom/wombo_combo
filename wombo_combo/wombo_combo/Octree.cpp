@@ -172,7 +172,7 @@ void Octree::InitOctreeDrawData()
 {
 	uint size = (uint)_octree.size() * 24;
 
-	_octreeVerts = new point3[size];
+	_octreeVerts = new point4[size];
 
 	uint vertsCount = 0;
 
@@ -183,11 +183,11 @@ void Octree::InitOctreeDrawData()
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(point3) * size, _octreeVerts, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(point4) * size, _octreeVerts, GL_STATIC_DRAW);
 
 	// Position attribute
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
 	glBindVertexArray(0); // Unbind VAO
 
 	delete[] _octreeVerts;
@@ -196,46 +196,54 @@ void Octree::InitOctreeDrawData()
 
 void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 {
-	point3 ftop_left;
+	point4 ftop_left;
 	ftop_left.x = node->center.x - node->radius;
 	ftop_left.y = node->center.y + node->radius;
 	ftop_left.z = node->center.z - node->radius;
+	ftop_left.w = 1.0f;
 
-	point3 ftop_right;
+	point4 ftop_right;
 	ftop_right.x = node->center.x + node->radius;
 	ftop_right.y = node->center.y + node->radius;
 	ftop_right.z = node->center.z - node->radius;
+	ftop_right.w = 1.0f;
 
-	point3 fdown_right;
+	point4 fdown_right;
 	fdown_right.x = node->center.x + node->radius;
 	fdown_right.y = node->center.y - node->radius;
 	fdown_right.z = node->center.z - node->radius;
+	fdown_right.w = 1.0f;
 
-	point3 fdown_left;
+	point4 fdown_left;
 	fdown_left.x = node->center.x - node->radius;
 	fdown_left.y = node->center.y - node->radius;
 	fdown_left.z = node->center.z - node->radius;
+	fdown_left.w = 1.0f;
 
 	///////////////////////////////////////////////
-	point3 btop_left;
+	point4 btop_left;
 	btop_left.x = node->center.x - node->radius;
 	btop_left.y = node->center.y + node->radius;
 	btop_left.z = node->center.z + node->radius;
+	btop_left.w = 1.0f;
 
-	point3 btop_right;
+	point4 btop_right;
 	btop_right.x = node->center.x + node->radius;
 	btop_right.y = node->center.y + node->radius;
 	btop_right.z = node->center.z + node->radius;
+	btop_right.w = 1.0f;
 
-	point3 bdown_right;
+	point4 bdown_right;
 	bdown_right.x = node->center.x + node->radius;
 	bdown_right.y = node->center.y - node->radius;
 	bdown_right.z = node->center.z + node->radius;
+	bdown_right.w = 1.0f;
 
-	point3 bdown_left;
+	point4 bdown_left;
 	bdown_left.x = node->center.x - node->radius;
 	bdown_left.y = node->center.y - node->radius;
 	bdown_left.z = node->center.z + node->radius;
+	bdown_left.w = 1.0f;
 
 	_octreeVerts[vertCount++] = ftop_left;
 	_octreeVerts[vertCount++] = ftop_right;
@@ -276,15 +284,18 @@ void Octree::_GenDrawData(OctantPtr node, uint &vertCount)
 }
 
 
-void Octree::DebugDraw(Camera *cam, Shader *shader)
+void Octree::DebugDraw(Camera *cam, Shader *shader, color4 color)
 {
 	assert(cam != nullptr && shader != nullptr);
 	shader->Use();
+	cam->Update();
+
 	glBindVertexArray(_vao);
 	// Get the uniform locations
 	GLint modelLoc = glGetUniformLocation(shader->GetID(), "model");
 	GLint viewLoc = glGetUniformLocation(shader->GetID(), "view");
 	GLint projLoc = glGetUniformLocation(shader->GetID(), "projection");
+	GLint colorLoc = glGetUniformLocation(shader->GetID(), "color");
 
 	glm::mat4 view;
 	view = *(cam->GetViewMatrix());
@@ -294,6 +305,7 @@ void Octree::DebugDraw(Camera *cam, Shader *shader)
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(matrix4(1.0f)));
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+	glUniform4fv(colorLoc, 1, glm::value_ptr(color));
 
 	glDrawArrays(GL_LINES, 0, (GLsizei)_octree.size() * 24);
 	glBindVertexArray(0);
