@@ -40,13 +40,10 @@ bool gIsGameLoopRunning = false;
 int gFrameCount = 0;
 double gTimeElapsed = 0.0;
 
-Octree gOctree;
-
 TerrainRenderable gTerrain(512, 512);
 FlockRenderable gFlock;
-MeshRender cube;
 
-Frustum gFrustrum;
+bool gIsCulling = true;
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -95,8 +92,6 @@ void Init()
 	gTerrain.Init();
 
 	//gFlock.Init();
-	gOctree.BindMesh(&gTerrain.GetRawTerrain()->GetMesh(), gTerrain.GetRawTerrain()->GetPosition(), 512.0f / 2.0f);
-	gOctree.Build(600, 8);
 
 }
 
@@ -104,6 +99,8 @@ void EventHandler(SDL_Event &e)
 {
 	if (SDL_PollEvent(&e))
 	{
+		if (gIsCulling){ gTerrain.EnableCull(true); }
+		
 		if (e.type == SDL_QUIT)
 			gIsGameLoopRunning = 0;
 		else if (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)
@@ -124,6 +121,9 @@ void EventHandler(SDL_Event &e)
 			case SDLK_d:
 				gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
 				break;
+			case SDLK_c:
+				gIsCulling = !gIsCulling;
+				break;
 			default:
 				break;
 			}
@@ -138,7 +138,6 @@ void EventHandler(SDL_Event &e)
 			if (e.button.button == SDL_BUTTON_LEFT)
 			{
 				//std::cout << "Clicked\n";
-				gFrustrum.Set(&gCamera);
 			}
 		}
 	}
@@ -155,7 +154,11 @@ void Render()
 	gTerrain.Render(&gCamera, &gLightPos, &gShader);
 
 	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
-	//gOctree.DebugDraw(&gCamera, &gShaderDebug, color4(1.0,0.0f,0.0f,1.0f));
+	if (!gIsCulling)
+	{
+		gTerrain._frustum.Set(&gCamera, true);
+		gTerrain._octree.DebugDraw(&gCamera, &gShaderDebug, color4(1.0, 0.0f, 0.0f, 1.0f));
+	}
 	DebugDrawManager::getInstance().Render(&gCamera, &gShaderDebug);
 
 	gWindow.SwapBuffers();

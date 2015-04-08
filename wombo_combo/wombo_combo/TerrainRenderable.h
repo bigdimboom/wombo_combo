@@ -23,7 +23,9 @@ public:
 	void Render(Camera* cam, point3* lightPos, Shader* shader) override;
 	inline Terrain* GetRawTerrain() const { return _terrain; }
 	void AttachTexture(Path, Name);
-	void EnableCull(bool isCull);
+	void EnableCull(bool isCull) { _isCull = true;  }
+	Frustum _frustum;
+	Octree _octree;
 private:
 	Terrain* _terrain;
 	GLuint _vao, _vbo, _ebo;
@@ -31,9 +33,8 @@ private:
 	std::vector<std::pair<Texture*, std::pair<Path, Name> > > _textures;
 	void _InitMembers();
 private:
-	Frustum _frustum;
-	Octree _octree;
 	bool _isCull;
 	void _Cull(OctantPtr ptr);
+	std::vector<std::vector<uint> > _idx;
 };
 

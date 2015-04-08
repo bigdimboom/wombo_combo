@@ -4,13 +4,13 @@
 TerrainRenderable::TerrainRenderable()
 {
 	_terrain = new Terrain(512, 512);
-	_isCull = false;
+	_isCull = true;
 }
 
 TerrainRenderable::TerrainRenderable(int width, int height)
 {
 	_terrain = new Terrain(width, height);
-	_isCull = false;
+	_isCull = true;
 }
 
 TerrainRenderable::TerrainRenderable(Terrain* inst)
@@ -18,7 +18,7 @@ TerrainRenderable::TerrainRenderable(Terrain* inst)
 	assert(inst != nullptr);
 	_terrain = inst;
 	_isOutsideInstance = true;
-	_isCull = false;
+	_isCull = true;
 }
 
 
@@ -54,7 +54,7 @@ void TerrainRenderable::Init()
 
 	_octree.BindMesh(&_terrain->GetMesh(), 
 		_terrain->GetPosition(), (float)_terrain->GetMaxSize() / 2.0f);
-	_octree.Build(600, 6);
+	_octree.Build(600, 2);
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -68,8 +68,11 @@ void TerrainRenderable::Init()
 	glBufferSubData(GL_ARRAY_BUFFER, _terrain->GetMesh().GetVSizeInBytes() +
 		_terrain->GetMesh().GetNormSizeInBytes(), _terrain->GetMesh().GetUVSizeInBytes(), _terrain->GetMesh().GetUVs());
 
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, _terrain->GetMesh().GetIdxSizeInBytes(), _terrain->GetMesh().GetIndxs(), GL_STATIC_DRAW);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _terrain->GetMesh().GetIdxSizeInBytes(), _terrain->GetMesh().GetIndxs(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
 	// Position attribute
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -116,10 +119,19 @@ void TerrainRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 	if (_isCull)
 	{
 		_frustum.Set(cam);
+		_idx.clear();
 		_Cull(_octree.GetRoot());
+		_isCull = false;
 	}
 
-	glDrawElements(GL_TRIANGLES, _terrain->GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	for (uint i = 0; i < _idx.size(); ++i)
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * _idx[i].size(), &_idx[i][0], GL_DYNAMIC_DRAW);
+		glDrawElements(GL_TRIANGLES, _idx[i].size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	}
+
+	//glDrawElements(GL_TRIANGLES, _terrain->GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
 }
 
@@ -144,5 +156,19 @@ void TerrainRenderable::_InitMembers()
 
 void TerrainRenderable::_Cull(OctantPtr ptr)
 {
+	if (ptr == nullptr || !_isCull || !_frustum.IsCubeInside(ptr->center, ptr->radius))
+	{
+		return;
+	}
 
+	if (_octree.IsLeafNode(ptr) && ptr->indices.size() != 0)
+	{
+		_idx.push_back(ptr->indices);
+		return;
+	}
+
+	for (uint i = 0; i < 8; ++i)
+	{
+		_Cull(ptr->child[i]);
+	}
 }

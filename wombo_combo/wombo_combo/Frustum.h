@@ -51,6 +51,6 @@ public:
 	bool IsCubeInside(const point3& center, const float cubeRadius) const;
 
 	const Plane &Get(Side side);
-	void Set(Camera* cam);
+	void Set(Camera* cam, bool Debug = false);
 };
 

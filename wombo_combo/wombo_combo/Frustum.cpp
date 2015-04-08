@@ -18,7 +18,7 @@ const Plane& Frustum::Get(Side side)
 	return this->planes[side];
 }
 
-void Frustum::Set(Camera* cam)
+void Frustum::Set(Camera* cam, bool Debug)
 {
 	assert(cam != nullptr);
 	this->camera = cam;
@@ -27,7 +27,8 @@ void Frustum::Set(Camera* cam)
 	this->dNear = cam->GetNearDistance();
 	this->dFar = cam->GetFarDistance();
 
-	float halfTanFOV = glm::tan(glm::radians(this->fov / 2.0f));
+	//fov is already in rad not in degree
+	float halfTanFOV = glm::tan(this->fov / 2.0f);
 	float nearHeight_half = dNear * halfTanFOV;
 	float farHeight_half = dFar * halfTanFOV;
 	float nearWidth_half = nearHeight_half * aspect;
@@ -61,22 +62,38 @@ void Frustum::Set(Camera* cam)
 	planes[TOP].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], farClip[UP_LEFT]);
 	planes[BOTTOM].Set(nearClip[BOTTOM_LEFT], nearClip[BOTTOM_RIGHT], farClip[BOTTOM_RIGHT]);
 
-	//DebugDrawManager::getInstance().
-	//	AddFrustum(point4(nearClip[UP_LEFT],1.0f), point4(nearClip[UP_RIGHT],1.0f),
-	//	point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f), 
-	//	point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
-	//	point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f),color4(0.1f, 0.4f, 0.5f, 1.0f), 100.0f, 1.5f, false);
+	///////////////////////////////////Debugging////////////////////////////////////
+
+	static bool isFrustumDrawed = false;
+
+	if (!Debug)
+	{
+		isFrustumDrawed = false;
+	}
+
+	if (Debug && !isFrustumDrawed){
+		DebugDrawManager::getInstance().
+			AddFrustum(point4(nearClip[UP_LEFT], 1.0f), point4(nearClip[UP_RIGHT], 1.0f),
+			point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f),
+			point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
+			point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f), color4(0.1f, 0.4f, 0.5f, 1.0f), 15.0f, 1.5f, false);
+
+		isFrustumDrawed = true;
+	}
 }
 
 bool Frustum::IsCubeInside(const point3& center, const float cubeRadius) const
 {
-	for (int i = 0; i < NumPlanes; ++i)
+	int out = 0,in = 0;
+
+	// for each plane do ...
+	for(int i=0; i < NumPlanes; i++) 
 	{
-		if (planes[i].IsCubeInstersect(center, cubeRadius))
+		if (!planes[i].IsCubeInstersect(center, cubeRadius))
 		{
-			return true;
+			return false;
 		}
 	}
-	return false;
+	return true;
 }
 
