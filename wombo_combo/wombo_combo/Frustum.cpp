@@ -1,32 +1,5 @@
 #include "Frustum.h"
 
-static point3 GetPoint(point3 center, float radius, int i)
-{
-	switch (i)
-	{
-	case 0:
-		return point3(center.x - radius, center.y + radius, center.z - radius);
-	case 1:
-		return point3(center.x + radius, center.y + radius, center.z - radius);
-	case 2:
-		return point3(center.x - radius, center.y - radius, center.z - radius);
-	case 3:
-		return point3(center.x + radius, center.y - radius, center.z - radius);
-	case 4:
-		return point3(center.x - radius, center.y + radius, center.z + radius);
-	case 5:
-		return point3(center.x + radius, center.y + radius, center.z + radius);
-	case 6:
-		return point3(center.x - radius, center.y - radius, center.z + radius);
-	case 7:
-		return point3(center.x + radius, center.y - radius, center.z + radius);
-	}
-	std::cout << "Error" << __LINE__ << std::endl;
-	return point3(0.0f, 0.0f, 0.0f);
-}
-
-
-
 Frustum::Frustum()
 {
 	this->dNear = 1.0f;
@@ -39,27 +12,6 @@ Frustum::Frustum()
 
 Frustum::~Frustum()
 {
-}
-
-bool Frustum::IsPointInside(const point3& point)
-{
-	for (int i = 0; i < NumPlanes; ++i)
-	{
-		if (!planes[i].IsInside(point))
-			return false;
-	}
-	return true;
-}
-
-bool Frustum::IsSphereInside(const point3& point, const float radius)
-{
-	for (int i = 0; i < NumPlanes; ++i)
-	{
-		if (!planes[i].IsInside(point, radius))
-			return false;
-	}
-	// otherwise we are fully in view
-	return true;
 }
 
 const Plane& Frustum::Get(Side side)
@@ -114,36 +66,17 @@ void Frustum::Set(Camera* cam)
 		AddFrustum(point4(nearClip[UP_LEFT],1.0f), point4(nearClip[UP_RIGHT],1.0f),
 		point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f), 
 		point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
-		point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f),color4(0.1f, 0.4f, 0.5f, 1.0f), 100.0f, 1.0f, 2.0f, false);
+		point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f),color4(0.1f, 0.4f, 0.5f, 1.0f), 100.0f, 1.5f, false);
 }
 
 bool Frustum::IsCubeInside(const point3& center, const float cubeRadius)
 {
-	int result = INSIDE, out, in;
-
-	// for each plane do ...
-	for (int i = 0; i < 6; i++) {
-
-		// reset counters for corners in and out
-		out = 0; in = 0;
-		// for each corner of the box do ...
-		// get out of the cycle as soon as a box as corners
-		// both inside and out of the frustum
-		for (int k = 0; k < 8 && (in == 0 || out == 0); k++) {
-
-			// is the corner outside or inside
-			if (planes[i].PlaneDotCoord(GetPoint(center, cubeRadius, k)) < 0)
-				out++;
-			else
-				in++;
-		}
-		//if all corners are out
-		if (!in)
-			return false;
-		// if some corners are out and others are in
-		else if (out)
-			result = INTERSECT;
-	}
+	
 	return true;
 }
 
+
+bool Frustum::IsTriangleInside(const point3& v0, const point3& v1, const point3& v2)
+{
+
+}

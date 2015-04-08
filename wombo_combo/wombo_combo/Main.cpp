@@ -207,7 +207,7 @@ int main(int argc, char** argv)
 
 	Init();
 	gCamera.SetVelocity(3.0f);
-	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 800.0f);
+	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 5.0f, 1000.0f);
 
 	SDL_Event e;
 

@@ -2,11 +2,10 @@
 
 
 Plane::Plane()
-	:_plane(0)
 {
 }
 
-Plane::Plane(const point3 &p0, const point3 &p1, const point3 &p2)
+Plane::Plane(const point3& p0, const point3& p1, const point3& p2)
 {
 	Set(p0, p1, p2);
 }
@@ -16,46 +15,41 @@ Plane::~Plane()
 {
 }
 
-
-inline void Plane::Normalize()
+void Plane::Set(const point3& p0, const point3& p1, const point3& p2)
 {
-	_plane = glm::normalize(_plane);
-}
-
-inline void Plane::Set(const point3 &a, const point3 &b, const point3 &c)
-{
-	point3 u = b - a;
-	point3 v = c - a;
+	point3 u = p1 - p0;
+	point3 v = p2 - p0;
 	point3 n = glm::normalize(glm::cross(u, v));
-	float D = -(n.x * a.x + n.y * a.y + n.z * a.z);
-
+	float D = -(n.x * p0.x + n.y * p0.y + n.z * p0.z);
 	_plane.x = n.x;
 	_plane.y = n.y;
 	_plane.z = n.z;
 	_plane.w = D;
-
-	Normalize();
+	_plane = glm::normalize(_plane);
 }
 
-bool Plane::IsInside(const point3& point, const float radius)
+/*
+if it is zero is on the plane) also gives information 
+as to which side of the plane is point r. 
+If the sign is positive then the point is on the side that agrees with the normal n, otherwise it is on the other side.
+*/
+
+float Plane::Distance(point3& point)
 {
-	float fDistance;
-	fDistance = PlaneDotCoord(point);
-	return (fDistance >= -radius);
+	return PlaneDotCoord(point);
 }
 
-bool Plane::IsInside(const point3& point)
+float Plane::PlaneDotCoord(point3& point)
 {
-	float result = PlaneDotCoord(point);
-	return (result >= 0.0f);
+	//determining the plane's relationship 
+	//with a coordinate in 3D space.
+	return _plane.x * point.x + 
+		_plane.y * point.y + 
+		_plane.z * point.z + 
+		_plane.w;
 }
 
-float Plane::PlaneDotCoord(const point3& vector)
+point3 Plane::ProjPointFrom(point3& point)
 {
-	return (glm::dot(point3(_plane), vector) + _plane.w);
-}
-
-point3 Plane::ProjectAPointFrom(const point3& point)
-{
-	return (point - PlaneDotCoord(point) * point3(_plane));
+	return (point - Distance(point) * point3(_plane.x, _plane.y, _plane.z));
 }

@@ -133,7 +133,7 @@ public:
 		point4 nearBottomRight, point4 nearBottomLeft,
 		point4 farTopLeft, point4 farTopRight,
 		point4 farBottomRight, point4 farBottomLeft,
-		color4 color, float duration, float scale = 1.0f, float lineWidth = 1.0f, bool isDepthEnabled = true);
+		color4 color, float duration, float lineWidth = 1.0f, bool isDepthEnabled = true);
 
 
 	void Render(Camera* debugCamera, Shader* debugShader);

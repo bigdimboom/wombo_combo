@@ -42,14 +42,14 @@ public:
 	float aspect; // aspect ratio - width divided by height
 	float dNear; // near clipping distance
 	float dFar; // far clipping distanc
+
 	Camera* camera;
 
 public:
 	Frustum();
 	~Frustum();
-	bool IsPointInside(const point3& point);
-	bool IsSphereInside(const point3& point, const float radius);
 	bool IsCubeInside(const point3& center, const float cubeRadius);
+	bool IsTriangleInside(const point3& v0, const point3& v1, const point3& v2);
 
 	const Plane &Get(Side side);
 	void Set(Camera* cam);
