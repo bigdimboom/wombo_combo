@@ -29,6 +29,8 @@ public:
 	void Build(int maxUnit, int maxDepth);
 	void Destory();
 	void DebugDraw(Camera *cam, Shader *shader, color4 color);
+	OctantPtr GetRoot() const { return _root; }
+	static bool IsLeafNode(OctantPtr octPtr);
 protected:
 	void GenerateChildren(OctantPtr &start, int depth);
 	void AddIndices(OctantPtr& up, OctantPtr& start);

@@ -34,5 +34,6 @@ private:
 	Frustum _frustum;
 	Octree _octree;
 	bool _isCull;
+	void _Cull(OctantPtr ptr);
 };
 

@@ -53,7 +53,8 @@ void TerrainRenderable::Init()
 	}
 
 	_octree.BindMesh(&_terrain->GetMesh(), 
-		_terrain->GetPosition());
+		_terrain->GetPosition(), (float)_terrain->GetMaxSize() / 2.0f);
+	_octree.Build(600, 6);
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -112,6 +113,12 @@ void TerrainRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 		glUniform1i( glGetUniformLocation( shader->GetID(), _textures[i].second.second), i );
 	}
 
+	if (_isCull)
+	{
+		_frustum.Set(cam);
+		_Cull(_octree.GetRoot());
+	}
+
 	glDrawElements(GL_TRIANGLES, _terrain->GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
 }
@@ -133,4 +140,9 @@ void TerrainRenderable::_InitMembers()
 	glGenVertexArrays(1, &_vao);
 	glGenBuffers(1, &_vbo);
 	glGenBuffers(1, &_ebo);
+}
+
+void TerrainRenderable::_Cull(OctantPtr ptr)
+{
+
 }

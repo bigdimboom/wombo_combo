@@ -27,7 +27,7 @@ bool IsInBox(OctantPtr octPtr, const point4* point)
 	return false;
 }
 
-static bool IsLeafNode(OctantPtr octPtr)
+bool Octree::IsLeafNode(OctantPtr octPtr)
 {
 	return octPtr->child[0] == nullptr;
 }
