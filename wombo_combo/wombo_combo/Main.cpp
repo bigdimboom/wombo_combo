@@ -20,6 +20,7 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
+#define MOUSE_TIME_CLIP 0.5
 
 //Put mouse in the center
 GLfloat lastX = WINDOW_WIDTH / 2, lastY = WINDOW_HEIGHT / 2;
@@ -44,6 +45,7 @@ TerrainRenderable gTerrain(512, 512);
 FlockRenderable gFlock;
 
 bool gIsCulling = true;
+bool gIsDebug = false;
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -110,16 +112,16 @@ void EventHandler(SDL_Event &e)
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_w:
-				gCamera.Move(FORWARD, (float)gTimer.GetElapsedTime());
+				gCamera.Move(FORWARD, MOUSE_TIME_CLIP);
 				break;
 			case SDLK_s:
-				gCamera.Move(BACKWARD, (float)gTimer.GetElapsedTime());
+				gCamera.Move(BACKWARD, MOUSE_TIME_CLIP);
 				break;
 			case SDLK_a:
-				gCamera.Move(LEFT, (float)gTimer.GetElapsedTime());
+				gCamera.Move(LEFT, MOUSE_TIME_CLIP);
 				break;
 			case SDLK_d:
-				gCamera.Move(RIGHT, (float)gTimer.GetElapsedTime());
+				gCamera.Move(RIGHT, MOUSE_TIME_CLIP);
 				break;
 			case SDLK_c:
 				gIsCulling = !gIsCulling;
@@ -156,6 +158,12 @@ void Render()
 	//gFlock.Render(&gCamera, nullptr, &gShaderFlock);
 	if (!gIsCulling)
 	{
+		if (!gIsDebug)
+		{
+			gTerrain.EnableDebug(true);
+			gIsDebug = true;
+		}
+
 		gTerrain._frustum.Set(&gCamera, true);
 		gTerrain._octree.DebugDraw(&gCamera, &gShaderDebug, color4(1.0, 0.0f, 0.0f, 1.0f));
 	}
@@ -201,8 +209,8 @@ int main(int argc, char** argv)
 	srand((unsigned int)time(NULL));
 
 	Init();
-	gCamera.SetVelocity(3.0f);
-	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 5.0f, 1000.0f);
+	gCamera.SetVelocity(2.8f);
+	gCamera.SetFrustum(glm::radians(60.0f), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 1.0f, 1000.0f);
 
 	SDL_Event e;
 

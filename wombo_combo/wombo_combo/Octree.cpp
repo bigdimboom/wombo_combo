@@ -151,7 +151,7 @@ void Octree::GenerateChildren(OctantPtr &start, int depth)
 		start->child[i]->radius = (start->radius / 2.0f);
 		//Be cautious of the next two
 		InitToChildrenPtr(start->child[i]); // make childen's children ptr to nullptr
-		_InitChildrenCenter(start, (int)i); // init its children's center;
+		_InitChildrenCenter(start, i); // init its children's center;
 		_octree.push_back(start->child[i]); // after the initilization of children push to octree
 		AddIndices(start, start->child[i]);
 	}
@@ -159,11 +159,9 @@ void Octree::GenerateChildren(OctantPtr &start, int depth)
 	start->indices.clear();
 	start->indices.shrink_to_fit();
 
-	--depth;
-
 	for (uint i = 0; i < 8; ++i)
 	{
-		GenerateChildren(start->child[i], depth);
+		GenerateChildren(start->child[i], depth - 1);
 	}
 }
 

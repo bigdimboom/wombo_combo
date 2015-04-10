@@ -57,7 +57,7 @@ void Frustum::Set(Camera* cam, bool Debug)
 	planes[FARD].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], nearClip[BOTTOM_LEFT]);
 
 	planes[LEFT].Set(nearClip[UP_LEFT], nearClip[BOTTOM_LEFT], farClip[BOTTOM_LEFT]);
-	planes[RIGHT].Set(nearClip[BOTTOM_RIGHT], nearClip[UP_RIGHT], farClip[BOTTOM_RIGHT]);
+	planes[RIGHT].Set(nearClip[BOTTOM_RIGHT], nearClip[UP_RIGHT], farClip[UP_RIGHT]);
 
 	planes[TOP].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], farClip[UP_LEFT]);
 	planes[BOTTOM].Set(nearClip[BOTTOM_LEFT], nearClip[BOTTOM_RIGHT], farClip[BOTTOM_RIGHT]);
@@ -76,7 +76,7 @@ void Frustum::Set(Camera* cam, bool Debug)
 			AddFrustum(point4(nearClip[UP_LEFT], 1.0f), point4(nearClip[UP_RIGHT], 1.0f),
 			point4(nearClip[BOTTOM_RIGHT], 1.0f), point4(nearClip[BOTTOM_LEFT], 1.0f),
 			point4(farClip[UP_LEFT], 1.0f), point4(farClip[UP_RIGHT], 1.0f),
-			point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f), color4(0.1f, 0.4f, 0.5f, 1.0f), 15.0f, 1.5f, false);
+			point4(farClip[BOTTOM_RIGHT], 1.0f), point4(farClip[BOTTOM_LEFT], 1.0f), color4(0.1f, 0.4f, 0.5, 1.0f), 150.0f, 1.5f, false);
 
 		isFrustumDrawed = true;
 	}
@@ -84,10 +84,8 @@ void Frustum::Set(Camera* cam, bool Debug)
 
 bool Frustum::IsCubeInside(const point3& center, const float cubeRadius) const
 {
-	int out = 0,in = 0;
-
 	// for each plane do ...
-	for(int i=0; i < NumPlanes; i++) 
+	for(int i = 0; i < NumPlanes; ++i) 
 	{
 		if (!planes[i].IsCubeInstersect(center, cubeRadius))
 		{

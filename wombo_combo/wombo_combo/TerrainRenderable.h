@@ -9,6 +9,9 @@
 #include "Frustum.h"
 #include "Octree.h"
 
+#define LAYERS 2
+#define NUM_TRIANGLES 600
+
 typedef const char* Path;
 typedef const char* Name;
 
@@ -23,7 +26,8 @@ public:
 	void Render(Camera* cam, point3* lightPos, Shader* shader) override;
 	inline Terrain* GetRawTerrain() const { return _terrain; }
 	void AttachTexture(Path, Name);
-	void EnableCull(bool isCull) { _isCull = true;  }
+	void EnableCull(bool isCull) { _isCull = isCull; }
+	void EnableDebug(bool isDebug) { _isDebug = isDebug; }
 	Frustum _frustum;
 	Octree _octree;
 private:
@@ -33,8 +37,9 @@ private:
 	std::vector<std::pair<Texture*, std::pair<Path, Name> > > _textures;
 	void _InitMembers();
 private:
+	bool _isDebug;
 	bool _isCull;
 	void _Cull(OctantPtr ptr);
-	std::vector<std::vector<uint> > _idx;
+	std::vector<std::vector<uint>* > _idx;
 };
 

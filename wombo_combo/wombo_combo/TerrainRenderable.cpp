@@ -5,12 +5,14 @@ TerrainRenderable::TerrainRenderable()
 {
 	_terrain = new Terrain(512, 512);
 	_isCull = true;
+	_isDebug = false;
 }
 
 TerrainRenderable::TerrainRenderable(int width, int height)
 {
 	_terrain = new Terrain(width, height);
 	_isCull = true;
+	_isDebug = false;
 }
 
 TerrainRenderable::TerrainRenderable(Terrain* inst)
@@ -19,6 +21,7 @@ TerrainRenderable::TerrainRenderable(Terrain* inst)
 	_terrain = inst;
 	_isOutsideInstance = true;
 	_isCull = true;
+	_isDebug = false;
 }
 
 
@@ -52,9 +55,9 @@ void TerrainRenderable::Init()
 		}
 	}
 
-	_octree.BindMesh(&_terrain->GetMesh(), 
+	_octree.BindMesh(&_terrain->GetMesh(),
 		_terrain->GetPosition(), (float)_terrain->GetMaxSize() / 2.0f);
-	_octree.Build(600, 2);
+	_octree.Build(NUM_TRIANGLES, LAYERS);
 
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -68,11 +71,11 @@ void TerrainRenderable::Init()
 	glBufferSubData(GL_ARRAY_BUFFER, _terrain->GetMesh().GetVSizeInBytes() +
 		_terrain->GetMesh().GetNormSizeInBytes(), _terrain->GetMesh().GetUVSizeInBytes(), _terrain->GetMesh().GetUVs());
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, _terrain->GetMesh().GetIdxSizeInBytes(), _terrain->GetMesh().GetIndxs(), GL_STATIC_DRAW);
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _terrain->GetMesh().GetIdxSizeInBytes(), _terrain->GetMesh().GetIndxs(), GL_STATIC_DRAW);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 
 	// Position attribute
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
@@ -113,36 +116,44 @@ void TerrainRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 	for (uint i = 0; i < _textures.size(); ++i)
 	{
 		_textures[i].first->Bind((int)i);
-		glUniform1i( glGetUniformLocation( shader->GetID(), _textures[i].second.second), i );
+		glUniform1i(glGetUniformLocation(shader->GetID(), _textures[i].second.second), i);
 	}
 
 	if (_isCull)
 	{
 		_frustum.Set(cam);
+
 		_idx.clear();
 		_Cull(_octree.GetRoot());
 		_isCull = false;
 	}
 
+	if (_isDebug)
+	{
+		_isCull = true;
+		_Cull(_octree.GetRoot());
+		_isCull = false;
+		_isDebug = false;
+	}
+
 	for (uint i = 0; i < _idx.size(); ++i)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * _idx[i].size(), &_idx[i][0], GL_DYNAMIC_DRAW);
-		glDrawElements(GL_TRIANGLES, _idx[i].size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * _idx[i]->size(), &_idx[i]->at(0), GL_DYNAMIC_DRAW);
+		glDrawElements(GL_TRIANGLES, _idx[i]->size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	}
 
-	//glDrawElements(GL_TRIANGLES, _terrain->GetMesh().GetIdxSize(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	glBindVertexArray(0);
 }
 
 
 void TerrainRenderable::AttachTexture(Path path, Name name)
 {
-	_textures.push_back ( 
-		std::make_pair (
-			new Texture(), std::make_pair(path, name)
+	_textures.push_back(
+		std::make_pair(
+		new Texture(), std::make_pair(path, name)
 		)
-	);
+		);
 }
 
 
@@ -156,6 +167,7 @@ void TerrainRenderable::_InitMembers()
 
 void TerrainRenderable::_Cull(OctantPtr ptr)
 {
+
 	if (ptr == nullptr || !_isCull || !_frustum.IsCubeInside(ptr->center, ptr->radius))
 	{
 		return;
@@ -163,8 +175,24 @@ void TerrainRenderable::_Cull(OctantPtr ptr)
 
 	if (_octree.IsLeafNode(ptr) && ptr->indices.size() != 0)
 	{
-		_idx.push_back(ptr->indices);
-		return;
+		_idx.push_back(&ptr->indices);
+
+		if (_isDebug)
+		{
+			point4 v[8];
+			for (int i = 0; i < 8; ++i)
+			{
+				v[i] = point4(Plane::GetPointFromCube(ptr->center, ptr->radius, i), 1.0f);
+			}
+
+			DebugDrawManager::getInstance().
+				AddFrustum(v[0], v[1],
+				v[3], v[2],
+				v[4], v[5],
+				v[7], v[6], color4(0.0f, 1.0f, 0.5, 1.0f), 1000.0f, 1.0f, false);
+		}
+
+		//return;
 	}
 
 	for (uint i = 0; i < 8; ++i)

@@ -25,6 +25,7 @@ void Plane::Set(const point3& p0, const point3& p1, const point3& p2)
 	_plane.y = n.y;
 	_plane.z = n.z;
 	_plane.w = D;
+	//_plane = point4(glm::normalize(point3(_plane)), _plane.w);
 	_plane = glm::normalize(_plane);
 }
 
@@ -58,6 +59,7 @@ bool Plane::IsPointInstersect(const point3& point) const
 bool Plane::IsCubeInstersect(const point3& center,
 	const float radius) const
 {
+	
 	for (int i = 0; i < 8; ++i)
 	{
 		if (IsPointInstersect(GetPointFromCube(center, radius, i)))
