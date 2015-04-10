@@ -140,7 +140,7 @@ void TerrainRenderable::Render(Camera* cam, point3* lightPos, Shader* shader)
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * _idx[i]->size(), &_idx[i]->at(0), GL_DYNAMIC_DRAW);
-		glDrawElements(GL_TRIANGLES, _idx[i]->size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+		glDrawElements(GL_TRIANGLES, (GLsizei)_idx[i]->size(), GL_UNSIGNED_INT, BUFFER_OFFSET(0));
 	}
 
 	glBindVertexArray(0);
@@ -175,6 +175,9 @@ void TerrainRenderable::_Cull(OctantPtr ptr)
 
 	if (_octree.IsLeafNode(ptr) && ptr->indices.size() != 0)
 	{
+
+		std::cout << ptr->indices.size() << std::endl;
+
 		_idx.push_back(&ptr->indices);
 
 		if (_isDebug)
@@ -191,8 +194,6 @@ void TerrainRenderable::_Cull(OctantPtr ptr)
 				v[4], v[5],
 				v[7], v[6], color4(0.0f, 1.0f, 0.5, 1.0f), 1000.0f, 1.0f, false);
 		}
-
-		//return;
 	}
 
 	for (uint i = 0; i < 8; ++i)

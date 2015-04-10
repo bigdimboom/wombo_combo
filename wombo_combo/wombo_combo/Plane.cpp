@@ -20,13 +20,13 @@ void Plane::Set(const point3& p0, const point3& p1, const point3& p2)
 	point3 u = p1 - p0;
 	point3 v = p2 - p0;
 	point3 n = glm::normalize(glm::cross(u, v));
+	float l = glm::length(n);
 	float D = -(n.x * p0.x + n.y * p0.y + n.z * p0.z);
-	_plane.x = n.x;
-	_plane.y = n.y;
-	_plane.z = n.z;
-	_plane.w = D;
-	//_plane = point4(glm::normalize(point3(_plane)), _plane.w);
-	_plane = glm::normalize(_plane);
+	_plane.x = n.x / l;
+	_plane.y = n.y / l;
+	_plane.z = n.z / l;
+	_plane.w = D / l;
+	//_plane = glm::normalize(_plane);
 }
 
 float Plane::Distance(const point3& point) const

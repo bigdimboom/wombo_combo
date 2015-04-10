@@ -9,7 +9,7 @@
 #include "Frustum.h"
 #include "Octree.h"
 
-#define LAYERS 2
+#define LAYERS 3
 #define NUM_TRIANGLES 600
 
 typedef const char* Path;

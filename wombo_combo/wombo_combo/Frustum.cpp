@@ -54,10 +54,10 @@ void Frustum::Set(Camera* cam, bool Debug)
 	farClip[BOTTOM_LEFT] = farCenter - (camera->GetUp() * farHeight_half) - (camera->GetRight() * farWidth_half);
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	planes[NEARD].Set(nearClip[UP_LEFT], nearClip[UP_RIGHT], nearClip[BOTTOM_RIGHT]);
-	planes[FARD].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], nearClip[BOTTOM_LEFT]);
+	planes[FARD].Set(farClip[UP_RIGHT], farClip[UP_LEFT], farClip[BOTTOM_LEFT]);
 
 	planes[LEFT].Set(nearClip[UP_LEFT], nearClip[BOTTOM_LEFT], farClip[BOTTOM_LEFT]);
-	planes[RIGHT].Set(nearClip[BOTTOM_RIGHT], nearClip[UP_RIGHT], farClip[UP_RIGHT]);
+	planes[RIGHT].Set(nearClip[BOTTOM_RIGHT], nearClip[UP_RIGHT], farClip[BOTTOM_RIGHT]);
 
 	planes[TOP].Set(nearClip[UP_RIGHT], nearClip[UP_LEFT], farClip[UP_LEFT]);
 	planes[BOTTOM].Set(nearClip[BOTTOM_LEFT], nearClip[BOTTOM_RIGHT], farClip[BOTTOM_RIGHT]);
