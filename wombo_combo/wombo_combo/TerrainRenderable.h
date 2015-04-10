@@ -40,6 +40,6 @@ private:
 	bool _isDebug;
 	bool _isCull;
 	void _Cull(OctantPtr ptr);
-	std::vector<std::vector<uint>* > _idx;
+	std::vector<std::vector<uint>*> _idx;
 };
 

@@ -176,9 +176,7 @@ void TerrainRenderable::_Cull(OctantPtr ptr)
 	if (_octree.IsLeafNode(ptr) && ptr->indices.size() != 0)
 	{
 
-		std::cout << ptr->indices.size() << std::endl;
-
-		_idx.push_back(&ptr->indices);
+		//std::cout << ptr->indices.size() << std::endl;
 
 		if (_isDebug)
 		{
@@ -193,6 +191,10 @@ void TerrainRenderable::_Cull(OctantPtr ptr)
 				v[3], v[2],
 				v[4], v[5],
 				v[7], v[6], color4(0.0f, 1.0f, 0.5, 1.0f), 1000.0f, 1.0f, false);
+		}
+		else
+		{
+			_idx.push_back(&ptr->indices);
 		}
 	}
 
