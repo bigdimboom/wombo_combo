@@ -1,5 +1,5 @@
 #pragma once
-#include "ActorMovable.h"
+#include "MovableActor.h"
 #include <vector>
 #include <map>
 #include <string>
@@ -7,7 +7,7 @@
 #include <memory>
 
 typedef std::shared_ptr<Mesh> Mesh_SPtr;
-typedef ActorMovable Boid;
+typedef MovableActor Boid;
 
 class Flock
 {

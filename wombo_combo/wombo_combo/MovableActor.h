@@ -10,11 +10,11 @@
 #include "Actor.h"
 #include "IMovable.h"
 
-class ActorMovable : public Actor, public IMovable
+class MovableActor : public Actor, public IMovable
 {
 public:
-	ActorMovable(point3 startPoint = point3(0.0f, 0.0f, 0.0f), point3 velocity = point3(0.0f, 0.0f, 0.0f));
-	~ActorMovable();
+	MovableActor(point3 startPoint = point3(0.0f, 0.0f, 0.0f), point3 velocity = point3(0.0f, 0.0f, 0.0f));
+	~MovableActor();
 	inline float GetRadius() const { return _radius; }
 	inline Mesh* GetMesh() const { return _mesh; }
 	void SetVelocity(point3 velocity) { _velocity = velocity; }

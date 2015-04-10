@@ -59,11 +59,11 @@
     <Filter Include="Source Files\Renderable">
       <UniqueIdentifier>{491f2f7e-374c-46bb-884c-5bc35a29c288}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Math">
-      <UniqueIdentifier>{e867e674-1d3a-4d88-872a-e35fa687eaa2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\DebugDraw">
       <UniqueIdentifier>{f2d08fbb-9f06-47c0-996c-b5cdb09bb117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{e867e674-1d3a-4d88-872a-e35fa687eaa2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +121,6 @@
     <ClCompile Include="FlockRenderable.cpp">
       <Filter>Source Files\Renderable</Filter>
     </ClCompile>
-    <ClCompile Include="ActorMovable.cpp">
-      <Filter>Source Files\Actor</Filter>
-    </ClCompile>
     <ClCompile Include="Sphere.cpp">
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
@@ -146,7 +143,10 @@
       <Filter>Source Files\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="Plane.cpp">
-      <Filter>Source Files\Math</Filter>
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="MovableActor.cpp">
+      <Filter>Source Files\Actor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,9 +233,6 @@
     <ClInclude Include="IMovable.h">
       <Filter>Source Files\Actor</Filter>
     </ClInclude>
-    <ClInclude Include="ActorMovable.h">
-      <Filter>Source Files\Actor</Filter>
-    </ClInclude>
     <ClInclude Include="Sphere.h">
       <Filter>Source Files\Mesh</Filter>
     </ClInclude>
@@ -258,7 +255,10 @@
       <Filter>Source Files\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
-      <Filter>Source Files\Math</Filter>
+      <Filter>Source Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="MovableActor.h">
+      <Filter>Source Files\Actor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

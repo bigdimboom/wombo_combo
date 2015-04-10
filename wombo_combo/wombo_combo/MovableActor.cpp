@@ -1,29 +1,29 @@
-#include "ActorMovable.h"
+#include "MovableActor.h"
 
 
-ActorMovable::ActorMovable(point3 startPoint, point3 velocity)
+MovableActor::MovableActor(point3 startPoint, point3 velocity)
 	: Actor(startPoint),
 	_mesh(nullptr),
 	_velocity(velocity)
 {
 }
 
-ActorMovable::~ActorMovable()
+MovableActor::~MovableActor()
 {
 }
 
-void ActorMovable::SetRadius(float radius)
+void MovableActor::SetRadius(float radius)
 {
 	_radius = radius;
 }
 
-void ActorMovable::SetMesh(Mesh* mesh)
+void MovableActor::SetMesh(Mesh* mesh)
 {
 	assert(mesh != nullptr);
 	_mesh = mesh;
 }
 
-void ActorMovable::Move(float dTime)
+void MovableActor::Move(float dTime)
 {
 	//for debugging purpose
 	if (_velocity == point3(0.0f, 0.0f, 0.0f))
