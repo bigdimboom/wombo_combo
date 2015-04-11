@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="CollidableActor.cpp" />
     <ClCompile Include="MovableActor.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Circle.cpp" />
@@ -57,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
+    <ClInclude Include="CollidableActor.h" />
     <ClInclude Include="MovableActor.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />

@@ -1,5 +1,5 @@
 #pragma once
-#include "ActorMovable.h"
+#include "MovableActor.h"
 #include "IRenderable.h"
 #include "Mesh.h"
 #include "Plane.h"

@@ -15,17 +15,17 @@ class MovableActor : public Actor, public IMovable
 public:
 	MovableActor(point3 startPoint = point3(0.0f, 0.0f, 0.0f), point3 velocity = point3(0.0f, 0.0f, 0.0f));
 	~MovableActor();
-	inline float GetRadius() const { return _radius; }
-	inline Mesh* GetMesh() const { return _mesh; }
-	void SetVelocity(point3 velocity) { _velocity = velocity; }
-	void ApplyVelocity(point3 velocity) { _velocity += velocity; }
+	inline float GetRadius() const { return this->radius; }
+	inline Mesh* GetMesh() const { return this->mesh; }
+	void SetVelocity(point3 velocity) { this->velocity = velocity; }
+	void ApplyVelocity(point3 velocity) { this->velocity += velocity; }
 	void SetRadius(float size);
 	void SetMesh(Mesh* mesh);
 	void Move(float dTime) override;
-	inline const point3& GetVelocity() const { return _velocity; }
-private:
-	float _radius;
-	Mesh* _mesh;
-	point3 _velocity;
+	inline const point3& GetVelocity() const { return this->velocity; }
+protected:
+	float radius;
+	Mesh* mesh;
+	point3 velocity;
 };
 
