@@ -188,9 +188,9 @@ void TerrainRenderable::_Cull(OctantPtr ptr)
 
 			DebugDrawManager::getInstance().
 				AddFrustum(v[0], v[1],
-				v[3], v[2],
+				v[2], v[3],
 				v[4], v[5],
-				v[7], v[6], color4(0.0f, 1.0f, 0.5, 1.0f), 1000.0f, 1.0f, false);
+				v[6], v[7], color4(0.0f, 1.0f, 0.5, 1.0f), 1000.0f, 1.0f, false);
 		}
 		else
 		{

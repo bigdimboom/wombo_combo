@@ -91,17 +91,17 @@ point3 Plane::GetPointFromCube(const point3& center, float radius, int i)
 	case 1:
 		return point3(center.x + radius, center.y + radius, center.z - radius);
 	case 2:
-		return point3(center.x - radius, center.y - radius, center.z - radius);
-	case 3:
 		return point3(center.x + radius, center.y - radius, center.z - radius);
+	case 3:
+		return point3(center.x - radius, center.y - radius, center.z - radius);
 	case 4:
 		return point3(center.x - radius, center.y + radius, center.z + radius);
 	case 5:
 		return point3(center.x + radius, center.y + radius, center.z + radius);
 	case 6:
-		return point3(center.x - radius, center.y - radius, center.z + radius);
+		return point3(center.x + radius, center.y - radius, center.z + radius);		
 	case 7:
-		return point3(center.x + radius, center.y - radius, center.z + radius);
+		return point3(center.x - radius, center.y - radius, center.z + radius);
 	default:
 		std::cout << "Error passing in \n";
 	}
