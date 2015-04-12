@@ -70,6 +70,18 @@ bool Plane::IsCubeInstersect(const point3& center,
 	return false;
 }
 
+bool Plane::IsSphereInstersect(const point3& center,
+	const float radius) const
+{
+	if (Distance(center) >= -radius)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
 point3 Plane::GetPointFromCube(const point3& center, float radius, int i)
 {
 	switch (i)

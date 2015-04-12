@@ -39,6 +39,7 @@
     <ClCompile Include="Octree.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SimpleCDTest.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainRenderable.cpp" />
     <ClCompile Include="Sphere.cpp" />
@@ -80,6 +81,7 @@
     <ClInclude Include="Octree.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SimpleCDTest.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainRenderable.h" />
     <ClInclude Include="Sphere.h" />

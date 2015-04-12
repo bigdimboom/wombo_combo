@@ -151,6 +151,9 @@
     <ClCompile Include="CollidableActor.cpp">
       <Filter>Source Files\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="SimpleCDTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -266,6 +269,7 @@
     <ClInclude Include="CollidableActor.h">
       <Filter>Source Files\Actor</Filter>
     </ClInclude>
+    <ClInclude Include="SimpleCDTest.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\awesomeface.png">

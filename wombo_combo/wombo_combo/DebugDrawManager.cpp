@@ -64,7 +64,7 @@ void DebugDrawManager::AddSphere(const point4& center,
 	sphere.color =color;
 	sphere.lineWidth = 1.0f;
 	sphere.expireAt = _timer.GetElapsedTime() + duration * 1000;
-	float scale = radius / 0.5f;
+	float scale = radius * 0.5f;
 	sphere.transform = glm::translate(matrix4(1.0), point3(center)) *
 		glm::scale(matrix4(1.0), point3(scale, scale, scale));
 	sphere.isDepthEnabled = isDepthEnabled;

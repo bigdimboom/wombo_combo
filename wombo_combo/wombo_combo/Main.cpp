@@ -15,7 +15,7 @@
 #include "Line.h"
 #include <time.h>
 #include "DebugDrawManager.h"
-#include "Frustum.h"
+#include "SimpleCDTest.h"
 
 
 #define WINDOW_WIDTH 800
@@ -46,6 +46,9 @@ FlockRenderable gFlock;
 
 bool gIsCulling = true;
 bool gIsDebug = false;
+
+SimpleCDTest gCDTest(&gTerrain);
+
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
 	if (firstMouse)
@@ -140,6 +143,7 @@ void EventHandler(SDL_Event &e)
 			if (e.button.button == SDL_BUTTON_LEFT)
 			{
 				//std::cout << "Clicked\n";
+				gCDTest.SetMovingObj(gCamera.GetPosition(), gCamera.GetFront());
 			}
 		}
 	}
@@ -176,8 +180,9 @@ void Update()
 {
 	gTimeElapsed += gTimer.GetElapsedTime();
 
-	if (gTimeElapsed / 1000 >= 0.1){
+	if (gTimeElapsed / 1000 >= 0.1f){
 		//gFlock.MoveAll(1.0f);
+		gCDTest.Update(0.1f);
 	}
 
 	++gFrameCount;
