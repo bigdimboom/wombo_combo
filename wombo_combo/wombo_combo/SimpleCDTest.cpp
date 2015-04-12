@@ -34,8 +34,8 @@ void SimpleCDTest::Update(float dTime)
 	point3 collidePoint;
 	if (_IsCollideWithTerrian(collidePoint))
 	{
+		_cdObj->SetPosition(collidePoint);
 		_cdObj->SetVelocity(point3(0.0f, 0.0f, 0.0f));
-		//_cdObj->SetPosition(collidePoint);
 		DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(1.0f, 0.0f, 0.0f, 1.0f), 1000.0f);
 		return;
 	}

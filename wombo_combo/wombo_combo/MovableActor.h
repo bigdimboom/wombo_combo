@@ -18,6 +18,7 @@ public:
 	inline float GetRadius() const { return this->radius; }
 	inline Mesh* GetMesh() const { return this->mesh; }
 	void SetVelocity(point3 velocity) { this->velocity = velocity; }
+	void SetPosition(point3 position) { Actor::position = position; }
 	void ApplyVelocity(point3 velocity) { this->velocity += velocity; }
 	void SetRadius(float size);
 	void SetMesh(Mesh* mesh);

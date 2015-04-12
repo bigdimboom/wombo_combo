@@ -20,28 +20,29 @@ void Plane::Set(const point3& p0, const point3& p1, const point3& p2)
 	point3 u = p1 - p0;
 	point3 v = p2 - p0;
 	point3 n = glm::normalize(glm::cross(u, v));
-	float l = glm::length(n);
 	float D = -(n.x * p0.x + n.y * p0.y + n.z * p0.z);
-	_plane.x = n.x / l;
-	_plane.y = n.y / l;
-	_plane.z = n.z / l;
-	_plane.w = D / l;
-	//_plane = glm::normalize(_plane);
+	//float l = glm::length(n);
+	//_plane.x = n.x / l;
+	//_plane.y = n.y / l;
+	//_plane.z = n.z / l;
+	//_plane.w = D;
+	_plane = glm::normalize(point4(n, D));
 }
 
 float Plane::Distance(const point3& point) const
 {
 	//determining the plane's relationship 
 	//with a coordinate in 3D space.
-	return _plane.x * point.x +
+	return (_plane.x * point.x +
 		_plane.y * point.y +
 		_plane.z * point.z +
-		_plane.w;
+		_plane.w) / glm::sqrt(_plane.x * _plane.x + _plane.y * _plane.y + _plane.z * _plane.z);
 }
 
 point3 Plane::ProjPointFrom(const point3& point) const 
 {
-	return (point - Distance(point) * point3(_plane.x, _plane.y, _plane.z));
+	float dist = Distance(point);
+	return (point - point3(_plane.x * dist, _plane.y * dist, _plane.z * dist));
 }
 
 // 'distance: 0 -> on the plane'
