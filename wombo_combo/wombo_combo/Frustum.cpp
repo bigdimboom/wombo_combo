@@ -87,7 +87,7 @@ bool Frustum::IsCubeInside(const point3& center, const float cubeRadius) const
 	// for each plane do ...
 	for(int i = 0; i < NumPlanes; ++i) 
 	{
-		if (!planes[i].IsCubeInstersect(center, cubeRadius))
+		if (!planes[i].IsCubeIntersect(center, cubeRadius))
 		{
 			return false;
 		}

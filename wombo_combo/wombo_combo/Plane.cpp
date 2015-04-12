@@ -41,14 +41,14 @@ float Plane::Distance(const point3& point) const
 
 point3 Plane::ProjPointFrom(const point3& point) const 
 {
-	float dist = Distance(point);
-	return (point - point3(_plane.x * dist, _plane.y * dist, _plane.z * dist));
+
+	return (point - Distance(point) * point3(_plane.x, _plane.y, _plane.z));
 }
 
 // 'distance: 0 -> on the plane'
 // 'distace: > 0, in the plane(normal direction)'
 // '<0, outside the plane'
-bool Plane::IsPointInstersect(const point3& point) const
+bool Plane::IsPointIntersect(const point3& point) const
 {
 	if (Distance(point) >= 0)
 	{
@@ -57,13 +57,13 @@ bool Plane::IsPointInstersect(const point3& point) const
 	return false;
 }
 
-bool Plane::IsCubeInstersect(const point3& center,
+bool Plane::IsCubeIntersect(const point3& center,
 	const float radius) const
 {
 	
 	for (int i = 0; i < 8; ++i)
 	{
-		if (IsPointInstersect(GetPointFromCube(center, radius, i)))
+		if (IsPointIntersect(GetPointFromCube(center, radius, i)))
 		{
 			return true;
 		}
@@ -71,17 +71,24 @@ bool Plane::IsCubeInstersect(const point3& center,
 	return false;
 }
 
-bool Plane::IsSphereInstersect(const point3& center,
+bool Plane::IsSphereInside(const point3& center,
 	const float radius) const
 {
-	if (Distance(center) >= -radius)
-	{
-		return true;
-	}
-
-	return false;
+	return -Distance(center) < -radius;
 }
 
+
+bool Plane::IsSphereOutside(const point3& center,
+	const float radius) const
+{
+	return Distance(center) > radius;
+}
+
+bool Plane::IsSphereIntersect(const point3& center,
+	const float radius) const
+{
+	return fabs(Distance(center)) <= radius;
+}
 
 point3 Plane::GetPointFromCube(const point3& center, float radius, int i)
 {

@@ -98,6 +98,7 @@ void Init()
 
 	//gFlock.Init();
 
+	//DebugDrawManager::getInstance().EnableWorldPlane(point4(0.2f, 0.6f, 0.4f, 1.0f), 1000.0f, 512, 1.0f, false);
 }
 
 void EventHandler(SDL_Event &e)

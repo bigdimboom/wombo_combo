@@ -16,11 +16,17 @@ public:
 	point3 ProjPointFrom(const point3& point) const;
 public:
 	//Testing Methods
-	bool IsPointInstersect(const point3& point) const;
-	bool IsCubeInstersect(const point3& center,
+	bool IsPointIntersect(const point3& point) const;
+	bool IsCubeIntersect(const point3& center,
 		const float radius) const;
 
-	bool IsSphereInstersect(const point3& center,
+	bool IsSphereInside(const point3& center,
+		const float radius) const;
+
+	bool IsSphereOutside(const point3& center,
+		const float radius) const;
+
+	bool IsSphereIntersect(const point3& center,
 		const float radius) const;
 
 	static point3 GetPointFromCube(const point3& center, float radius, int i);

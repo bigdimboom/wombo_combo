@@ -7,6 +7,7 @@
 #include "MeshRender.h"
 #include "Plane.h"
 #include "DebugDrawManager.h"
+#include <glm/gtx/intersect.hpp>
 
 
 typedef MovableActor PhxActor;
@@ -24,6 +25,9 @@ private:
 	PhxActor* _cdObj;
 	bool _IsCollideWithTerrian(point3& cdPos);
 	bool _IsCollideWithOctant(OctantPtr ptr);
+	bool _IsInsideOctant(Plane* octantPlanes);
+	bool _IsIntersectOctant(Plane* octantPlanes);
+
 	void _Traverse(OctantPtr ptr, point3& cdPos);
 	bool _IsCollideWithTriangle(OctantPtr ptr, point4* p0, point4* p1, point4* p2, point3& cdPos);
 	enum Side
