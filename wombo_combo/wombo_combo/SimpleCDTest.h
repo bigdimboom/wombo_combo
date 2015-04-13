@@ -28,6 +28,8 @@ private:
 	bool _IsInsideOctant(Plane* octantPlanes);
 	bool _IsIntersectOctant(Plane* octantPlanes);
 
+	bool IsPointInsideTriangle(const point3& v0, const point3& v1, const point3& v2, const point3& point);
+
 	void _Traverse(OctantPtr ptr, point3& cdPos);
 	bool _IsCollideWithTriangle(OctantPtr ptr, point4* p0, point4* p1, point4* p2, point3& cdPos);
 	enum Side

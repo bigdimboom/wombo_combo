@@ -1,21 +1,5 @@
 #include "SimpleCDTest.h"
 
-inline float squared(float v) { return v * v; }
-bool doesCubeIntersectSphere(point3 C1, point3 C2, point3 S, float R)
-{
-	float dist_squared = R * R;
-	/* assume C1 and C2 are element-wise sorted, if not, do that now */
-	if (S.x < C1.x) dist_squared -= squared(S.x - C1.x);
-	else if (S.x > C2.x) dist_squared -= squared(S.x - C2.x);
-	if (S.y < C1.y) dist_squared -= squared(S.y - C1.y);
-	else if (S.y > C2.y) dist_squared -= squared(S.y - C2.y);
-	if (S.z < C1.z) dist_squared -= squared(S.z - C1.z);
-	else if (S.z > C2.z) dist_squared -= squared(S.z - C2.z);
-	return dist_squared > 0;
-}
-
-
-
 SimpleCDTest::SimpleCDTest(TerrainRenderable* inst)
 	:_terrain(inst)
 {
@@ -32,13 +16,17 @@ SimpleCDTest::~SimpleCDTest()
 void SimpleCDTest::SetMovingObj(point3 pos, point3 vel)
 {
 	_cdObj = new MovableActor(pos, vel);
-	_cdObj->SetRadius(1.0f);
+	_cdObj->SetRadius(5.0f);
 	//DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(0.2f, 0.1f, 0.9f, 1.0f), 0.5f);
 }
 
 void SimpleCDTest::Update(float dTime)
 {
 	assert(_terrain);
+
+	static float time = 0.0f;
+
+	time += dTime;
 
 	if (!_cdObj || _cdObj->GetVelocity() == point3(0.0f, 0.0f, 0.0f))
 	{
@@ -52,11 +40,15 @@ void SimpleCDTest::Update(float dTime)
 	{
 		_cdObj->SetPosition(collidePoint);
 		_cdObj->SetVelocity(point3(0.0f, 0.0f, 0.0f));
-		DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(1.0f, 0.0f, 0.0f, 1.0f), 1000.0f, false);
-		return;
+		//DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(1.0f, 0.0f, 0.0f, 1.0f), 1000.0f, false);
+		//return;
 	}
 
-	DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(0.2f, 0.1f, 0.9f, 1.0f), 100.0f);
+	if (time >= 2.5f)
+	{
+		DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(0.2f, 0.1f, 0.9f, 1.0f), 10.0f);
+		time = 0.0f;
+	}
 
 	return;
 }
@@ -107,8 +99,8 @@ bool SimpleCDTest::_IsInsideOctant(Plane* octantPlanes)
 {
 	for (int i = 0; i < NumPlanes; ++i)
 	{
-		if ( !octantPlanes[i].IsSphereInside(
-			_cdObj->GetPosition(), _cdObj->GetRadius()) )
+		if (!octantPlanes[i].IsSphereInside(
+			_cdObj->GetPosition(), _cdObj->GetRadius()))
 		{
 			return false;
 		}
@@ -197,6 +189,7 @@ void SimpleCDTest::_Traverse(OctantPtr ptr, point3& cdPos)
 
 	for (int i = 0; i < 8; ++i)
 	{
+		if (!_isCollide)
 		_Traverse(ptr->child[i], cdPos);
 	}
 }
@@ -211,7 +204,8 @@ bool SimpleCDTest::_IsCollideWithTriangle(OctantPtr ptr, point4* p0, point4* p1,
 
 	plane.Set(pp0, pp1, pp2);
 
-	if (!plane.IsSphereInside(_cdObj->GetPosition(), _cdObj->GetRadius()))
+	if (!plane.IsSphereInside(_cdObj->GetPosition(), _cdObj->GetRadius()) &&
+		!plane.IsSphereIntersect(_cdObj->GetPosition(), _cdObj->GetRadius()))
 	{
 		return false;
 	}
@@ -234,7 +228,43 @@ bool SimpleCDTest::_IsCollideWithTriangle(OctantPtr ptr, point4* p0, point4* p1,
 		return false;
 	}
 
+	//if (!IsPointInsideTriangle(pp0, pp1, pp2, projectPoint))
+	//{
+	//	return false;
+	//}
+
+	std::cout << glm::to_string(projectPoint) << std::endl;
+
 	cdPos = projectPoint;
+
+	return true;
+}
+
+bool SimpleCDTest::IsPointInsideTriangle(const point3& v0, const point3& v1, const point3& v2, const point3& point)
+{
+	point3 u = v1 - v0;
+	point3 v = v2 - v0;
+	point3 w = point - v0;
+
+	float uu = glm::dot(u, u);
+	float uv = glm::dot(u, v);
+	float vv = glm::dot(v, v);
+	float wu = glm::dot(w, u);
+	float wv = glm::dot(w, v);
+	float d = uv*uv - uu * vv;
+
+	float invD = 1 / d;
+	float s = (uv * wv - vv * wu) * invD;
+	if (s < 0 || s > 1)
+	{
+		return false;
+	}
+
+	float t = (uv * wu - uu * wv) * invD;
+	if (t < 0.0f || (s + t) > 1.0f)
+	{
+		return false;
+	}
 
 	return true;
 }

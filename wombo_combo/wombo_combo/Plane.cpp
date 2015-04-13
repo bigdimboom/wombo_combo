@@ -41,7 +41,6 @@ float Plane::Distance(const point3& point) const
 
 point3 Plane::ProjPointFrom(const point3& point) const 
 {
-
 	return (point - Distance(point) * point3(_plane.x, _plane.y, _plane.z));
 }
 
