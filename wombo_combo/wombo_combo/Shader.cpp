@@ -59,6 +59,8 @@ GLuint Shader::CreateShader(GLenum eShaderType, const char *strShaderFile)
 		}
 
 		printf("Compile failure in %s shader:\n%s\n", strShaderType, strInfoLog);
+
+		glDeleteShader(shader);
 		return -1;
 	}
 	else
@@ -109,6 +111,60 @@ bool Shader::Comiple(const char *vsPath, const char *fsPath)
 	glDetachShader(_program, vertexShader);
 	glDetachShader(_program, fragmentShader);
 
+	if (_program == -1)
+	{
+		std::cout << "Unable to Compile the Shader\n";
+		return false;
+	}
+
+	return true;
+}
+
+bool Shader::Comiple(const char *vsPath, const char* gsPath, const char *fsPath)
+{
+	GLuint vertexShader;
+	GLuint geometryShader;
+	GLuint fragmentShader;
+
+	vertexShader = CreateShader(GL_VERTEX_SHADER, vsPath);
+	if (fsPath){ fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fsPath); }
+	geometryShader = CreateShader(GL_GEOMETRY_SHADER, gsPath);
+
+	/* So we've compiled our shaders, now we need to link them in to the program
+	that will be used for rendering. */
+
+	/*This section could be broken out into a separate function, but we're doing it here
+	because I'm not using C++ STL features that would make this easier. Tutorial doing so is
+	here: http://www.arcsynthesis.org/gltut/Basics/Tut01%20Making%20Shaders.html */
+
+	_program = glCreateProgram();
+
+	glAttachShader(_program, vertexShader);
+	glAttachShader(_program, geometryShader);
+	if (fsPath){ glAttachShader(_program, fragmentShader); }
+
+	glLinkProgram(_program); //linking!
+
+	//error checking
+	GLint status;
+	glGetProgramiv(_program, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE)
+	{
+		GLint infoLogLength;
+		glGetProgramiv(_program, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		GLchar strInfoLog[4096];
+		glGetProgramInfoLog(_program, infoLogLength, NULL, strInfoLog);
+		printf("Shader linker failure: %s\n", strInfoLog);
+		return false;
+	}
+	else
+		puts("Shader linked sucessfully!");
+
+	glDetachShader(_program, vertexShader);
+	glDetachShader(_program, geometryShader);
+	if (fsPath){ glDetachShader(_program, fragmentShader); }
+	
 	if (_program == -1)
 	{
 		std::cout << "Unable to Compile the Shader\n";

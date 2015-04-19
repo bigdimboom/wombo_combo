@@ -9,6 +9,7 @@ public:
 	Shader();
 	~Shader();
 	bool Comiple(const char *vsPath, const char *fsPath);
+	bool Comiple(const char *vsPath, const char* gsPath,const char *fsPath = nullptr);
 	inline GLuint GetID() const { return _program; }
 	inline void Use() { glUseProgram(_program); }
 	void Delete();

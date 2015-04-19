@@ -33,6 +33,7 @@ void SimpleCDTest::Update(float dTime)
 		return;
 	}
 
+
 	_cdObj->Move(dTime);
 
 	point3 collidePoint;
@@ -44,7 +45,7 @@ void SimpleCDTest::Update(float dTime)
 		//return;
 	}
 
-	if (time >= 2.5f)
+	if (time >= 3.5f)
 	{
 		DebugDrawManager::getInstance().AddSphere(point4(_cdObj->GetPosition(), 1.0f), _cdObj->GetRadius(), color4(0.2f, 0.1f, 0.9f, 1.0f), 10.0f);
 		time = 0.0f;
@@ -210,7 +211,19 @@ bool SimpleCDTest::_IsCollideWithTriangle(OctantPtr ptr, point4* p0, point4* p1,
 		return false;
 	}
 
+	//To be fixed:
+	//Project Point does not mean your sphere has touched the trianlge 
+	//I need to check glm::length(center - projectPoint) is equal to "radius"
+	// and torlance (+- 0.01)
+
 	point3 projectPoint = plane.ProjPointFrom(ptr->center);
+
+	//float value = glm::length(_cdObj->GetPosition() - projectPoint);
+
+	//if (value + 0.001 > _cdObj->GetRadius())
+	//{
+	//	return false;
+	//}
 
 	////Check Each point
 	if (glm::dot(pp1 - pp0, projectPoint - pp0) < 0)
@@ -228,14 +241,14 @@ bool SimpleCDTest::_IsCollideWithTriangle(OctantPtr ptr, point4* p0, point4* p1,
 		return false;
 	}
 
-	//if (!IsPointInsideTriangle(pp0, pp1, pp2, projectPoint))
+	//if (!IsPointInsideTriangle(pp0, pp2, pp1, projectPoint))
 	//{
 	//	return false;
 	//}
 
 	std::cout << glm::to_string(projectPoint) << std::endl;
 
-	cdPos = projectPoint;
+	cdPos = projectPoint + _cdObj->GetRadius() * plane.GetNormal();
 
 	return true;
 }

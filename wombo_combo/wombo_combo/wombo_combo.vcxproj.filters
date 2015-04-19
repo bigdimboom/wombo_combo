@@ -65,6 +65,12 @@
     <Filter Include="Source Files\Physics">
       <UniqueIdentifier>{e867e674-1d3a-4d88-872a-e35fa687eaa2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Particle">
+      <UniqueIdentifier>{634e795c-1b9a-4399-aba8-5c6b96d8b01f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Particle\shader">
+      <UniqueIdentifier>{f77db82a-b8c6-4727-a6e3-dcec5af6189a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Window.cpp">
@@ -154,6 +160,9 @@
     <ClCompile Include="SimpleCDTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -173,6 +182,12 @@
     </None>
     <None Include="Shaders\fs_debug.glsl">
       <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Particle\vs_genParticles.glsl">
+      <Filter>Source Files\Particle\shader</Filter>
+    </None>
+    <None Include="Shaders\Particle\gs_genParticles.glsl">
+      <Filter>Source Files\Particle\shader</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -270,6 +285,9 @@
       <Filter>Source Files\Actor</Filter>
     </ClInclude>
     <ClInclude Include="SimpleCDTest.h" />
+    <ClInclude Include="Particle.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Assets\awesomeface.png">

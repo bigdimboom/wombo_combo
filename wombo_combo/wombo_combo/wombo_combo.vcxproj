@@ -37,6 +37,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyTimer.cpp" />
     <ClCompile Include="Octree.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SimpleCDTest.cpp" />
@@ -53,6 +54,8 @@
     <None Include="Shaders\fs.glsl" />
     <None Include="Shaders\fs_debug.glsl" />
     <None Include="Shaders\fs_octree.glsl" />
+    <None Include="Shaders\Particle\gs_genParticles.glsl" />
+    <None Include="Shaders\Particle\vs_genParticles.glsl" />
     <None Include="Shaders\vs.glsl" />
     <None Include="Shaders\vs_debug.glsl" />
     <None Include="Shaders\vs_octree.glsl" />
@@ -79,6 +82,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MyTimer.h" />
     <ClInclude Include="Octree.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SimpleCDTest.h" />
