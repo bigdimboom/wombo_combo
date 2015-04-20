@@ -120,15 +120,15 @@ bool Shader::Comiple(const char *vsPath, const char *fsPath)
 	return true;
 }
 
-bool Shader::Comiple(const char *vsPath, const char* gsPath, const char *fsPath)
+bool Shader::Comiple(const char *vsPath, const char *gsPath, const char *fsPath)
 {
 	GLuint vertexShader;
 	GLuint geometryShader;
 	GLuint fragmentShader;
 
 	vertexShader = CreateShader(GL_VERTEX_SHADER, vsPath);
-	if (fsPath){ fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fsPath); }
 	geometryShader = CreateShader(GL_GEOMETRY_SHADER, gsPath);
+	fragmentShader = CreateShader(GL_FRAGMENT_SHADER, fsPath);
 
 	/* So we've compiled our shaders, now we need to link them in to the program
 	that will be used for rendering. */
@@ -141,7 +141,7 @@ bool Shader::Comiple(const char *vsPath, const char* gsPath, const char *fsPath)
 
 	glAttachShader(_program, vertexShader);
 	glAttachShader(_program, geometryShader);
-	if (fsPath){ glAttachShader(_program, fragmentShader); }
+	glAttachShader(_program, fragmentShader);
 
 	glLinkProgram(_program); //linking!
 
@@ -163,8 +163,8 @@ bool Shader::Comiple(const char *vsPath, const char* gsPath, const char *fsPath)
 
 	glDetachShader(_program, vertexShader);
 	glDetachShader(_program, geometryShader);
-	if (fsPath){ glDetachShader(_program, fragmentShader); }
-	
+	glDetachShader(_program, fragmentShader);
+
 	if (_program == -1)
 	{
 		std::cout << "Unable to Compile the Shader\n";
@@ -174,11 +174,9 @@ bool Shader::Comiple(const char *vsPath, const char* gsPath, const char *fsPath)
 	return true;
 }
 
-
 void Shader::Delete()
 {
 	assert(_program > 0);
 	glDeleteProgram(_program);
 }
-
 

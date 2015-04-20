@@ -144,7 +144,7 @@ void EventHandler(SDL_Event &e)
 			if (e.button.button == SDL_BUTTON_LEFT)
 			{
 				//std::cout << "Clicked\n";
-				gCDTest.SetMovingObj(gCamera.GetPosition(), gCamera.GetFront());
+				//gCDTest.SetMovingObj(gCamera.GetPosition(), gCamera.GetFront());
 			}
 		}
 	}

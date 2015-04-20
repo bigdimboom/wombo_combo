@@ -4,11 +4,16 @@
 class Particle
 {
 public:
+	Particle();
+	~Particle();
+	bool Update(float dtime);
+
 	point3 position;
 	point3 velocity;
+	point3 acceleration;
 	point4 color;
-	float life;
 	float size;
-	int type;
+	float life;
+	float TTL;
 };
 
