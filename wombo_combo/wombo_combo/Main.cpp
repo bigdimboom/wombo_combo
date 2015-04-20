@@ -195,6 +195,7 @@ void Update()
 	if (gTimeElapsed / 1000 >= 0.1f){
 		//gFlock.MoveAll(1.0f);
 		gCDTest.Update(0.1f);
+		//gPEffect.Update(0.1f);
 	}
 
 	++gFrameCount;

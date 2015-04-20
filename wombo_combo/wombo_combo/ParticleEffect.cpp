@@ -74,7 +74,7 @@ void ParticleEffect::_InitParticlesData()
 	_particleFactory.SetProperties(point3(0.0f, 40.0f, 0.0f),
 		point3(10.0f, 10.0f, 10.0f), point3(50.0f, 50.0f, 50.0f),
 		point3(0.0f, -9.8f, 0.0f), color4(0.9, 0.2, 0.6, 1.0),
-		0.8f, 1.0f,
+		10.0f, 20.0f,
 		1.0f);
 
 	for (int i = 0; i < MAX_PARTICLES; ++i)
