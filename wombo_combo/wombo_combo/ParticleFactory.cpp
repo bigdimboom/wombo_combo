@@ -22,7 +22,7 @@ void ParticleFactory::SetProperties(point3 initPosition, point3 initVelocityMin,
 	_color = color;
 	_lifeMin = lifeMin;
 	_lifeMax = lifeMax;
-	float size = size;
+	_size = size;
 	_isPropertiesSet = true;
 }
 

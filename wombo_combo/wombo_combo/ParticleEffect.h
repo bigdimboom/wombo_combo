@@ -9,6 +9,9 @@
 
 
 #define MAX_PARTICLES 100000
+//#define STATIC_BUFFER_DATA 0
+//#define DYNAMIC_BUFFER_DATA 1
+
 
 class ParticleEffect
 {
@@ -26,5 +29,7 @@ private:
 	void _InitDrawData();
 
 	GLuint _vbo;
+
+	GLuint _vao;
 };
 

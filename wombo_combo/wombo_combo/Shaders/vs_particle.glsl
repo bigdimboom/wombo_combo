@@ -4,6 +4,7 @@ layout (location = 0) in vec3 position;
 layout (location = 1) in vec3 velocity; 
 layout (location = 2) in vec3 acceleration; 
 layout (location = 3) in vec4 color; 
+
 layout (location = 4) in float life; 
 layout (location = 5) in float size; 
 
@@ -21,5 +22,6 @@ vec3 GetPosition()
 void main()
 {
 	gl_Position = projection * view  * model * vec4(GetPosition(), 1.0);
+	gl_PointSize  = size;
 	fragColor = color;
 }
