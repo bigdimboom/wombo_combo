@@ -163,6 +163,9 @@
     <ClCompile Include="ParticleFactory.cpp">
       <Filter>Source Files\Particle</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleEffect.cpp">
+      <Filter>Source Files\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\fs.glsl">
@@ -181,6 +184,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\fs_debug.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\vs_particle.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\fs_particle.glsl">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
@@ -283,6 +292,9 @@
       <Filter>Source Files\Particle</Filter>
     </ClInclude>
     <ClInclude Include="ParticleFactory.h">
+      <Filter>Source Files\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEffect.h">
       <Filter>Source Files\Particle</Filter>
     </ClInclude>
   </ItemGroup>
