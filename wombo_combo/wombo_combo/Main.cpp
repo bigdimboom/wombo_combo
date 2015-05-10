@@ -51,7 +51,7 @@ bool gIsDebug = false;
 
 SimpleCDTest gCDTest(&gTerrain);
 
-ParticleEffect gPEffect;
+//ParticleEffect gPEffect;
 
 
 void CameraMotion(GLfloat xpos, GLfloat ypos, Window* win, FreeCamera* cam){
@@ -90,7 +90,7 @@ void Init()
 {
 	gShader.Comiple("Shaders/vs.glsl", "Shaders/fs.glsl");
 	gShaderDebug.Comiple("Shaders/vs_debug.glsl", "Shaders/fs_debug.glsl");
-	gShaderParticle.Comiple("Shaders/vs_particle.glsl", "Shaders/fs_particle.glsl");
+	//gShaderParticle.Comiple("Shaders/vs_particle.glsl", "Shaders/fs_particle.glsl");
 
 	gTimer.Reset();
 
@@ -103,7 +103,7 @@ void Init()
 
 	//gFlock.Init();
 
-	gPEffect.Init();
+	//gPEffect.Init();
 
 	//DebugDrawManager::getInstance().EnableWorldPlane(point4(0.2f, 0.6f, 0.4f, 1.0f), 1000.0f, 512, 1.0f, false);
 }
@@ -181,7 +181,7 @@ void Render()
 	}
 
 
-	gPEffect.Render(&gShaderParticle, &gCamera);
+	//gPEffect.Render(&gShaderParticle, &gCamera);
 
 	DebugDrawManager::getInstance().Render(&gCamera, &gShaderDebug);
 

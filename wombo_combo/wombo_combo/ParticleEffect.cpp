@@ -36,9 +36,9 @@ void ParticleEffect::Update(float dTime)
 				glm::linearRand(0.5f, 0.7f), 1.0f), 
 				////
 				glm::linearRand(1.5f, 2.0f));
+			_InitDrawData();
 		}
 	}
-	_InitDrawData();
 }
 
 void ParticleEffect::Render(Shader* shader, Camera* cam)
@@ -71,10 +71,10 @@ void ParticleEffect::Render(Shader* shader, Camera* cam)
 
 void ParticleEffect::_InitParticlesData()
 {
-	_particleFactory.SetProperties(point3(0.0f, 40.0f, 0.0f),
+	_particleFactory.SetProperties(point3(10.0f, 25.0f, 10.5f),
 		point3(10.0f, 10.0f, 10.0f), point3(50.0f, 50.0f, 50.0f),
 		point3(0.0f, -9.8f, 0.0f), color4(0.9, 0.2, 0.6, 1.0),
-		10.0f, 20.0f,
+		20.0f, 30.0f,
 		1.0f);
 
 	for (int i = 0; i < MAX_PARTICLES; ++i)
@@ -84,7 +84,7 @@ void ParticleEffect::_InitParticlesData()
 			glm::linearRand(0.1f, 0.7f),
 			glm::linearRand(0.5f, 0.7f), 1.0f), 
 			/////
-			glm::linearRand(1.5f, 2.0f));
+			glm::linearRand(2.0f, 3.0f));
 		_particleBox.push_back(p);
 	}
 

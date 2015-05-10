@@ -8,7 +8,7 @@
 
 
 
-#define MAX_PARTICLES 100000
+#define MAX_PARTICLES 10000
 //#define STATIC_BUFFER_DATA 0
 //#define DYNAMIC_BUFFER_DATA 1
 
